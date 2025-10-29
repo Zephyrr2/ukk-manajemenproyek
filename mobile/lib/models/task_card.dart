@@ -61,8 +61,12 @@ class TaskCard {
       dueDate: json['due_date'] != null ? DateTime.parse(json['due_date']) : null,
       status: json['status'],
       priority: json['priority'],
-      estimatedHours: json['estimated_hours']?.toDouble(),
-      actualHours: json['actual_hours']?.toDouble(),
+      estimatedHours: json['estimated_hours'] != null 
+          ? double.tryParse(json['estimated_hours'].toString())
+          : null,
+      actualHours: json['actual_hours'] != null 
+          ? double.tryParse(json['actual_hours'].toString())
+          : null,
       startedAt: json['started_at'] != null ? DateTime.parse(json['started_at']) : null,
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
@@ -136,6 +140,29 @@ class TaskCard {
         return 'High';
       default:
         return priority;
+    }
+  }
+
+  // Alias untuk compatibility
+  String get title => cardTitle;
+
+  // Format due date
+  String getFormattedDueDate() {
+    if (dueDate == null) return 'No deadline';
+    
+    final now = DateTime.now();
+    final difference = dueDate!.difference(now).inDays;
+    
+    if (difference < 0) {
+      return 'Overdue';
+    } else if (difference == 0) {
+      return 'Today';
+    } else if (difference == 1) {
+      return 'Tomorrow';
+    } else if (difference <= 7) {
+      return '$difference days left';
+    } else {
+      return '${dueDate!.day}/${dueDate!.month}/${dueDate!.year}';
     }
   }
 }

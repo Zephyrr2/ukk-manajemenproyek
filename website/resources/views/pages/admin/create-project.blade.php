@@ -134,7 +134,7 @@
                                            id="team_lead_search"
                                            name="team_lead_search"
                                            value="{{ old('team_lead_search') }}"
-                                           placeholder="Search for team leader..."
+                                           placeholder="Search for available leader..."
                                            autocomplete="off"
                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors @error('team_lead_id') border-red-500 ring-2 ring-red-500 @enderror">
 
@@ -229,17 +229,45 @@ function displaySearchResults(leaders) {
 
     let html = '';
     leaders.forEach(leader => {
+        const hasProject = leader.has_project;
+        const projectName = leader.project_name;
+        const isDisabled = hasProject; // Disabled if already has project
+        const bgColor = isDisabled ? 'bg-gray-100' : 'hover:bg-gray-100';
+        const cursor = isDisabled ? 'cursor-not-allowed' : 'cursor-pointer';
+        const opacity = isDisabled ? 'opacity-60' : '';
+
         html += `
-            <div class="p-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0"
-                 onclick="selectLeader(${leader.id}, '${leader.name}')">
-                <div class="flex items-center">
-                    <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
-                        <span class="text-white text-sm font-semibold">${leader.name.charAt(0).toUpperCase()}</span>
+            <div class="p-3 ${bgColor} ${cursor} ${opacity} border-b border-gray-100 last:border-b-0"
+                 ${!isDisabled ? `onclick="selectLeader(${leader.id}, '${leader.name}')"` : ''}>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center flex-1">
+                        <div class="w-8 h-8 ${isDisabled ? 'bg-gray-400' : 'bg-green-500'} rounded-full flex items-center justify-center mr-3">
+                            <span class="text-white text-sm font-semibold">${leader.name.charAt(0).toUpperCase()}</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-900">${leader.name}</div>
+                            <div class="text-sm text-gray-500">${leader.email}</div>
+                        </div>
                     </div>
-                    <div>
-                        <div class="font-medium text-gray-900">${leader.name}</div>
-                        <div class="text-sm text-gray-500">${leader.email}</div>
+                    ${hasProject ? `
+                    <div class="ml-2">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            <svg class="mr-1 h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            Sudah punya: ${projectName}
+                        </span>
                     </div>
+                    ` : `
+                    <div class="ml-2">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <svg class="mr-1 h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            Available
+                        </span>
+                    </div>
+                    `}
                 </div>
             </div>
         `;

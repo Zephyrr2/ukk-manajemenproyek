@@ -152,13 +152,13 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
   Future<void> _addSubtask() async {
     if (_subtaskTitleController.text.trim().isEmpty) return;
 
-    final success = await ApiService.createSubtask(
+    final result = await ApiService.createSubtask(
       taskId: widget.taskId,
       title: _subtaskTitleController.text.trim(),
       description: _subtaskDescController.text.trim(),
     );
 
-    if (success && mounted) {
+    if (result != null && mounted) {
       _subtaskTitleController.clear();
       _subtaskDescController.clear();
       Navigator.of(context).pop();

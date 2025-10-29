@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/projects/{slug}/board', [ProjectController::class, 'board'])->name('projects.board');
         Route::get('/projects/{slug}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
         Route::put('/projects/{slug}', [ProjectController::class, 'updateProject'])->name('projects.update');
+        Route::delete('/projects/{slug}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 
         // Project Members Management
         Route::post('/projects/{slug}/members', [ProjectController::class, 'addMember'])->name('projects.members.add');
@@ -60,6 +61,7 @@ Route::middleware('auth')->group(function () {
         // Team Management
         Route::get('/users', [UserController::class, 'tampilUser'])->name('users');
         Route::get('/users/create', [UserController::class, 'tambahUser'])->name('users.create');
+        Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
         Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');

@@ -131,13 +131,12 @@ class SubtaskController extends Controller
 
             $user = Auth::user();
 
-            // Verify user has access to the task
-            $task = Card::whereHas('board.project', function ($query) use ($user) {
-                $query->where(function ($subQuery) use ($user) {
-                    $subQuery->whereHas('projectMembers', function ($memberQuery) use ($user) {
-                        $memberQuery->where('user_id', $user->id);
-                    })->orWhere('user_id', $user->id);
-                });
+            // Verify user has access to the task (simplified)
+            $task = Card::where(function ($query) use ($user) {
+                $query->where('user_id', $user->id)
+                      ->orWhereHas('assignments', function ($subQuery) use ($user) {
+                          $subQuery->where('user_id', $user->id);
+                      });
             })->find($taskId);
 
             if (!$task) {
@@ -147,19 +146,24 @@ class SubtaskController extends Controller
                 ], 404);
             }
 
+            // Get the next position number
+            $maxPosition = Subtask::where('card_id', $taskId)->max('position') ?? 0;
+
             $subtask = Subtask::create([
                 'card_id' => $taskId,
-                'title' => $request->title,
+                'user_id' => $user->id,
+                'subtask_title' => $request->title,
                 'description' => $request->description,
-                'status' => 'todo',
-                'estimated_hours' => $request->estimated_hours
+                'status' => 'in_progress',
+                'estimated_hours' => $request->estimated_hours,
+                'position' => $maxPosition + 1
             ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Subtask created successfully',
                 'data' => $subtask
-            ]);
+            ], 201);
 
         } catch (\Exception $e) {
             return response()->json([

@@ -25,16 +25,20 @@ class Subtask {
 
   factory Subtask.fromJson(Map<String, dynamic> json) {
     return Subtask(
-      id: json['id'],
-      cardId: json['card_id'],
-      title: json['title'],
-      description: json['description'],
-      status: json['status'],
-      estimatedHours: json['estimated_hours']?.toDouble(),
-      actualHours: json['actual_hours']?.toDouble(),
-      dueDate: json['due_date'] != null ? DateTime.parse(json['due_date']) : null,
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      id: json['id'] as int,
+      cardId: json['card_id'] as int,
+      title: json['subtask_title'] ?? json['title'] ?? '',
+      description: json['description'] as String?,
+      status: json['status'] as String,
+      estimatedHours: json['estimated_hours'] != null 
+          ? double.tryParse(json['estimated_hours'].toString())
+          : null,
+      actualHours: json['actual_hours'] != null 
+          ? double.tryParse(json['actual_hours'].toString())
+          : null,
+      dueDate: json['due_date'] != null ? DateTime.parse(json['due_date'] as String) : null,
+      createdAt: DateTime.parse(json['created_at'] as String),
+      updatedAt: DateTime.parse(json['updated_at'] as String),
     );
   }
 
@@ -65,4 +69,8 @@ class Subtask {
         return status;
     }
   }
+
+  bool get isDone => status == 'done';
+  bool get isInProgress => status == 'in_progress';
+  bool get isTodo => status == 'todo';
 }

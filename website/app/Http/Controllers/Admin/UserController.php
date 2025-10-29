@@ -20,6 +20,25 @@ class UserController extends Controller
         return view('pages.admin.create-user');
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'role' => 'nullable|in:admin,leader,user',
+        ]);
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role' => $request->role ?? 'user', // Default role is 'user'
+        ]);
+
+        return redirect()->route('admin.users')->with('success', 'User created successfully!');
+    }
+
     public function updateRole(Request $request, User $user)
     {
         $request->validate([

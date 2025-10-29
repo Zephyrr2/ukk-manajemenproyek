@@ -44,6 +44,13 @@ class ProjectController extends Controller
                 return back()->withErrors(['team_lead_id' => 'Please select a valid team leader.'])
                             ->withInput();
             }
+
+            // Check if leader already has a project
+            $existingProject = Project::where('user_id', $request->team_lead_id)->first();
+            if ($existingProject) {
+                return back()->withErrors(['team_lead_id' => 'Leader sudah memiliki project: ' . $existingProject->project_name])
+                            ->withInput();
+            }
         }
 
         $project = Project::create([
@@ -92,6 +99,16 @@ class ProjectController extends Controller
                            ->first();
 
             if ($teamLead) {
+                // Check if leader already has another project (not this one)
+                $existingProject = Project::where('user_id', $request->team_lead_id)
+                                         ->where('id', '!=', $project->id)
+                                         ->first();
+
+                if ($existingProject) {
+                    return back()->withErrors(['team_lead_id' => 'Leader sudah memiliki project: ' . $existingProject->project_name])
+                                ->withInput();
+                }
+
                 $updateData['user_id'] = $request->team_lead_id;
             }
         }
@@ -108,6 +125,7 @@ class ProjectController extends Controller
     public function searchLeaders(Request $request)
     {
         $query = $request->get('q');
+        $projectId = $request->get('project_id'); // For edit mode
 
         if (strlen($query) < 2) {
             return response()->json([]);
@@ -115,9 +133,29 @@ class ProjectController extends Controller
 
         $leaders = User::where('role', 'leader')
                       ->where('name', 'LIKE', "%{$query}%")
+                      ->with('createdProjects:id,project_name,user_id')
                       ->select('id', 'name', 'email')
                       ->limit(10)
-                      ->get();
+                      ->get()
+                      ->map(function($leader) use ($projectId) {
+                          $hasProject = $leader->createdProjects->isNotEmpty();
+                          $currentProject = $leader->createdProjects->first();
+
+                          // Check if this is the current project being edited
+                          $isCurrentProject = false;
+                          if ($projectId && $currentProject) {
+                              $isCurrentProject = $currentProject->id == $projectId;
+                          }
+
+                          return [
+                              'id' => $leader->id,
+                              'name' => $leader->name,
+                              'email' => $leader->email,
+                              'has_project' => $hasProject,
+                              'project_name' => $hasProject ? $currentProject->project_name : null,
+                              'is_current_project' => $isCurrentProject,
+                          ];
+                      });
 
         return response()->json($leaders);
     }
@@ -336,4 +374,32 @@ class ProjectController extends Controller
 
         return redirect()->route('admin.projects.board', $project->slug)
                        ->with('success', 'Task "' . $request->title . '" created successfully!');
-    }}
+    }
+
+    public function destroy($slug)
+    {
+        $project = Project::where('slug', $slug)->firstOrFail();
+
+        // Hapus semua board dan card terkait (cascade delete)
+        foreach ($project->boards as $board) {
+            // Hapus semua card dalam board
+            foreach ($board->cards as $card) {
+                // Hapus subtask dan time logs
+                $card->subtasks()->delete();
+                $card->timeLogs()->delete();
+                $card->delete();
+            }
+            $board->delete();
+        }
+
+        // Hapus project members
+        $project->membersWithUsers()->delete();
+
+        // Hapus project
+        $projectName = $project->project_name;
+        $project->delete();
+
+        return redirect()->route('admin.projects')
+                       ->with('success', "Project '{$projectName}' berhasil dihapus!");
+    }
+}

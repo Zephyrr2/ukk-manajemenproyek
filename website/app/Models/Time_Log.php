@@ -55,18 +55,20 @@ class Time_Log extends Model
      */
     public function getFormattedDurationAttribute()
     {
-        if (!$this->duration_minutes) {
+        $minutes = max(0, $this->duration_minutes ?? 0); // Ensure non-negative
+
+        if (!$minutes) {
             return '0m';
         }
 
-        $hours = intdiv($this->duration_minutes, 60);
-        $minutes = $this->duration_minutes % 60;
+        $hours = intdiv($minutes, 60);
+        $remainingMinutes = $minutes % 60;
 
         if ($hours > 0) {
-            return $minutes > 0 ? "{$hours}h {$minutes}m" : "{$hours}h";
+            return $remainingMinutes > 0 ? "{$hours}h {$remainingMinutes}m" : "{$hours}h";
         }
 
-        return "{$minutes}m";
+        return "{$remainingMinutes}m";
     }
 
     /**
@@ -74,7 +76,7 @@ class Time_Log extends Model
      */
     public function getDurationHoursAttribute()
     {
-        return round(($this->duration_minutes ?? 0) / 60, 2);
+        return round(max(0, $this->duration_minutes ?? 0) / 60, 2);
     }
 
     /**
@@ -117,11 +119,17 @@ class Time_Log extends Model
         }
 
         $sessionDuration = now()->diffInMinutes($this->start_time);
+
+        // Ensure duration is not negative
+        if ($sessionDuration < 0) {
+            $sessionDuration = 0;
+        }
+
         $totalDuration = ($this->duration_minutes ?? 0) + $sessionDuration;
 
         $this->update([
             'end_time' => now(),
-            'duration_minutes' => $totalDuration,
+            'duration_minutes' => max(0, $totalDuration), // Ensure non-negative
             'status' => 'completed',
             'description' => "Work completed - {$this->formatted_duration}",
         ]);
@@ -139,11 +147,17 @@ class Time_Log extends Model
         }
 
         $sessionDuration = now()->diffInMinutes($this->start_time);
+
+        // Ensure duration is not negative
+        if ($sessionDuration < 0) {
+            $sessionDuration = 0;
+        }
+
         $totalDuration = ($this->duration_minutes ?? 0) + $sessionDuration;
 
         $this->update([
             'end_time' => now(),
-            'duration_minutes' => $totalDuration,
+            'duration_minutes' => max(0, $totalDuration), // Ensure non-negative
             'status' => 'paused',
             'description' => "Work paused - {$this->formatted_duration} total",
         ]);
@@ -233,14 +247,15 @@ class Time_Log extends Model
         foreach ($sessions as $session) {
             if ($session->end_time) {
                 // Completed session
-                $totalMinutes += $session->duration_minutes;
+                $totalMinutes += max(0, $session->duration_minutes ?? 0);
             } else {
                 // Active session - calculate current duration
                 $currentDuration = now()->diffInMinutes($session->start_time);
+                $currentDuration = max(0, $currentDuration); // Ensure non-negative
                 $totalMinutes += ($session->duration_minutes ?? 0) + $currentDuration;
             }
         }
 
-        return $totalMinutes;
+        return max(0, $totalMinutes); // Ensure final result is non-negative
     }
 }

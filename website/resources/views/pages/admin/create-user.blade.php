@@ -22,7 +22,7 @@
                         <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
                         </svg>
-                        <a href="{{ route('admin.projects') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-green-600 md:ml-2">Projects</a>
+                        <a href="{{ route('admin.users') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-green-600 md:ml-2">Users</a>
                     </div>
                 </li>
                 <li aria-current="page">
@@ -59,8 +59,9 @@
 
             <!-- Form -->
             <div class="px-6 py-8">
-                <form class="space-y-6" action="{{ url('/register/process') }}" method="POST">
+                <form class="space-y-6" action="{{ route('admin.users.store') }}" method="POST">
                     @csrf
+
                 <div>
                     <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Full Name</label>
                     <div class="mt-2">
@@ -87,6 +88,20 @@
                         <input type="password" name="password" id="password" autocomplete="new-password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6 px-3">
                     </div>
                     @error('password')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="role" class="block text-sm font-medium leading-6 text-gray-900">Role</label>
+                    <div class="mt-2">
+                        <select name="role" id="role" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6 px-3">
+                            <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User</option>
+                            <option value="leader" {{ old('role') == 'leader' ? 'selected' : '' }}>Leader</option>
+                            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                        </select>
+                    </div>
+                    @error('role')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>

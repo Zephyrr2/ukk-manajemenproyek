@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import '../models/user.dart';
+import '../models/task_card.dart';
 import '../utils/constants.dart';
 import 'login_screen.dart';
+import 'subtask_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,21 +16,32 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   User? _user;
   bool _isLoading = true;
+  List<TaskCard> _tasks = [];
 
   @override
   void initState() {
     super.initState();
-    _loadUser();
+    _loadData();
   }
 
-  Future<void> _loadUser() async {
+  Future<void> _loadData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
       final user = await ApiService.getUser();
+      final tasksData = await ApiService.getUserTasks();
+      
       setState(() {
         _user = user;
+        if (tasksData != null) {
+          _tasks = tasksData.map((json) => TaskCard.fromJson(json)).toList();
+        }
         _isLoading = false;
       });
     } catch (e) {
+      print('Error loading tasks: $e');
       setState(() {
         _isLoading = false;
       });
@@ -189,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       // Menu Grid
                       Text(
-                        'Menu Utama',
+                        'My Tasks',
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -197,37 +210,38 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: AppSpacing.md),
                       
                       Expanded(
-                        child: GridView.count(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: AppSpacing.md,
-                          mainAxisSpacing: AppSpacing.md,
-                          children: [
-                            _buildMenuCard(
-                              context,
-                              'Proyek',
-                              Icons.assignment,
-                              Colors.blue,
-                              () {
-                                // TODO: Navigate to projects
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Fitur Proyek akan segera hadir')),
-                                );
-                              },
-                            ),
-                            _buildMenuCard(
-                              context,
-                              'Tim',
-                              Icons.group,
-                              Colors.green,
-                              () {
-                                // TODO: Navigate to teams
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Fitur Tim akan segera hadir')),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                        child: _tasks.isEmpty
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.inbox_outlined,
+                                      size: 64,
+                                      color: Colors.grey[400],
+                                    ),
+                                    const SizedBox(height: AppSpacing.md),
+                                    Text(
+                                      'Tidak ada task',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : RefreshIndicator(
+                                onRefresh: _loadData,
+                                child: ListView.separated(
+                                  itemCount: _tasks.length,
+                                  separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.sm),
+                                  itemBuilder: (context, index) {
+                                    final task = _tasks[index];
+                                    return _buildTaskCard(task);
+                                  },
+                                ),
+                              ),
                       ),
                     ],
                   ),
@@ -235,39 +249,180 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildMenuCard(
-    BuildContext context,
-    String title,
-    IconData icon,
-    Color color,
-    VoidCallback onTap,
-  ) {
+  Widget _buildTaskCard(TaskCard task) {
+    Color statusColor;
+    String statusText;
+    
+    switch (task.status) {
+      case 'todo':
+        statusColor = Colors.grey;
+        statusText = 'To Do';
+        break;
+      case 'in_progress':
+        statusColor = Colors.orange;
+        statusText = 'In Progress';
+        break;
+      case 'review':
+        statusColor = Colors.blue;
+        statusText = 'Review';
+        break;
+      case 'done':
+        statusColor = Colors.green;
+        statusText = 'Done';
+        break;
+      default:
+        statusColor = Colors.grey;
+        statusText = task.status;
+    }
+
+    Color priorityColor;
+    IconData priorityIcon;
+    
+    switch (task.priority) {
+      case 'high':
+        priorityColor = Colors.red;
+        priorityIcon = Icons.arrow_upward;
+        break;
+      case 'medium':
+        priorityColor = Colors.orange;
+        priorityIcon = Icons.remove;
+        break;
+      case 'low':
+        priorityColor = Colors.green;
+        priorityIcon = Icons.arrow_downward;
+        break;
+      default:
+        priorityColor = Colors.grey;
+        priorityIcon = Icons.remove;
+    }
+
     return Card(
-      elevation: 4,
+      elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSizes.borderRadius),
       ),
       child: InkWell(
-        onTap: onTap,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SubtaskScreen(task: task),
+            ),
+          );
+        },
         borderRadius: BorderRadius.circular(AppSizes.borderRadius),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                icon,
-                size: 48,
-                color: color,
+              // Title and Status Row
+              Row(
+                children: [
+                  // Priority Indicator
+                  Container(
+                    width: 4,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: priorityColor,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          task.title,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Icon(priorityIcon, size: 14, color: priorityColor),
+                            const SizedBox(width: 4),
+                            Text(
+                              task.priority.toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: priorityColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: statusColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      statusText,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: statusColor,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: color,
+              
+              if (task.description != null && task.description!.isNotEmpty) ...[
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  task.description!,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                textAlign: TextAlign.center,
+              ],
+
+              const SizedBox(height: AppSpacing.sm),
+
+              // Info Row
+              Row(
+                children: [
+                  if (task.estimatedHours != null) ...[
+                    Icon(Icons.access_time, size: 14, color: Colors.grey[600]),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${task.estimatedHours}h',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                  ],
+                  Icon(Icons.calendar_today, size: 14, color: Colors.grey[600]),
+                  const SizedBox(width: 4),
+                  Text(
+                    task.getFormattedDueDate(),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const Spacer(),
+                  const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+                ],
               ),
             ],
           ),

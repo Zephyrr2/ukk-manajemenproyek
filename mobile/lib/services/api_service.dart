@@ -338,7 +338,7 @@ class ApiService {
   }
 
   // Create subtask
-  static Future<bool> createSubtask({
+  static Future<Map<String, dynamic>?> createSubtask({
     required int taskId,
     required String title,
     String? description,
@@ -355,9 +355,14 @@ class ApiService {
         }),
       );
 
-      return response.statusCode == 200 || response.statusCode == 201;
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        return data['data'];
+      }
+      return null;
     } catch (e) {
-      return false;
+      print('Error creating subtask: $e');
+      return null;
     }
   }
 
@@ -427,5 +432,26 @@ class ApiService {
     }
   }
 
+  // ====== Subtask Methods ======
+  
+  // Get all subtasks for a task
+  static Future<List<dynamic>?> getTaskSubtasks(int taskId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/tasks/$taskId/subtasks'),
+        headers: await authHeaders,
+      );
 
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['success'] == true) {
+          return data['data'] as List<dynamic>;
+        }
+      }
+      return null;
+    } catch (e) {
+      print('Error fetching subtasks: $e');
+      return null;
+    }
+  }
 }

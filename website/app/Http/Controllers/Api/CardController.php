@@ -15,28 +15,20 @@ class CardController extends Controller
         try {
             $user = Auth::user();
 
-            $projects = Project::where(function ($query) use ($user) {
+            // Ambil task yang user buat atau di-assign ke user
+            $myTasks = Card::where(function ($query) use ($user) {
                 $query->where('user_id', $user->id)
-                      ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
+                      ->orWhereHas('assignments', function ($subQuery) use ($user) {
                           $subQuery->where('user_id', $user->id);
                       });
-            })->with(['boards.cards.user', 'boards.cards.assignments.user'])->get();
-
-            $allTasks = collect();
-            foreach ($projects as $project) {
-                foreach ($project->boards as $board) {
-                    $allTasks = $allTasks->merge($board->cards);
-                }
-            }
-
-            $myTasks = $allTasks->filter(function ($task) use ($user) {
-                return $task->user_id == $user->id ||
-                       $task->assignments->where('user_id', $user->id)->isNotEmpty();
-            });
+            })
+            ->with(['user', 'assignments.user', 'board'])
+            ->orderBy('due_date', 'asc')
+            ->get();
 
             return response()->json([
                 'success' => true,
-                'data' => $myTasks->values()
+                'data' => $myTasks
             ]);
 
         } catch (\Exception $e) {
