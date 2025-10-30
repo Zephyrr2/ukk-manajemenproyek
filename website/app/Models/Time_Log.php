@@ -137,7 +137,7 @@ class Time_Log extends Model
         $totalDuration = max(0, $totalDuration); // Ensure non-negative
 
         // IMPORTANT: Use DB update to ensure data is saved
-        \DB::table('time_logs')
+        DB::table('time_logs')
             ->where('id', $this->id)
             ->update([
                 'end_time' => $endTime,
@@ -154,7 +154,7 @@ class Time_Log extends Model
         $minutes = $totalDuration % 60;
         $formattedDuration = $hours > 0 ? "{$hours}h {$minutes}m" : "{$minutes}m";
 
-        \DB::table('time_logs')
+        DB::table('time_logs')
             ->where('id', $this->id)
             ->update([
                 'description' => "Work completed - {$formattedDuration}",
@@ -193,7 +193,7 @@ class Time_Log extends Model
         $totalDuration = max(0, $totalDuration); // Ensure non-negative
 
         // IMPORTANT: Use DB update to ensure data is saved
-        \DB::table('time_logs')
+        DB::table('time_logs')
             ->where('id', $this->id)
             ->update([
                 'end_time' => $endTime,
@@ -210,7 +210,7 @@ class Time_Log extends Model
         $minutes = $totalDuration % 60;
         $formattedDuration = $hours > 0 ? "{$hours}h {$minutes}m" : "{$minutes}m";
 
-        \DB::table('time_logs')
+        DB::table('time_logs')
             ->where('id', $this->id)
             ->update([
                 'description' => "Work paused - {$formattedDuration} total",

@@ -201,7 +201,7 @@
 
                 <!-- Executive Summary -->
                 <div class="mb-8">
-                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">📊 RINGKASAN EKSEKUTIF</h3>
+                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">RINGKASAN EKSEKUTIF</h3>
                     <table class="w-full border-collapse border border-gray-400 mb-6">
                         <thead>
                             <tr class="bg-gray-100">
@@ -213,32 +213,32 @@
                         <tbody>
                             <tr>
                                 <td class="border border-gray-400 px-4 py-2 font-medium">Total Proyek</td>
-                                <td class="border border-gray-400 px-4 py-2 text-center font-bold text-xl">{{ $totalProjects ?? 0 }}</td>
+                                <td class="border border-gray-400 px-4 py-2 text-center font-bold">{{ $totalProjects ?? 0 }}</td>
                                 <td class="border border-gray-400 px-4 py-2">Dalam periode laporan</td>
                             </tr>
                             <tr>
                                 <td class="border border-gray-400 px-4 py-2 font-medium">Proyek Selesai</td>
-                                <td class="border border-gray-400 px-4 py-2 text-center font-bold text-xl text-green-700">{{ $completedProjects ?? 0 }}</td>
+                                <td class="border border-gray-400 px-4 py-2 text-center font-bold text-green-700">{{ $completedProjects ?? 0 }}</td>
                                 <td class="border border-gray-400 px-4 py-2">{{ $totalProjects > 0 ? round(($completedProjects ?? 0) / $totalProjects * 100, 1) : 0 }}% tingkat penyelesaian</td>
                             </tr>
                             <tr>
                                 <td class="border border-gray-400 px-4 py-2 font-medium">Total Task</td>
-                                <td class="border border-gray-400 px-4 py-2 text-center font-bold text-xl">{{ $totalTasks ?? 0 }}</td>
+                                <td class="border border-gray-400 px-4 py-2 text-center font-bold">{{ $totalTasks ?? 0 }}</td>
                                 <td class="border border-gray-400 px-4 py-2">{{ $completedTasks ?? 0 }} task selesai ({{ $overallCompletionRate ?? 0 }}%)</td>
                             </tr>
                             <tr>
                                 <td class="border border-gray-400 px-4 py-2 font-medium">Task Overdue</td>
-                                <td class="border border-gray-400 px-4 py-2 text-center font-bold text-xl text-red-700">{{ $overdueTasks ?? 0 }}</td>
+                                <td class="border border-gray-400 px-4 py-2 text-center font-bold text-red-700">{{ $overdueTasks ?? 0 }}</td>
                                 <td class="border border-gray-400 px-4 py-2">Task melewati deadline</td>
                             </tr>
                             <tr>
                                 <td class="border border-gray-400 px-4 py-2 font-medium">Rata-rata Penyelesaian</td>
-                                <td class="border border-gray-400 px-4 py-2 text-center font-bold text-xl">{{ $avgCompletionDays ?? 0 }}</td>
+                                <td class="border border-gray-400 px-4 py-2 text-center font-bold">{{ $avgCompletionDays ?? 0 }}</td>
                                 <td class="border border-gray-400 px-4 py-2">Hari per task</td>
                             </tr>
                             <tr>
                                 <td class="border border-gray-400 px-4 py-2 font-medium">Tim Aktif</td>
-                                <td class="border border-gray-400 px-4 py-2 text-center font-bold text-xl">{{ $activeUsers ?? 0 }}</td>
+                                <td class="border border-gray-400 px-4 py-2 text-center font-bold">{{ $activeUsers ?? 0 }}</td>
                                 <td class="border border-gray-400 px-4 py-2">Anggota tim yang berkontribusi</td>
                             </tr>
                         </tbody>
@@ -247,7 +247,7 @@
 
                 <!-- Task Status Breakdown -->
                 <div class="mb-8">
-                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">📋 BREAKDOWN STATUS TASK</h3>
+                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">BREAKDOWN STATUS TASK</h3>
                     <div class="grid grid-cols-2 gap-4">
                         <table class="w-full border-collapse border border-gray-400">
                             <thead>
@@ -307,7 +307,7 @@
 
                 <!-- Project Status Breakdown -->
                 <div class="mb-8">
-                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">🎯 BREAKDOWN STATUS PROYEK</h3>
+                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">BREAKDOWN STATUS PROYEK</h3>
                     <table class="w-full border-collapse border border-gray-400">
                         <thead>
                             <tr class="bg-gray-100">
@@ -344,7 +344,7 @@
 
                 <!-- Project Details Table -->
                 <div class="mb-8" style="page-break-before: always;">
-                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">📁 DETAIL PROYEK</h3>
+                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">RINGKASAN PROYEK</h3>
                     <table class="w-full border-collapse border border-gray-400">
                         <thead>
                             <tr class="bg-gray-100">
@@ -378,45 +378,165 @@
                     </table>
                 </div>
 
-                <!-- Top Performers -->
+                <!-- Project Management Report -->
                 <div class="mb-8">
-                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">🏆 TOP 10 PERFORMER TIM</h3>
-                    <table class="w-full border-collapse border border-gray-400">
-                        <thead>
-                            <tr class="bg-gray-100">
-                                <th class="border border-gray-400 px-3 py-2 text-center font-bold">Ranking</th>
-                                <th class="border border-gray-400 px-3 py-2 text-left font-bold">Nama</th>
-                                <th class="border border-gray-400 px-3 py-2 text-center font-bold">Total Task</th>
-                                <th class="border border-gray-400 px-3 py-2 text-center font-bold">Selesai</th>
-                                <th class="border border-gray-400 px-3 py-2 text-center font-bold">Progress</th>
-                                <th class="border border-gray-400 px-3 py-2 text-center font-bold">Completion Rate</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($topPerformers ?? [] as $index => $performer)
-                                <tr class="{{ $index < 3 ? 'bg-yellow-50' : '' }}">
-                                    <td class="border border-gray-400 px-3 py-2 text-center font-bold">
-                                        {{ $index + 1 }}
-                                        @if($index === 0) 🥇
-                                        @elseif($index === 1) 🥈
-                                        @elseif($index === 2) 🥉
-                                        @endif
-                                    </td>
-                                    <td class="border border-gray-400 px-3 py-2 font-medium">{{ $performer->name }}</td>
-                                    <td class="border border-gray-400 px-3 py-2 text-center">{{ $performer->task_count ?? 0 }}</td>
-                                    <td class="border border-gray-400 px-3 py-2 text-center font-bold text-green-700">{{ $performer->completed_tasks ?? 0 }}</td>
-                                    <td class="border border-gray-400 px-3 py-2 text-center">{{ $performer->in_progress_tasks ?? 0 }}</td>
-                                    <td class="border border-gray-400 px-3 py-2 text-center font-bold">{{ $performer->completion_rate ?? 0 }}%</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="border border-gray-400 px-4 py-8 text-center text-gray-500">
-                                        Tidak ada data performer
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">DETAIL MANAJEMEN PROYEK</h3>
+                    @forelse($reportProjects ?? [] as $index => $project)
+                        <div class="mb-6 border border-gray-400">
+                            <!-- Project Header -->
+                            <div class="bg-gray-100 px-4 py-3 border-b border-gray-400">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="text-base font-bold">{{ $index + 1 }}. {{ $project->project_name }}</h4>
+                                    <span class="px-3 py-1 bg-white border border-gray-400 text-sm font-semibold">
+                                        {{ $project->status == 'completed' ? 'SELESAI' : ($project->status == 'in_progress' ? 'BERJALAN' : 'PERENCANAAN') }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Project Details -->
+                            <div class="p-4">
+                                <table class="w-full border-collapse mb-3">
+                                    <tr>
+                                        <td class="py-1 text-sm font-semibold" style="width: 150px;">Leader Proyek:</td>
+                                        <td class="py-1 text-sm">{{ $project->user->name ?? 'N/A' }} ({{ $project->user->email ?? 'N/A' }})</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-1 text-sm font-semibold">Tanggal Mulai:</td>
+                                        <td class="py-1 text-sm">{{ $project->created_at ? \Carbon\Carbon::parse($project->created_at)->format('d F Y') : 'Belum ditentukan' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-1 text-sm font-semibold">Target Selesai:</td>
+                                        <td class="py-1 text-sm">{{ $project->deadline ? \Carbon\Carbon::parse($project->deadline)->format('d F Y') : 'Belum ditentukan' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-1 text-sm font-semibold">Progress:</td>
+                                        <td class="py-1 text-sm font-bold">{{ $project->progress ?? 0 }}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-1 text-sm font-semibold">Deskripsi:</td>
+                                        <td class="py-1 text-sm">{{ $project->description ?? '-' }}</td>
+                                    </tr>
+                                </table>
+
+                                <!-- Team Members & Tasks -->
+                                @php
+                                    $projectTasks = collect();
+                                    $projectMembers = collect();
+                                    foreach ($project->boards as $board) {
+                                        foreach ($board->cards as $card) {
+                                            $projectTasks->push($card);
+                                            if ($card->user) {
+                                                $projectMembers->push($card->user);
+                                            }
+                                            foreach ($card->assignments as $assignment) {
+                                                if ($assignment->user) {
+                                                    $projectMembers->push($assignment->user);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    $projectMembers = $projectMembers->unique('id');
+                                    
+                                    // Calculate time spent
+                                    $totalTimeMinutes = 0;
+                                    foreach ($projectTasks as $task) {
+                                        $timeLogs = \App\Models\Time_Log::where('card_id', $task->id)->get();
+                                        foreach ($timeLogs as $log) {
+                                            if ($log->end_time) {
+                                                $totalTimeMinutes += $log->duration_minutes ?? 0;
+                                            } else {
+                                                $currentDuration = abs($log->start_time->diffInMinutes(now(), false));
+                                                $totalTimeMinutes += ($log->duration_minutes ?? 0) + $currentDuration;
+                                            }
+                                        }
+                                    }
+                                    $totalHours = floor($totalTimeMinutes / 60);
+                                    $totalMinutes = $totalTimeMinutes % 60;
+                                @endphp
+
+                                <!-- Team Performance Table -->
+                                <div class="mt-3">
+                                    <h5 class="text-sm font-bold mb-2 bg-gray-50 px-2 py-1 border-t border-b border-gray-300">TIM PROYEK ({{ $projectMembers->count() }} Orang)</h5>
+                                    <table class="w-full border-collapse border border-gray-300 text-sm">
+                                        <thead>
+                                            <tr class="bg-gray-50">
+                                                <th class="border border-gray-300 px-2 py-1 text-left">No</th>
+                                                <th class="border border-gray-300 px-2 py-1 text-left">Nama</th>
+                                                <th class="border border-gray-300 px-2 py-1 text-center">Total Task</th>
+                                                <th class="border border-gray-300 px-2 py-1 text-center">Selesai</th>
+                                                <th class="border border-gray-300 px-2 py-1 text-center">Progress</th>
+                                                <th class="border border-gray-300 px-2 py-1 text-center">Waktu Kerja</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse($projectMembers as $idx => $member)
+                                                @php
+                                                    $memberTasks = $projectTasks->filter(function($task) use ($member) {
+                                                        return $task->user_id == $member->id || 
+                                                               $task->assignments->where('user_id', $member->id)->isNotEmpty();
+                                                    });
+                                                    $memberCompleted = $memberTasks->where('status', 'done')->count();
+                                                    $memberInProgress = $memberTasks->where('status', 'in_progress')->count();
+                                                    
+                                                    // Calculate member work time
+                                                    $memberTimeMinutes = 0;
+                                                    foreach ($memberTasks as $task) {
+                                                        $timeLogs = \App\Models\Time_Log::where('card_id', $task->id)
+                                                                                        ->where('user_id', $member->id)
+                                                                                        ->get();
+                                                        foreach ($timeLogs as $log) {
+                                                            if ($log->end_time) {
+                                                                $memberTimeMinutes += $log->duration_minutes ?? 0;
+                                                            } else {
+                                                                $currentDuration = abs($log->start_time->diffInMinutes(now(), false));
+                                                                $memberTimeMinutes += ($log->duration_minutes ?? 0) + $currentDuration;
+                                                            }
+                                                        }
+                                                    }
+                                                    $memberHours = floor($memberTimeMinutes / 60);
+                                                    $memberMinutes = $memberTimeMinutes % 60;
+                                                @endphp
+                                                <tr>
+                                                    <td class="border border-gray-300 px-2 py-1 text-center">{{ $idx + 1 }}</td>
+                                                    <td class="border border-gray-300 px-2 py-1">{{ $member->name }}</td>
+                                                    <td class="border border-gray-300 px-2 py-1 text-center font-semibold">{{ $memberTasks->count() }}</td>
+                                                    <td class="border border-gray-300 px-2 py-1 text-center font-semibold">{{ $memberCompleted }}</td>
+                                                    <td class="border border-gray-300 px-2 py-1 text-center">{{ $memberInProgress }}</td>
+                                                    <td class="border border-gray-300 px-2 py-1 text-center font-semibold">{{ $memberHours }}h {{ $memberMinutes }}m</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="6" class="border border-gray-300 px-2 py-2 text-center text-gray-500">
+                                                        Belum ada anggota tim
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Project Summary -->
+                                <div class="mt-3 grid grid-cols-3 gap-2 text-sm">
+                                    <div class="border border-gray-300 px-3 py-2">
+                                        <div class="font-semibold">Total Task:</div>
+                                        <div class="text-lg font-bold">{{ $projectTasks->count() }}</div>
+                                    </div>
+                                    <div class="border border-gray-300 px-3 py-2">
+                                        <div class="font-semibold">Task Selesai:</div>
+                                        <div class="text-lg font-bold text-green-700">{{ $projectTasks->where('status', 'done')->count() }}</div>
+                                    </div>
+                                    <div class="border border-gray-300 px-3 py-2">
+                                        <div class="font-semibold">Total Waktu:</div>
+                                        <div class="text-lg font-bold">{{ $totalHours }}h {{ $totalMinutes }}m</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="border border-gray-400 px-4 py-8 text-center text-gray-500">
+                            Tidak ada data proyek dalam periode ini
+                        </div>
+                    @endforelse
                 </div>
 
                 <!-- Footer -->
@@ -691,27 +811,88 @@
             body {
                 -webkit-print-color-adjust: exact;
                 color-adjust: exact;
-                font-size: 12px;
+                font-size: 11px;
                 margin: 0 !important;
                 padding: 0 !important;
+                line-height: 1.4;
             }
 
             /* Table styling for print */
             table {
                 border-collapse: collapse;
                 width: 100%;
-                margin-bottom: 20px;
+                margin-bottom: 15px;
+                font-size: 10px;
             }
 
             th, td {
-                border: 1px solid #333;
-                padding: 8px;
+                border: 1px solid #444;
+                padding: 6px 8px;
                 text-align: left;
+                vertical-align: top;
             }
 
             th {
-                background-color: #f5f5f5;
+                background-color: #f0f0f0;
                 font-weight: bold;
+                font-size: 10px;
+            }
+
+            /* Spacing adjustments */
+            .mb-8 {
+                margin-bottom: 15px !important;
+            }
+
+            .mb-6 {
+                margin-bottom: 10px !important;
+            }
+
+            .mb-4 {
+                margin-bottom: 8px !important;
+            }
+
+            .mb-3 {
+                margin-bottom: 6px !important;
+            }
+
+            .mt-8 {
+                margin-top: 15px !important;
+            }
+
+            .mt-4 {
+                margin-top: 8px !important;
+            }
+
+            .mt-3 {
+                margin-top: 6px !important;
+            }
+
+            .py-3, .py-2, .py-1 {
+                padding-top: 4px !important;
+                padding-bottom: 4px !important;
+            }
+
+            .px-4, .px-3, .px-2 {
+                padding-left: 6px !important;
+                padding-right: 6px !important;
+            }
+
+            /* Section headers */
+            h3 {
+                font-size: 13px !important;
+                font-weight: bold !important;
+                margin-bottom: 8px !important;
+                padding: 6px 8px !important;
+            }
+
+            h4 {
+                font-size: 11px !important;
+                font-weight: bold !important;
+            }
+
+            h5 {
+                font-size: 10px !important;
+                font-weight: bold !important;
             }
 
             /* Hide everything except print sections ONLY when printing */
@@ -741,33 +922,64 @@
             }
 
             .border {
-                border: 1px solid #e5e7eb !important;
+                border: 1px solid #ddd !important;
             }
 
             .rounded-xl, .rounded-lg {
-                border-radius: 0.5rem !important;
+                border-radius: 0 !important;
             }
 
             .space-y-6 > * + * {
-                margin-top: 1.5rem !important;
+                margin-top: 12px !important;
+            }
+
+            /* Grid spacing for print */
+            .grid-cols-2 {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px !important;
+            }
+
+            .grid-cols-3 {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 6px !important;
             }
 
             /* Print header */
             @page {
-                margin: 1.5cm;
+                margin: 1.2cm;
                 size: A4;
             }
 
-            /* Add print title */
-            .print-section:first-child::before {
-                content: "LAPORAN PROYEK - " attr(data-period);
-                font-size: 18px;
-                font-weight: bold;
-                text-align: center;
-                display: block;
-                margin-bottom: 20px;
-                padding-bottom: 10px;
-                border-bottom: 2px solid #000;
+            /* Prevent page breaks inside important sections */
+            .border.border-gray-400 {
+                page-break-inside: avoid;
+                margin-bottom: 10px;
+            }
+
+            /* Compact text */
+            .text-sm {
+                font-size: 9px !important;
+            }
+
+            .text-xs {
+                font-size: 8px !important;
+            }
+
+            .text-lg {
+                font-size: 11px !important;
+            }
+
+            .text-base {
+                font-size: 10px !important;
+            }
+
+            /* Header kompak */
+            .text-center.mb-6 {
+                margin-bottom: 12px !important;
+            }
+
+            .text-2xl {
+                font-size: 16px !important;
             }
         }
     </style>
