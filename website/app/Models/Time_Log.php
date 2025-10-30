@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Time_Log extends Model
 {
@@ -118,21 +119,49 @@ class Time_Log extends Model
             return false; // Already stopped
         }
 
-        $sessionDuration = now()->diffInMinutes($this->start_time);
+        $endTime = now();
+        // IMPORTANT: Use start_time->diffInMinutes(end_time) or use abs() to get positive value
+        $sessionDuration = abs($this->start_time->diffInMinutes($endTime, false));
+        
+        // Round to nearest minute
+        $sessionDuration = round($sessionDuration);
 
-        // Ensure duration is not negative
+        // Ensure duration is not negative (extra safety)
         if ($sessionDuration < 0) {
             $sessionDuration = 0;
         }
 
-        $totalDuration = ($this->duration_minutes ?? 0) + $sessionDuration;
+        // Calculate total duration (previous accumulated time + current session)
+        $previousDuration = max(0, intval($this->duration_minutes ?? 0));
+        $totalDuration = $previousDuration + $sessionDuration;
+        $totalDuration = max(0, $totalDuration); // Ensure non-negative
 
-        $this->update([
-            'end_time' => now(),
-            'duration_minutes' => max(0, $totalDuration), // Ensure non-negative
-            'status' => 'completed',
-            'description' => "Work completed - {$this->formatted_duration}",
-        ]);
+        // IMPORTANT: Use DB update to ensure data is saved
+        \DB::table('time_logs')
+            ->where('id', $this->id)
+            ->update([
+                'end_time' => $endTime,
+                'duration_minutes' => $totalDuration,
+                'status' => 'completed',
+                'updated_at' => now(),
+            ]);
+
+        // Reload from database
+        $this->refresh();
+
+        // Update description with formatted duration
+        $hours = intdiv($totalDuration, 60);
+        $minutes = $totalDuration % 60;
+        $formattedDuration = $hours > 0 ? "{$hours}h {$minutes}m" : "{$minutes}m";
+
+        \DB::table('time_logs')
+            ->where('id', $this->id)
+            ->update([
+                'description' => "Work completed - {$formattedDuration}",
+                'updated_at' => now(),
+            ]);
+
+        $this->refresh();
 
         return true;
     }
@@ -146,21 +175,49 @@ class Time_Log extends Model
             return false; // Already stopped/paused
         }
 
-        $sessionDuration = now()->diffInMinutes($this->start_time);
+        $endTime = now();
+        // IMPORTANT: Use start_time->diffInMinutes(end_time) or use abs() to get positive value
+        $sessionDuration = abs($this->start_time->diffInMinutes($endTime, false));
+        
+        // Round to nearest minute
+        $sessionDuration = round($sessionDuration);
 
-        // Ensure duration is not negative
+        // Ensure duration is not negative (extra safety)
         if ($sessionDuration < 0) {
             $sessionDuration = 0;
         }
 
-        $totalDuration = ($this->duration_minutes ?? 0) + $sessionDuration;
+        // Calculate total duration (previous accumulated time + current session)
+        $previousDuration = max(0, intval($this->duration_minutes ?? 0));
+        $totalDuration = $previousDuration + $sessionDuration;
+        $totalDuration = max(0, $totalDuration); // Ensure non-negative
 
-        $this->update([
-            'end_time' => now(),
-            'duration_minutes' => max(0, $totalDuration), // Ensure non-negative
-            'status' => 'paused',
-            'description' => "Work paused - {$this->formatted_duration} total",
-        ]);
+        // IMPORTANT: Use DB update to ensure data is saved
+        \DB::table('time_logs')
+            ->where('id', $this->id)
+            ->update([
+                'end_time' => $endTime,
+                'duration_minutes' => $totalDuration,
+                'status' => 'paused',
+                'updated_at' => now(),
+            ]);
+
+        // Reload from database
+        $this->refresh();
+
+        // Update description with formatted duration
+        $hours = intdiv($totalDuration, 60);
+        $minutes = $totalDuration % 60;
+        $formattedDuration = $hours > 0 ? "{$hours}h {$minutes}m" : "{$minutes}m";
+
+        \DB::table('time_logs')
+            ->where('id', $this->id)
+            ->update([
+                'description' => "Work paused - {$formattedDuration} total",
+                'updated_at' => now(),
+            ]);
+
+        $this->refresh();
 
         return true;
     }

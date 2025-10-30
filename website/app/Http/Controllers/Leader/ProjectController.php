@@ -227,6 +227,26 @@ class ProjectController extends Controller
             $oldStatus = $card->status;
             $newStatus = $request->status;
 
+            // STOP ACTIVE TIMER when task moves to review or done
+            // Timer should stop when task is no longer in active work
+            if (in_array($newStatus, ['review', 'done']) && $oldStatus === 'in_progress') {
+                // Stop any active time logs for this task
+                $activeLogs = \App\Models\Time_Log::where('card_id', $card->id)
+                    ->whereNull('end_time')
+                    ->get();
+
+                foreach ($activeLogs as $log) {
+                    $log->stopWorkSession();
+                    \Illuminate\Support\Facades\Log::info('Auto-stopped timer when task status changed by leader', [
+                        'task_id' => $card->id,
+                        'old_status' => $oldStatus,
+                        'new_status' => $newStatus,
+                        'time_log_id' => $log->id,
+                        'changed_by' => $user->id
+                    ]);
+                }
+            }
+
             // Update task status and started_at if moving to in_progress
             $updateData = ['status' => $newStatus];
             if ($newStatus === 'in_progress' && $oldStatus !== 'in_progress') {

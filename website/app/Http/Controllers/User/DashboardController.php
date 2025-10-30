@@ -16,8 +16,13 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Get all tasks assigned to this user
-        $myTasks = Card::where('user_id', $user->id)
+        // Get all tasks assigned to this user (both direct assignment and through card_assignments)
+        $myTasks = Card::where(function ($query) use ($user) {
+                $query->where('user_id', $user->id) // Direct assignment
+                      ->orWhereHas('assignments', function ($subQuery) use ($user) {
+                          $subQuery->where('user_id', $user->id); // Assignment through card_assignments table
+                      });
+            })
             ->with(['board.project', 'user', 'subtasks'])
             ->orderBy('due_date', 'asc')
             ->orderBy('priority', 'desc')
@@ -122,12 +127,12 @@ class DashboardController extends Controller
         ->with('boards.cards')
         ->get();
 
-        // Get upcoming deadlines
-        $upcomingTasks = $myTasks
-            ->whereNotIn('status', ['done'])
-            ->where('due_date', '>=', Carbon::today())
-            ->sortBy('due_date')
-            ->take(5);
+        // Get recent tasks for dashboard display (limit to 8 tasks, show all statuses)
+        // Sort by: priority (high first), then due_date (nearest first), then updated_at (recent first)
+        $recentTasks = $myTasks->sortByDesc(function($task) {
+            $priorityOrder = ['high' => 3, 'medium' => 2, 'low' => 1];
+            return $priorityOrder[$task->priority] ?? 0;
+        })->sortBy('due_date')->sortByDesc('updated_at')->take(8);
 
         return view('pages.user.dashboard', compact(
             'user',
@@ -145,7 +150,7 @@ class DashboardController extends Controller
             'todayWorkTime',
             'weekWorkTime',
             'projects',
-            'upcomingTasks',
+            'recentTasks',
             'activeSession'
         ));
     }

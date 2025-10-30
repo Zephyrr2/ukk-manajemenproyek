@@ -220,10 +220,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                     </svg>
                 </div>
-                <h2 class="text-lg font-semibold text-gray-900">DAFTAR TUGAS SAYA</h2>
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-900">DAFTAR TUGAS SAYA</h2>
+                    <p class="text-xs text-gray-500 mt-0.5">Menampilkan {{ $recentTasks->count() }} dari {{ $totalTasks }} tugas</p>
+                </div>
             </div>
-            <a href="{{ route('user.tasks') }}" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">
-                Lihat Semua
+            <a href="{{ route('user.tasks') }}" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition-colors">
+                📋 Lihat Semua ({{ $totalTasks }})
             </a>
         </div>
 
@@ -240,7 +243,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($upcomingTasks as $task)
+                    @forelse($recentTasks as $task)
                     <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                         <td class="py-3 px-4">
                             <div class="flex items-center">

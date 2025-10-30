@@ -58,10 +58,59 @@ class SubtaskController extends Controller
      */
     public function updateStatus(Request $request, string $id)
     {
-        return response()->json([
-            'message' => 'Subtask status updated successfully',
-            'id' => $id
-        ]);
+        try {
+            $request->validate([
+                'is_completed' => 'required|boolean'
+            ]);
+
+            $subtask = Subtask::find($id);
+
+            if (!$subtask) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Subtask not found'
+                ], 404);
+            }
+
+            $oldStatus = $subtask->is_completed;
+            $newStatus = $request->is_completed;
+
+            // STOP ACTIVE TIMER when subtask is marked as completed
+            if ($newStatus && !$oldStatus) {
+                // Stop any active time logs for this subtask
+                $activeLogs = \App\Models\Time_Log::where('subtask_id', $subtask->id)
+                    ->whereNull('end_time')
+                    ->get();
+
+                foreach ($activeLogs as $log) {
+                    $log->stopWorkSession();
+                    \Illuminate\Support\Facades\Log::info('Auto-stopped timer when subtask completed', [
+                        'subtask_id' => $subtask->id,
+                        'time_log_id' => $log->id
+                    ]);
+                }
+            }
+
+            $subtask->update([
+                'is_completed' => $newStatus
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Subtask status updated successfully',
+                'data' => [
+                    'id' => $subtask->id,
+                    'is_completed' => $subtask->is_completed
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update subtask status',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

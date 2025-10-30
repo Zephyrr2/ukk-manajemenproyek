@@ -85,6 +85,25 @@ class CardController extends Controller
 
             $oldStatus = $task->status;
 
+            // STOP ACTIVE TIMER when task moves to review or done
+            // Timer should stop when task is no longer in active work
+            if (in_array($request->status, ['review', 'done']) && $oldStatus === 'in_progress') {
+                // Stop any active time logs for this task
+                $activeLogs = \App\Models\Time_Log::where('card_id', $task->id)
+                    ->whereNull('end_time')
+                    ->get();
+
+                foreach ($activeLogs as $log) {
+                    $log->stopWorkSession();
+                    \Illuminate\Support\Facades\Log::info('Auto-stopped timer when task status changed', [
+                        'task_id' => $task->id,
+                        'old_status' => $oldStatus,
+                        'new_status' => $request->status,
+                        'time_log_id' => $log->id
+                    ]);
+                }
+            }
+
             // Check for pending subtasks if status is changing to done
             $pendingSubtasks = 0;
             if ($request->status === 'done' && $oldStatus !== 'done') {

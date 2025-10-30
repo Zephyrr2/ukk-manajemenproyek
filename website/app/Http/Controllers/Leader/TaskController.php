@@ -176,12 +176,6 @@ class TaskController extends Controller
             return redirect()->back()->with('error', 'Task hanya bisa direject jika statusnya sedang dalam review.');
         }
 
-        // Update task status back to in_progress and reset actual_hours
-        $task->update([
-            'status' => 'in_progress',
-            'actual_hours' => null // Reset actual hours since task is back in progress
-        ]);
-
         // Get the task assignee (user who originally worked on the task)
         $taskAssignee = null;
         if ($task->user_id) {
@@ -197,15 +191,53 @@ class TaskController extends Controller
             }
         }
 
-        // Update task assignee status back to working (since they need to continue working)
+        // Update task status back to in_progress and reset actual_hours
+        $task->update([
+            'status' => 'in_progress',
+            'actual_hours' => null // Reset actual hours since task is back in progress
+        ]);
+
+        // RESUME TIME LOG - Start tracking time again when task is rejected
         if ($taskAssignee) {
+            // Find the most recent paused/completed time log for this task and user
+            $lastTimeLog = \App\Models\Time_Log::where('card_id', $task->id)
+                ->where('user_id', $taskAssignee)
+                ->whereNotNull('end_time') // Was stopped
+                ->orderBy('end_time', 'desc')
+                ->first();
+
+            if ($lastTimeLog) {
+                // Resume the time tracking - create new session with accumulated time
+                \App\Models\Time_Log::create([
+                    'card_id' => $task->id,
+                    'subtask_id' => null,
+                    'user_id' => $taskAssignee,
+                    'start_time' => now(),
+                    'end_time' => null, // Active session
+                    'duration_minutes' => $lastTimeLog->duration_minutes, // Carry over accumulated time
+                    'status' => 'active',
+                    'description' => 'Work resumed after task rejected by leader',
+                ]);
+
+                \Illuminate\Support\Facades\Log::info('Auto-resumed timer when task rejected', [
+                    'task_id' => $task->id,
+                    'user_id' => $taskAssignee,
+                    'accumulated_minutes' => $lastTimeLog->duration_minutes
+                ]);
+            } else {
+                // No previous time log, start fresh
+                \App\Models\Time_Log::startWorkSession($task->id, null, $taskAssignee);
+            }
+
+            // Update task assignee status back to working (since they need to continue working)
             User::where('id', $taskAssignee)->update(['status' => 'working']);
 
             // Update assignment status to in_progress for the assignee
             $assignment = $task->assignments()->where('user_id', $taskAssignee)->first();
             if ($assignment) {
                 $assignment->update([
-                    'assignment_status' => 'in_progress'
+                    'assignment_status' => 'in_progress',
+                    'completed_at' => null // Clear completed timestamp
                 ]);
             }
         }
@@ -220,6 +252,6 @@ class TaskController extends Controller
             'completed_at' => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Task "' . $task->card_title . '" direject dan dikembalikan ke status todo.');
+        return redirect()->back()->with('success', 'Task "' . $task->card_title . '" direject dan dikembalikan ke status in progress. Timer otomatis dimulai untuk user.');
     }
 }
