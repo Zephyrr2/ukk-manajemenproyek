@@ -5,8 +5,7 @@
 @endsection
 
 @section('title', 'My Time Tracking')
-@section('page-title', 'TIME TRACKING')
-@section('page-subtitle', 'Track your work time and productivity')
+@section('page-title', 'TIME LOG')
 
 @section('content')
 <div class="space-y-6">
@@ -48,7 +47,7 @@
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </div>
@@ -66,7 +65,7 @@
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="h-6 w-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                         </svg>
                     </div>
@@ -84,7 +83,7 @@
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="h-6 w-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
                         </svg>
                     </div>
@@ -132,11 +131,11 @@
     </div>
     @endif
 
-    <!-- Time Logs List -->
+    <!-- Subtask Time Logs -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
         <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">Time Logs</h3>
-            <p class="mt-1 max-w-2xl text-sm text-gray-500">Your detailed work time entries</p>
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Subtask Time Logs</h3>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">Your detailed work time entries on subtasks</p>
         </div>
 
         @if($timeLogs->count() > 0)
@@ -147,19 +146,11 @@
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center space-x-3">
                                     <div class="flex-shrink-0">
-                                        @if($log->subtask_id)
-                                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                                </svg>
-                                            </div>
-                                        @else
-                                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                                                </svg>
-                                            </div>
-                                        @endif
+                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                        </div>
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center space-x-2 mb-1">
@@ -177,7 +168,7 @@
 
                                         @if($log->subtask)
                                             <p class="text-sm text-blue-600 mb-1">
-                                                Subtask: {{ $log->subtask->subtask_title }}
+                                                <span class="font-medium">Subtask:</span> {{ $log->subtask->subtask_title }}
                                             </p>
                                         @endif
 
@@ -201,7 +192,7 @@
                             </div>
 
                             <div class="ml-4 flex-shrink-0 text-right">
-                                <div class="text-lg font-semibold text-green-600">
+                                <div class="text-lg font-semibold text-blue-600">
                                     {{ $log->formatted_duration }}
                                 </div>
                                 <div class="text-sm text-gray-500">
@@ -212,15 +203,13 @@
                     </div>
                 @endforeach
             </div>
-
-            <!-- Pagination would go here if needed -->
         @else
             <div class="text-center py-12">
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 <h3 class="mt-2 text-sm font-medium text-gray-900">No time logs found</h3>
-                <p class="mt-1 text-sm text-gray-500">No work time has been logged for the selected period.</p>
+                <p class="mt-1 text-sm text-gray-500">No work time has been logged for subtasks in the selected period.</p>
             </div>
         @endif
     </div>

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('subtask_title');
             $table->text('description')->nullable();
-            $table->enum('status', ['in_progress', 'done'])->default('in_progress');
+            $table->enum('status', ['todo', 'in_progress', 'done'])->default('todo');
             $table->decimal('estimated_hours', 5, 2)->nullable();
             $table->decimal('actual_hours', 5, 2)->nullable();
             $table->integer('position');

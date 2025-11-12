@@ -25,6 +25,8 @@ class _SubtaskScreenState extends State<SubtaskScreen> {
   }
 
   Future<void> _loadSubtasks() async {
+    if (!mounted) return;
+    
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -32,6 +34,9 @@ class _SubtaskScreenState extends State<SubtaskScreen> {
 
     try {
       final data = await ApiService.getTaskSubtasks(widget.task.id);
+      
+      if (!mounted) return;
+      
       if (data != null) {
         setState(() {
           _subtasks = data.map((json) => Subtask.fromJson(json)).toList();
@@ -44,6 +49,8 @@ class _SubtaskScreenState extends State<SubtaskScreen> {
         });
       }
     } catch (e) {
+      if (!mounted) return;
+      
       setState(() {
         _errorMessage = 'Error: $e';
         _isLoading = false;
@@ -458,17 +465,14 @@ class _SubtaskScreenState extends State<SubtaskScreen> {
                 return;
               }
 
-              // Simpan context sebelum async operation
-              final navigator = Navigator.of(context);
-              final scaffoldMessenger = ScaffoldMessenger.of(context);
-
-              navigator.pop();
+              Navigator.pop(context);
 
               // Show loading
+              if (!context.mounted) return;
               showDialog(
                 context: context,
                 barrierDismissible: false,
-                builder: (context) => const Center(
+                builder: (dialogContext) => const Center(
                   child: CircularProgressIndicator(),
                 ),
               );
@@ -485,19 +489,29 @@ class _SubtaskScreenState extends State<SubtaskScreen> {
               );
 
               // Hide loading
-              if (mounted) navigator.pop();
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
+
+              if (!mounted) return;
 
               if (result != null) {
-                if (mounted) {
-                  scaffoldMessenger.showSnackBar(
-                    const SnackBar(content: Text('Subtask berhasil ditambahkan')),
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Subtask berhasil ditambahkan'),
+                      backgroundColor: AppColors.success,
+                    ),
                   );
-                  _loadSubtasks();
                 }
+                _loadSubtasks();
               } else {
-                if (mounted) {
-                  scaffoldMessenger.showSnackBar(
-                    const SnackBar(content: Text('Gagal menambahkan subtask')),
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Gagal menambahkan subtask'),
+                      backgroundColor: AppColors.error,
+                    ),
                   );
                 }
               }

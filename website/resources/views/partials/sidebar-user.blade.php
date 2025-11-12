@@ -39,7 +39,7 @@
 
         <!-- User Profile Section -->
         <div class="p-4 border-t border-emerald-800">
-            <div class="flex items-center">
+            <a href="{{ route('profile.show') }}" class="flex items-center hover:bg-emerald-800 rounded-lg p-2 transition-colors duration-200">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">
                         <span class="text-sm font-medium text-white">{{ substr(Auth::user()->name, 0, 1) }}</span>
@@ -49,7 +49,7 @@
                     <p class="text-sm font-medium text-white truncate">{{ Auth::user()->name }}</p>
                     <p class="text-xs text-emerald-300 truncate">{{ ucfirst(Auth::user()->role) }}</p>
                 </div>
-            </div>
+            </a>
 
             <!-- Logout -->
             <div class="mt-3 mb-16">

@@ -54,6 +54,7 @@ class SubtaskController extends Controller
         // Calculate subtask statistics
         $subtaskStats = [
             'total' => $subtasks->count(),
+            'todo' => $subtasks->where('status', 'todo')->count(),
             'in_progress' => $subtasks->where('status', 'in_progress')->count(),
             'done' => $subtasks->where('status', 'done')->count(),
             'total_estimated' => $subtasks->sum('estimated_hours'),
@@ -72,7 +73,9 @@ class SubtaskController extends Controller
             ->orderBy('end_time', 'desc')
             ->first();
 
-        return view('pages.user.subtask', compact('task', 'subtasks', 'subtaskStats', 'user', 'activeSession', 'pausedSession'));
+        $pageSubtitle = 'Manage subtasks for: ' . $task->card_title;
+
+        return view('pages.user.subtask', compact('task', 'subtasks', 'subtaskStats', 'user', 'activeSession', 'pausedSession', 'pageSubtitle'));
     }
 
     /**
@@ -121,7 +124,7 @@ class SubtaskController extends Controller
             'subtask_title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'estimated_hours' => 'nullable|numeric|min:0|max:999.99',
-            'status' => 'required|in:in_progress,done',
+            'status' => 'nullable|in:todo,in_progress,done',
         ]);
 
         // Find the task and verify access
@@ -158,7 +161,7 @@ class SubtaskController extends Controller
             'description' => $request->description,
             'estimated_hours' => $request->estimated_hours,
             'position' => $nextPosition,
-            'status' => $request->status ?? 'in_progress'
+            'status' => $request->status ?? 'todo'
         ]);
 
         // Handle different actions
@@ -303,6 +306,161 @@ class SubtaskController extends Controller
         }
 
         return redirect()->back()->with('success', $message);
+    }
+
+    /**
+     * Start working on a subtask (todo -> in_progress)
+     */
+    public function start($taskId, $subtaskId)
+    {
+        $user = Auth::user();
+
+        // Find subtask and verify access
+        $subtask = Subtask::whereHas('card.board.project', function ($query) use ($user) {
+            $query->where(function ($subQuery) use ($user) {
+                $subQuery->whereHas('projectMembers', function ($memberQuery) use ($user) {
+                    $memberQuery->where('user_id', $user->id);
+                })->orWhere('user_id', $user->id);
+            });
+        })
+        ->where('id', $subtaskId)
+        ->where('card_id', $taskId)
+        ->first();
+
+        if (!$subtask) {
+            return redirect()->back()->with('error', 'Subtask tidak ditemukan atau Anda tidak memiliki akses.');
+        }
+
+        // Check if there's already an active time log for THIS SUBTASK specifically
+        $activeSubtaskLog = \App\Models\Time_Log::where('user_id', $user->id)
+            ->where('subtask_id', $subtaskId)
+            ->whereNull('end_time')
+            ->first();
+
+        if ($activeSubtaskLog) {
+            return redirect()->back()->with('error', 'Subtask ini sudah dalam status berjalan.');
+        }
+
+        // Check if user has another subtask running (not parent task)
+        // This allows user to work on subtask even if parent task is running
+        $otherActiveSubtask = \App\Models\Time_Log::where('user_id', $user->id)
+            ->whereNotNull('subtask_id') // Only check for other subtasks, ignore parent task time logs
+            ->where('subtask_id', '!=', $subtaskId)
+            ->whereNull('end_time')
+            ->first();
+
+        if ($otherActiveSubtask) {
+            $otherSubtask = \App\Models\Subtask::find($otherActiveSubtask->subtask_id);
+            $subtaskTitle = $otherSubtask ? $otherSubtask->subtask_title : 'subtask lain';
+            return redirect()->back()->with('error', 'Anda sudah memiliki subtask lain yang sedang berjalan: "' . $subtaskTitle . '". Silakan pause atau selesaikan terlebih dahulu.');
+        }
+
+        // Update subtask status to in_progress
+        $subtask->update(['status' => 'in_progress']);
+
+        // Create new time log entry
+        \App\Models\Time_Log::create([
+            'card_id' => $taskId,
+            'subtask_id' => $subtaskId,
+            'user_id' => $user->id,
+            'start_time' => now(),
+            'status' => 'active'
+        ]);
+
+        return redirect()->back()->with('success', 'Subtask dimulai! Timer aktif.');
+    }
+
+    /**
+     * Pause working on a subtask
+     */
+    public function pause($taskId, $subtaskId)
+    {
+        $user = Auth::user();
+
+        // Find active time log for this subtask
+        $timeLog = \App\Models\Time_Log::where('user_id', $user->id)
+            ->where('subtask_id', $subtaskId)
+            ->whereNull('end_time')
+            ->first();
+
+        if (!$timeLog) {
+            return redirect()->back()->with('error', 'Tidak ada sesi aktif untuk subtask ini.');
+        }
+
+        // Calculate duration in minutes
+        $startTime = \Carbon\Carbon::parse($timeLog->start_time);
+        $endTime = now();
+        $durationMinutes = $startTime->diffInMinutes($endTime);
+
+        // Update time log
+        $timeLog->update([
+            'end_time' => $endTime,
+            'duration_minutes' => $durationMinutes,
+            'status' => 'paused'
+        ]);
+
+        return redirect()->back()->with('success', 'Subtask di-pause. Waktu: ' . $durationMinutes . ' menit.');
+    }
+
+    /**
+     * Complete a subtask (in_progress -> done)
+     */
+    public function complete($taskId, $subtaskId)
+    {
+        $user = Auth::user();
+
+        // Find subtask and verify access
+        $subtask = Subtask::whereHas('card.board.project', function ($query) use ($user) {
+            $query->where(function ($subQuery) use ($user) {
+                $subQuery->whereHas('projectMembers', function ($memberQuery) use ($user) {
+                    $memberQuery->where('user_id', $user->id);
+                })->orWhere('user_id', $user->id);
+            });
+        })
+        ->where('id', $subtaskId)
+        ->where('card_id', $taskId)
+        ->first();
+
+        if (!$subtask) {
+            return redirect()->back()->with('error', 'Subtask tidak ditemukan atau Anda tidak memiliki akses.');
+        }
+
+        // Close any active time log
+        $activeLog = \App\Models\Time_Log::where('user_id', $user->id)
+            ->where('subtask_id', $subtaskId)
+            ->whereNull('end_time')
+            ->first();
+
+        if ($activeLog) {
+            $startTime = \Carbon\Carbon::parse($activeLog->start_time);
+            $endTime = now();
+            $durationMinutes = $startTime->diffInMinutes($endTime);
+
+            $activeLog->update([
+                'end_time' => $endTime,
+                'duration_minutes' => $durationMinutes,
+                'status' => 'completed'
+            ]);
+        }
+
+        // Calculate total actual hours from all time logs for this subtask
+        $totalMinutes = \App\Models\Time_Log::where('subtask_id', $subtaskId)
+            ->whereNotNull('duration_minutes')
+            ->sum('duration_minutes');
+
+        $actualHours = round($totalMinutes / 60, 2);
+
+        // Update subtask status to done
+        $subtask->update([
+            'status' => 'done',
+            'actual_hours' => $actualHours
+        ]);
+
+        // Mark all time logs as completed
+        \App\Models\Time_Log::where('subtask_id', $subtaskId)
+            ->update(['status' => 'completed']);
+
+        return redirect()->back()->with('success', 'Subtask selesai! Total waktu: ' . $actualHours . ' jam.');
     }
 
     /**

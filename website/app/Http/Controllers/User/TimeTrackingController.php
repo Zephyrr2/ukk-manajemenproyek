@@ -32,9 +32,10 @@ class TimeTrackingController extends Controller
                   });
         })->pluck('project_name', 'id');
 
-        // Get time logs for the user within date range
+        // Get time logs for the user within date range - ONLY SUBTASK LOGS
         $timeLogs = Time_Log::where('user_id', $user->id)
             ->whereBetween('start_time', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->whereNotNull('subtask_id')  // Only subtask logs
             ->with(['card.board.project', 'subtask'])
             ->orderBy('start_time', 'desc')
             ->get();
@@ -64,6 +65,8 @@ class TimeTrackingController extends Controller
             ];
         });
 
+        $pageSubtitle = 'Track your work time and productivity';
+
         return view('pages.user.time-tracking', compact(
             'timeLogs',
             'totalMinutes',
@@ -72,7 +75,8 @@ class TimeTrackingController extends Controller
             'dailyStats',
             'projects',
             'startDate',
-            'endDate'
+            'endDate',
+            'pageSubtitle'
         ));
     }
 

@@ -134,6 +134,8 @@ class DashboardController extends Controller
             return $priorityOrder[$task->priority] ?? 0;
         })->sortBy('due_date')->sortByDesc('updated_at')->take(8);
 
+        $pageSubtitle = 'Welcome, ' . $user->name . '!';
+
         return view('pages.user.dashboard', compact(
             'user',
             'myTasks',
@@ -151,7 +153,8 @@ class DashboardController extends Controller
             'weekWorkTime',
             'projects',
             'recentTasks',
-            'activeSession'
+            'activeSession',
+            'pageSubtitle'
         ));
     }
 }

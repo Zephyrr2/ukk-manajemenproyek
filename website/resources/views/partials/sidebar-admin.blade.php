@@ -48,7 +48,7 @@
         <!-- User Profile Section - Fixed at bottom -->
         <div class="px-4 pb-6">
             <div class="border-t border-emerald-800 pt-4">
-                <div class="flex items-center px-4 py-3">
+                <a href="{{ route('profile.show') }}" class="flex items-center px-4 py-3 rounded-lg hover:bg-emerald-800 transition-colors duration-200">
                     <div class="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center">
                         <span class="text-white font-semibold">{{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 1)) }}</span>
                     </div>
@@ -56,7 +56,7 @@
                         <p class="text-white font-medium">{{ Auth::user()->name ?? 'User' }}</p>
                         <p class="text-emerald-200 text-sm">{{ ucfirst(Auth::user()->role ?? 'Admin') }}</p>
                     </div>
-                </div>
+                </a>
 
                 <!-- Logout -->
                 <form action="{{ route('logout') }}" method="POST">

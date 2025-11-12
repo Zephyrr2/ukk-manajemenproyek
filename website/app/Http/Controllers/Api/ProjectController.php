@@ -28,6 +28,17 @@ class ProjectController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+            // Calculate progress for each project
+            $projects->each(function ($project) {
+                $totalCards = $project->boards->flatMap->cards->count();
+                $completedCards = $project->boards->flatMap->cards->where('status', 'done')->count();
+                $progress = $totalCards > 0 ? round(($completedCards / $totalCards) * 100) : 0;
+
+                $project->total_tasks = $totalCards;
+                $project->completed_tasks = $completedCards;
+                $project->progress_percentage = $progress;
+            });
+
             return response()->json([
                 'success' => true,
                 'data' => $projects
@@ -66,6 +77,15 @@ class ProjectController extends Controller
                     'message' => 'Project not found or access denied'
                 ], 404);
             }
+
+            // Calculate progress
+            $totalCards = $project->boards->flatMap->cards->count();
+            $completedCards = $project->boards->flatMap->cards->where('status', 'done')->count();
+            $progress = $totalCards > 0 ? round(($completedCards / $totalCards) * 100) : 0;
+
+            $project->total_tasks = $totalCards;
+            $project->completed_tasks = $completedCards;
+            $project->progress_percentage = $progress;
 
             return response()->json([
                 'success' => true,

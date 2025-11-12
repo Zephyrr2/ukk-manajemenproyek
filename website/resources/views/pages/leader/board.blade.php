@@ -37,10 +37,11 @@
         <!-- Board Actions -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
             <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
+                <form method="GET" action="{{ route('leader.projects.board', $project->id) }}" class="flex items-center space-x-2" id="searchForm">
                     <div class="relative">
-                        <input type="text" placeholder="Search tasks..."
-                            class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
+                            placeholder="Search tasks..." autocomplete="off"
+                            class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -48,15 +49,16 @@
                             </svg>
                         </div>
                     </div>
-
-                    <select
-                        class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                        <option>All Members</option>
-                        @foreach ($teamMembers as $member)
-                            <option value="{{ $member->id }}">{{ $member->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
+                    @if(request('search'))
+                        <a href="{{ route('leader.projects.board', $project->id) }}"
+                           class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Clear
+                        </a>
+                    @endif
+                </form>
 
                 <a href="{{ route('leader.projects.create-task', $project->id) }}"
                     class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
@@ -67,6 +69,23 @@
                     <span>Add Task</span>
                 </a>
             </div>
+
+            @if(request('search'))
+                <div class="mt-3 flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p class="text-sm text-blue-800">
+                            Showing results for: <span class="font-semibold">"{{ request('search') }}"</span>
+                            <span class="text-blue-600 ml-2">({{ $totalCards }} task{{ $totalCards != 1 ? 's' : '' }} found)</span>
+                        </p>
+                    </div>
+                    <a href="{{ route('leader.projects.board', $project->id) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        Clear filter
+                    </a>
+                </div>
+            @endif
         </div>
 
         <!-- Kanban Board -->
@@ -405,5 +424,8 @@
                 closeCommentModal();
             }
         });
+
+        // Search functionality - manual submit only (Enter key)
+        // Form will submit naturally when user presses Enter in the input field
     </script>
 @endsection

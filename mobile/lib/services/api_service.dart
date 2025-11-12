@@ -266,7 +266,8 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final data = jsonDecode(response.body);
+        return data;
       }
       return null;
     } catch (e) {
@@ -361,7 +362,6 @@ class ApiService {
       }
       return null;
     } catch (e) {
-      print('Error creating subtask: $e');
       return null;
     }
   }
@@ -398,8 +398,8 @@ class ApiService {
     }
   }
 
-  // Add comment to task
-  static Future<bool> addTaskComment(int taskId, String content) async {
+  // Add comment to a task
+  static Future<Map<String, dynamic>> addTaskComment(int taskId, String content) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/tasks/$taskId/comments'),
@@ -409,9 +409,25 @@ class ApiService {
         }),
       );
 
-      return response.statusCode == 200 || response.statusCode == 201;
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return {
+          'success': true,
+          'data': data,
+        };
+      } else {
+        return {
+          'success': false,
+          'message': data['message'] ?? 'Failed to add comment',
+          'error': data['error'],
+        };
+      }
     } catch (e) {
-      return false;
+      return {
+        'success': false,
+        'message': 'Network error: ${e.toString()}',
+      };
     }
   }
 
@@ -450,8 +466,70 @@ class ApiService {
       }
       return null;
     } catch (e) {
-      print('Error fetching subtasks: $e');
       return null;
+    }
+  }
+
+  // ====== Profile Methods ======
+  
+  // Update user profile
+  static Future<Map<String, dynamic>> updateProfile({
+    required String name,
+    required String email,
+  }) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$baseUrl/profile'),
+        headers: await authHeaders,
+        body: jsonEncode({
+          'name': name,
+          'email': email,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+      
+      if (response.statusCode == 200 && data['success'] == true) {
+        // Update local user data
+        final userData = data['data']['user'];
+        if (userData != null) {
+          final user = User.fromJson(userData);
+          await saveUser(user);
+        }
+      }
+
+      return data;
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Network error: ${e.toString()}',
+      };
+    }
+  }
+
+  // Change password
+  static Future<Map<String, dynamic>> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/change-password'),
+        headers: await authHeaders,
+        body: jsonEncode({
+          'current_password': currentPassword,
+          'new_password': newPassword,
+          'new_password_confirmation': confirmPassword,
+        }),
+      );
+
+      return jsonDecode(response.body);
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Network error: ${e.toString()}',
+      };
     }
   }
 }

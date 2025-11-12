@@ -6,7 +6,6 @@
 
 @section('title', 'Dashboard Developer')
 @section('page-title', 'DASHBOARD DEVELOPER')
-@section('page-subtitle', 'Halo, {{ $user->name }}!')
 
 @section('content')
 <div class="space-y-6">
@@ -157,7 +156,7 @@
                 <!-- Resume Work Form (when paused) -->
                 <form action="{{ route('user.time-tracking.resume') }}" method="POST" class="inline">
                     @csrf
-                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors duration-200" onclick="return confirm('Lanjutkan pekerjaan? Timer akan aktif kembali.')">
+                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors duration-200" onclick="return confirm('Resume work? Timer will be reactivated.')">
                         ▶️ Resume Work
                     </button>
                 </form>
@@ -165,7 +164,7 @@
                 <!-- Stop Work Form (can stop even when paused) -->
                 <form action="{{ route('user.time-tracking.stop') }}" method="POST" class="inline">
                     @csrf
-                    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors duration-200" onclick="return confirm('Berhenti bekerja dan simpan waktu?')">
+                    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors duration-200" onclick="return confirm('Stop working and save time?')">
                         ⏹️ Stop Work
                     </button>
                 </form>
@@ -173,7 +172,7 @@
                 <!-- Stop Work Form -->
                 <form action="{{ route('user.time-tracking.stop') }}" method="POST" class="inline">
                     @csrf
-                    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors duration-200" onclick="return confirm('Berhenti bekerja dan simpan waktu?')">
+                    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors duration-200" onclick="return confirm('Stop working and save time?')">
                         ⏹️ Stop Work
                     </button>
                 </form>
@@ -181,7 +180,7 @@
                 <!-- Pause Work Form -->
                 <form action="{{ route('user.time-tracking.pause') }}" method="POST" class="inline">
                     @csrf
-                    <button type="submit" class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-700 transition-colors duration-200" onclick="return confirm('Jeda pekerjaan? Waktu yang sudah berjalan akan disimpan.')">
+                    <button type="submit" class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-700 transition-colors duration-200" onclick="return confirm('Pause work? Your time will be saved.')">
                         ⏸️ Pause
                     </button>
                 </form>
@@ -190,20 +189,20 @@
                 <form action="{{ route('user.tasks.start', $currentTask->id) }}" method="POST" class="inline">
                     @csrf
                     <input type="hidden" name="from" value="dashboard">
-                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors duration-200" onclick="return confirm('Mulai bekerja pada tugas ini?\n\n• Status task: In Progress\n• Timer akan dimulai\n• Status: Working')">
+                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors duration-200" onclick="return confirm('Start working on this task?\n\n• Task status: In Progress\n• Timer will start\n• Status: Working')">
                         🕐 Start Work
                     </button>
                 </form>
                 @endif
 
                 <a href="{{ route('user.tasks') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors duration-200">
-                    📋 Lihat Detail
+                    📋 View Details
                 </a>
             </div>
         </div>
         @else
         <div class="border border-gray-200 rounded-lg p-6 text-center">
-            <p class="text-gray-500 mb-4">Tidak ada tugas aktif saat ini.</p>
+            <p class="text-gray-500 mb-4">No active tasks at the moment.</p>
             @if($todoTasks->count() > 0)
             <p class="text-sm text-gray-600">Anda memiliki {{ $todoTasks->count() }} tugas menunggu.</p>
             @endif
@@ -221,12 +220,12 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-lg font-semibold text-gray-900">DAFTAR TUGAS SAYA</h2>
-                    <p class="text-xs text-gray-500 mt-0.5">Menampilkan {{ $recentTasks->count() }} dari {{ $totalTasks }} tugas</p>
+                    <h2 class="text-lg font-semibold text-gray-900">MY TASK LIST</h2>
+                    <p class="text-xs text-gray-500 mt-0.5">Showing {{ $recentTasks->count() }} of {{ $totalTasks }} tasks</p>
                 </div>
             </div>
             <a href="{{ route('user.tasks') }}" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition-colors">
-                📋 Lihat Semua ({{ $totalTasks }})
+                📋 View All ({{ $totalTasks }})
             </a>
         </div>
 
@@ -236,9 +235,9 @@
                 <thead>
                     <tr class="border-b border-gray-200">
                         <th class="text-left py-3 px-4 font-medium text-gray-900">Status</th>
-                        <th class="text-left py-3 px-4 font-medium text-gray-900">Tugas</th>
+                        <th class="text-left py-3 px-4 font-medium text-gray-900">Task</th>
                         <th class="text-left py-3 px-4 font-medium text-gray-900">Priority</th>
-                        <th class="text-left py-3 px-4 font-medium text-gray-900">Proyek</th>
+                        <th class="text-left py-3 px-4 font-medium text-gray-900">Project</th>
                         <th class="text-left py-3 px-4 font-medium text-gray-900">Deadline</th>
                     </tr>
                 </thead>
@@ -293,7 +292,7 @@
                     @empty
                     <tr>
                         <td colspan="5" class="py-8 text-center text-gray-500">
-                            Tidak ada tugas saat ini.
+                            No tasks at the moment.
                         </td>
                     </tr>
                     @endforelse
@@ -312,20 +311,20 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
-                <h2 class="text-lg font-semibold text-gray-900">HARI INI</h2>
+                <h2 class="text-lg font-semibold text-gray-900">TODAY</h2>
             </div>
 
             <div class="space-y-4">
                 <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                    <div class="text-gray-600">Waktu Kerja</div>
-                    <div class="font-semibold text-gray-900">{{ number_format($todayWorkTime, 1) }} jam</div>
+                    <div class="text-gray-600">Work Time</div>
+                    <div class="font-semibold text-gray-900">{{ number_format($todayWorkTime, 1) }} hours</div>
                 </div>
                 <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                    <div class="text-gray-600">Tugas Aktif</div>
+                    <div class="text-gray-600">Active Tasks</div>
                     <div class="font-semibold text-gray-900">{{ $inProgressTasks->count() }}</div>
                 </div>
                 <div class="flex items-center justify-between py-3">
-                    <div class="text-gray-600">Tugas Selesai Hari Ini</div>
+                    <div class="text-gray-600">Tasks Completed Today</div>
                     <div class="font-semibold text-green-600">{{ $doneTasks->where('updated_at', '>=', \Carbon\Carbon::today())->count() }}</div>
                 </div>
 
@@ -333,7 +332,7 @@
                 <div class="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-green-900">Timer Aktif</p>
+                            <p class="text-sm font-medium text-green-900">Active Timer</p>
                             <p class="text-xs text-green-700 mt-1">{{ $activeSession->card->card_title ?? 'Unknown Task' }}</p>
                         </div>
                         <div class="text-lg font-bold text-green-600" id="activeTimer">
@@ -353,24 +352,24 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                     </svg>
                 </div>
-                <h2 class="text-lg font-semibold text-gray-900">MINGGU INI</h2>
+                <h2 class="text-lg font-semibold text-gray-900">THIS WEEK</h2>
             </div>
 
             <div class="space-y-4">
                 <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                    <div class="text-gray-600">Total Jam</div>
-                    <div class="font-semibold text-gray-900">{{ number_format($weekWorkTime, 1) }} jam</div>
+                    <div class="text-gray-600">Total Hours</div>
+                    <div class="font-semibold text-gray-900">{{ number_format($weekWorkTime, 1) }} hours</div>
                 </div>
                 <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                    <div class="text-gray-600">Rata-rata/hari</div>
-                    <div class="font-semibold text-gray-900">{{ number_format($weekWorkTime / max(1, now()->dayOfWeek), 1) }} jam</div>
+                    <div class="text-gray-600">Average/day</div>
+                    <div class="font-semibold text-gray-900">{{ number_format($weekWorkTime / max(1, now()->dayOfWeek), 1) }} hours</div>
                 </div>
                 <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                    <div class="text-gray-600">Tugas Selesai</div>
+                    <div class="text-gray-600">Completed Tasks</div>
                     <div class="font-semibold text-green-600">{{ $doneTasks->where('updated_at', '>=', \Carbon\Carbon::now()->startOfWeek())->count() }}</div>
                 </div>
                 <div class="flex items-center justify-between py-3">
-                    <div class="text-gray-600">Progress Keseluruhan</div>
+                    <div class="text-gray-600">Overall Progress</div>
                     <div class="font-semibold text-blue-600">{{ $overallProgress }}%</div>
                 </div>
             </div>

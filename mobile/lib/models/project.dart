@@ -13,6 +13,9 @@ class Project {
   final User? user;
   final List<ProjectMember>? projectMembers;
   final List<Board>? boards;
+  final int? totalTasks;
+  final int? completedTasks;
+  final int? progressPercentage;
 
   Project({
     required this.id,
@@ -26,6 +29,9 @@ class Project {
     this.user,
     this.projectMembers,
     this.boards,
+    this.totalTasks,
+    this.completedTasks,
+    this.progressPercentage,
   });
 
   factory Project.fromJson(Map<String, dynamic> json) {
@@ -49,6 +55,9 @@ class Project {
               .map((item) => Board.fromJson(item))
               .toList()
           : null,
+      totalTasks: json['total_tasks'],
+      completedTasks: json['completed_tasks'],
+      progressPercentage: json['progress_percentage'],
     );
   }
 
@@ -65,6 +74,9 @@ class Project {
       'user': user?.toJson(),
       'project_members': projectMembers?.map((item) => item.toJson()).toList(),
       'boards': boards?.map((item) => item.toJson()).toList(),
+      'total_tasks': totalTasks,
+      'completed_tasks': completedTasks,
+      'progress_percentage': progressPercentage,
     };
   }
 }

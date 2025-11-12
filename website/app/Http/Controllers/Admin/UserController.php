@@ -9,9 +9,34 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function tampilUser()
+    public function tampilUser(Request $request)
     {
-        $users = User::orderBy('created_at', 'desc')->paginate(10);
+        $query = User::query();
+
+        // Search functionality
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Role filter
+        if ($request->has('role') && $request->role != '' && $request->role != 'all') {
+            $query->where('role', $request->role);
+        }
+
+        // Status filter
+        if ($request->has('status') && $request->status != '' && $request->status != 'all') {
+            $query->where('status', $request->status);
+        }
+
+        $users = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        // Append query parameters to pagination links
+        $users->appends($request->except('page'));
+
         return view('pages.admin.users', compact('users'));
     }
 

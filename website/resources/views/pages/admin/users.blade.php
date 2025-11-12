@@ -47,10 +47,14 @@
 
             </div>
 
-            <div class="flex items-center space-x-3">
+            <form method="GET" action="{{ route('admin.users') }}" class="flex items-center space-x-3" id="filterForm">
                 <div class="relative">
-                    <input type="text" placeholder="Cari anggota..."
-                        class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <input type="text"
+                           name="search"
+                           id="searchInput"
+                           value="{{ request('search') }}"
+                           placeholder="Cari anggota..."
+                           class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64">
                     <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -58,14 +62,36 @@
                     </svg>
                 </div>
 
-                <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                    <option>Semua Role</option>
-                    <option>Admin</option>
-                    <option>Team Lead</option>
-                    <option>Developer</option>
-                    <option>Designer</option>
+                <select name="role"
+                        id="roleFilter"
+                        class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        onchange="document.getElementById('filterForm').submit()">
+                    <option value="all" {{ request('role') == 'all' || !request('role') ? 'selected' : '' }}>Semua Role</option>
+                    <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                    <option value="leader" {{ request('role') == 'leader' ? 'selected' : '' }}>Leader</option>
+                    <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>User</option>
                 </select>
-            </div>
+
+                <select name="status"
+                        id="statusFilter"
+                        class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        onchange="document.getElementById('filterForm').submit()">
+                    <option value="all" {{ request('status') == 'all' || !request('status') ? 'selected' : '' }}>Semua Status</option>
+                    <option value="free" {{ request('status') == 'free' ? 'selected' : '' }}>Free</option>
+                    <option value="working" {{ request('status') == 'working' ? 'selected' : '' }}>Working</option>
+                    <option value="paused" {{ request('status') == 'paused' ? 'selected' : '' }}>Paused</option>
+                </select>
+
+                @if(request('search') || request('role') != 'all' || request('status') != 'all')
+                    <a href="{{ route('admin.users') }}"
+                       class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 bg-white hover:bg-gray-50"
+                       title="Reset Filter">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </a>
+                @endif
+            </form>
         </div>
 
         <!-- Team Members Table -->
@@ -154,11 +180,22 @@
                             <tr>
                                 <td colspan="6" class="px-6 py-12 text-center">
                                     <div class="flex flex-col items-center">
-                                        <svg class="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/>
-                                        </svg>
-                                        <h3 class="text-sm font-medium text-gray-900 mb-1">No team members found</h3>
-                                        <p class="text-sm text-gray-500">Get started by adding a new team member.</p>
+                                        @if(request('search') || (request('role') && request('role') != 'all') || (request('status') && request('status') != 'all'))
+                                            <svg class="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                            </svg>
+                                            <h3 class="text-sm font-medium text-gray-900 mb-1">No results found</h3>
+                                            <p class="text-sm text-gray-500 mb-3">Try adjusting your search or filter criteria.</p>
+                                            <a href="{{ route('admin.users') }}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                                                Clear all filters
+                                            </a>
+                                        @else
+                                            <svg class="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/>
+                                            </svg>
+                                            <h3 class="text-sm font-medium text-gray-900 mb-1">No team members found</h3>
+                                            <p class="text-sm text-gray-500">Get started by adding a new team member.</p>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -238,5 +275,60 @@
                 </div>
             @endif
         </div>
+
+        <!-- Active Filters Info -->
+        @if(request('search') || (request('role') && request('role') != 'all') || (request('status') && request('status') != 'all'))
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-blue-400 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                    </svg>
+                    <div class="flex-1">
+                        <h3 class="text-sm font-medium text-blue-800">Filter Active</h3>
+                        <div class="mt-2 text-sm text-blue-700">
+                            <p>Menampilkan hasil untuk:</p>
+                            <ul class="list-disc list-inside mt-1 space-y-1">
+                                @if(request('search'))
+                                    <li>Pencarian: <strong>"{{ request('search') }}"</strong></li>
+                                @endif
+                                @if(request('role') && request('role') != 'all')
+                                    <li>Role: <strong>{{ ucfirst(request('role')) }}</strong></li>
+                                @endif
+                                @if(request('status') && request('status') != 'all')
+                                    <li>Status: <strong>{{ ucfirst(request('status')) }}</strong></li>
+                                @endif
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
+
+    @push('scripts')
+    <script>
+        // Debounce function for search
+        let searchTimeout;
+        const searchInput = document.getElementById('searchInput');
+        const filterForm = document.getElementById('filterForm');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function() {
+                    filterForm.submit();
+                }, 500); // Wait 500ms after user stops typing
+            });
+
+            // Submit on Enter key
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    clearTimeout(searchTimeout);
+                    filterForm.submit();
+                }
+            });
+        }
+    </script>
+    @endpush
 @endsection

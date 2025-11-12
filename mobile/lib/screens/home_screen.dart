@@ -49,53 +49,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _logout() async {
-    showDialog(
+    if (!mounted) return;
+    
+    final result = await showDialog<bool>(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Konfirmasi Logout'),
           content: const Text('Apakah Anda yakin ingin keluar?'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(dialogContext).pop(false),
               child: const Text('Batal'),
             ),
             TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop();
-                
-                // Show loading
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-
-                try {
-                  await ApiService.logout();
-                  
-                  if (mounted) {
-                    Navigator.of(context).pop(); // Remove loading dialog
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ),
-                    );
-                  }
-                } catch (e) {
-                  if (mounted) {
-                    Navigator.of(context).pop(); // Remove loading dialog
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Gagal logout: $e'),
-                        backgroundColor: AppColors.error,
-                      ),
-                    );
-                  }
-                }
-              },
+              onPressed: () => Navigator.of(dialogContext).pop(true),
               child: const Text(
                 'Logout',
                 style: TextStyle(color: Colors.red),
@@ -105,6 +73,46 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
+
+    if (result != true || !mounted) return;
+
+    // Show loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+
+    try {
+      await ApiService.logout();
+      
+      if (!mounted) return;
+      
+      Navigator.of(context).pop(); // Remove loading dialog
+      
+      if (!mounted) return;
+      
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const LoginScreen(),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      
+      Navigator.of(context).pop(); // Remove loading dialog
+      
+      if (!mounted) return;
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal logout: $e'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
 
   @override

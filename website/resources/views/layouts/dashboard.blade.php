@@ -33,7 +33,7 @@
                     <!-- Page Title -->
                     <div class="flex-1">
                         <h1 class="text-2xl font-semibold text-gray-900">@yield('page-title', 'Dashboard')</h1>
-                        <p class="text-gray-600 text-sm mt-1">@yield('page-subtitle', 'Selamat datang, Budi!')</p>
+                        <p class="text-gray-600 text-sm mt-1">{!! $pageSubtitle ?? 'Selamat datang!' !!}</p>
                     </div>
                 </div>
             </header>

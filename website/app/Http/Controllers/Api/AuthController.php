@@ -157,11 +157,10 @@ class AuthController extends Controller
         try {
             $user = $request->user();
 
-            // Validate request data
+            // Validate request data (without password)
             $validator = Validator::make($request->all(), [
                 'name' => 'sometimes|required|string|max:255',
                 'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $user->id,
-                'password' => 'sometimes|required|string|min:8|confirmed',
             ]);
 
             if ($validator->fails()) {
@@ -181,10 +180,6 @@ class AuthController extends Controller
                 $user->email = $request->email;
             }
 
-            if ($request->has('password')) {
-                $user->password = Hash::make($request->password);
-            }
-
             $user->save();
 
             return response()->json([
@@ -199,6 +194,57 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update profile',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Change user password
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function changePassword(Request $request): JsonResponse
+    {
+        try {
+            $user = $request->user();
+
+            // Validate request data
+            $validator = Validator::make($request->all(), [
+                'current_password' => 'required|string',
+                'new_password' => 'required|string|min:8|confirmed',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // Check if current password is correct
+            if (!Hash::check($request->current_password, $user->password)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Password saat ini tidak sesuai'
+                ], 401);
+            }
+
+            // Update password
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Password berhasil diubah'
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to change password',
                 'error' => $e->getMessage()
             ], 500);
         }

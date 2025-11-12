@@ -50,17 +50,29 @@ class TaskCard {
   });
 
   factory TaskCard.fromJson(Map<String, dynamic> json) {
+    // Validate required fields
+    if (json['id'] == null) {
+      throw Exception('Task ID cannot be null');
+    }
+    if (json['board_id'] == null) {
+      throw Exception('Board ID cannot be null');
+    }
+    
     return TaskCard(
-      id: json['id'],
-      boardId: json['board_id'],
-      userId: json['user_id'],
-      cardTitle: json['card_title'],
-      slug: json['slug'],
-      description: json['description'],
-      position: json['position'],
+      id: json['id'] is int ? json['id'] : int.parse(json['id'].toString()),
+      boardId: json['board_id'] is int ? json['board_id'] : int.parse(json['board_id'].toString()),
+      userId: json['user_id'] != null 
+          ? (json['user_id'] is int ? json['user_id'] : int.parse(json['user_id'].toString()))
+          : null,
+      cardTitle: json['card_title']?.toString() ?? json['title']?.toString() ?? 'Untitled',
+      slug: json['slug']?.toString(),
+      description: json['description']?.toString(),
+      position: json['position'] != null
+          ? (json['position'] is int ? json['position'] : int.tryParse(json['position'].toString()))
+          : null,
       dueDate: json['due_date'] != null ? DateTime.parse(json['due_date']) : null,
-      status: json['status'],
-      priority: json['priority'],
+      status: json['status']?.toString() ?? 'todo',
+      priority: json['priority']?.toString() ?? 'medium',
       estimatedHours: json['estimated_hours'] != null 
           ? double.tryParse(json['estimated_hours'].toString())
           : null,
@@ -68,8 +80,12 @@ class TaskCard {
           ? double.tryParse(json['actual_hours'].toString())
           : null,
       startedAt: json['started_at'] != null ? DateTime.parse(json['started_at']) : null,
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      createdAt: json['created_at'] != null 
+          ? DateTime.parse(json['created_at'])
+          : DateTime.now(),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : DateTime.now(),
       board: json['board'] != null ? Board.fromJson(json['board']) : null,
       user: json['user'] != null ? User.fromJson(json['user']) : null,
       subtasks: json['subtasks'] != null

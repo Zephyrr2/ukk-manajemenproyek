@@ -6,7 +6,6 @@
 
 @section('title', 'Dashboard Team Lead')
 @section('page-title', 'DASHBOARD TEAM LEAD')
-@section('page-subtitle', 'Halo, {{ $user->name }}!')
 
 @section('content')
 <div class="space-y-6">

@@ -51,7 +51,7 @@ class Project extends Model
 
     public function getCompletedTasksCountAttribute()
     {
-        return $this->cards()->where('status', 'completed')->count();
+        return $this->cards()->where('status', 'done')->count();
     }
 
     public function getProgressPercentageAttribute()

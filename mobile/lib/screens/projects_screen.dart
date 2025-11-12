@@ -254,8 +254,8 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                         color: AppColors.gray600,
                       ),
                     ),
-                    const Text(
-                      '0%',
+                    Text(
+                      '${project.progressPercentage ?? 0}%',
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
@@ -267,10 +267,10 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                 const SizedBox(height: 8),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(4),
-                  child: const LinearProgressIndicator(
-                    value: 0.0,
+                  child: LinearProgressIndicator(
+                    value: (project.progressPercentage ?? 0) / 100.0,
                     backgroundColor: AppColors.gray200,
-                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.green600),
+                    valueColor: const AlwaysStoppedAnimation<Color>(AppColors.green600),
                     minHeight: 8,
                   ),
                 ),
@@ -285,7 +285,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                 const Icon(Icons.people_outline, size: 16, color: AppColors.gray500),
                 const SizedBox(width: 4),
                 Text(
-                  '${project.projectMembers?.length ?? 0} Members',
+                  '${(project.projectMembers?.length ?? 0) + 1} members',
                   style: const TextStyle(
                     fontSize: 12,
                     color: AppColors.gray600,
@@ -295,7 +295,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                 const Icon(Icons.assignment_outlined, size: 16, color: AppColors.gray500),
                 const SizedBox(width: 4),
                 Text(
-                  '${project.boards?.length ?? 0} Boards',
+                  '${project.totalTasks ?? 0} tasks',
                   style: const TextStyle(
                     fontSize: 12,
                     color: AppColors.gray600,

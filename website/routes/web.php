@@ -34,6 +34,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout.get');
 
+    // Profile Routes (accessible by all authenticated users)
+    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
+    Route::patch('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.password.update');
+
     // Admin Management Routes
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         Route::get('/dashboard', [MainController::class, 'dashboard'])->name('dashboard');
@@ -90,9 +95,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/tasks/{id}/approve', [TaskController::class, 'approve'])->name('tasks.approve');
         Route::post('/tasks/{id}/reject', [TaskController::class, 'reject'])->name('tasks.reject');
 
-        // Keep existing task route for compatibility
-        Route::get('/tasks', [ProjectController::class, 'tasks'])->name('tasks');
-
         // Comments
         Route::post('/tasks/{taskId}/comments', [LeaderCommentController::class, 'storeTaskComment'])->name('tasks.comments.store');
         Route::post('/tasks/{taskId}/subtasks/{subtaskId}/comments', [LeaderCommentController::class, 'storeSubtaskComment'])->name('subtasks.comments.store');
@@ -136,6 +138,11 @@ Route::middleware('auth')->group(function () {
         Route::put('/tasks/{taskId}/subtasks/{subtaskId}', [SubtaskController::class, 'update'])->name('subtasks.update');
         Route::patch('/tasks/{taskId}/subtasks/{subtaskId}/toggle', [SubtaskController::class, 'toggleStatus'])->name('subtasks.toggle');
         Route::delete('/tasks/{taskId}/subtasks/{subtaskId}', [SubtaskController::class, 'destroy'])->name('subtasks.destroy');
+
+        // Subtask Time Tracking
+        Route::post('/tasks/{taskId}/subtasks/{subtaskId}/start', [SubtaskController::class, 'start'])->name('subtasks.start');
+        Route::post('/tasks/{taskId}/subtasks/{subtaskId}/pause', [SubtaskController::class, 'pause'])->name('subtasks.pause');
+        Route::post('/tasks/{taskId}/subtasks/{subtaskId}/complete', [SubtaskController::class, 'complete'])->name('subtasks.complete');
 
         // Comments
         Route::post('/tasks/{taskId}/comments', [UserCommentController::class, 'storeTaskComment'])->name('tasks.comments.store');

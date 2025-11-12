@@ -33,25 +33,26 @@ class TimeTrackingController extends Controller
                   });
         })->with('projectMembers.user')->get();
 
-        // Get all team members from user's projects
+        // Get all team members from user's projects (exclude leaders, only show developers/designers)
         $teamMembers = collect();
         foreach ($projects as $project) {
-            // Add project creator if not already added
-            if (!$teamMembers->where('id', $project->user_id)->count()) {
+            // Add project creator if not already added and not a leader
+            if (!$teamMembers->where('id', $project->user_id)->count() && $project->user->role !== 'leader') {
                 $teamMembers->push($project->user);
             }
-            // Add project members
+            // Add project members (exclude leaders)
             foreach ($project->projectMembers as $member) {
-                if (!$teamMembers->where('id', $member->user_id)->count()) {
+                if (!$teamMembers->where('id', $member->user_id)->count() && $member->user->role !== 'leader') {
                     $teamMembers->push($member->user);
                 }
             }
         }
 
-        // Build time logs query
+        // Build time logs query - only show task logs (no subtasks)
         $timeLogsQuery = Time_Log::whereBetween('start_time', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
             ->whereIn('user_id', $teamMembers->pluck('id'))
-            ->with(['card.board.project', 'subtask', 'user']);
+            ->whereNull('subtask_id')  // Only show task logs, exclude subtask logs
+            ->with(['card.board.project', 'user']);
 
         // Apply filters
         if ($selectedProject) {
@@ -149,23 +150,24 @@ class TimeTrackingController extends Controller
                   });
         })->with('projectMembers.user')->get();
 
-        // Get all team members from user's projects
+        // Get all team members from user's projects (exclude leaders, only show developers/designers)
         $teamMembers = collect();
         foreach ($projects as $project) {
-            if (!$teamMembers->where('id', $project->user_id)->count()) {
+            if (!$teamMembers->where('id', $project->user_id)->count() && $project->user->role !== 'leader') {
                 $teamMembers->push($project->user);
             }
             foreach ($project->projectMembers as $member) {
-                if (!$teamMembers->where('id', $member->user_id)->count()) {
+                if (!$teamMembers->where('id', $member->user_id)->count() && $member->user->role !== 'leader') {
                     $teamMembers->push($member->user);
                 }
             }
         }
 
-        // Build query
+        // Build query - only show task logs (no subtasks)
         $timeLogsQuery = Time_Log::whereBetween('start_time', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
             ->whereIn('user_id', $teamMembers->pluck('id'))
-            ->with(['card.board.project', 'subtask', 'user']);
+            ->whereNull('subtask_id')  // Only show task logs, exclude subtask logs
+            ->with(['card.board.project', 'user']);
 
         if ($projectId) {
             $timeLogsQuery->whereHas('card.board.project', function($q) use ($projectId) {

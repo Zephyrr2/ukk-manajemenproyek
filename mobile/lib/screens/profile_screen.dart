@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../utils/constants.dart';
 import 'login_screen.dart';
+import 'edit_profile_screen.dart';
+import 'change_password_screen.dart';
 import '../services/api_service.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -236,10 +238,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _buildMenuItem(
                           icon: Icons.person_outline,
                           title: 'Edit Profile',
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Fitur belum tersedia')),
+                          onTap: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditProfileScreen(
+                                  currentName: _userName,
+                                  currentEmail: _userEmail,
+                                ),
+                              ),
                             );
+                            
+                            // Reload data if profile was updated
+                            if (result == true) {
+                              _loadUserData();
+                            }
                           },
                         ),
                         const Divider(height: 1),
@@ -247,18 +260,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           icon: Icons.lock_outline,
                           title: 'Ubah Password',
                           onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Fitur belum tersedia')),
-                            );
-                          },
-                        ),
-                        const Divider(height: 1),
-                        _buildMenuItem(
-                          icon: Icons.notifications_outlined,
-                          title: 'Notifikasi',
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Fitur belum tersedia')),
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ChangePasswordScreen(),
+                              ),
                             );
                           },
                         ),

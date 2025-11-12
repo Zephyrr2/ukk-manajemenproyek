@@ -127,6 +127,8 @@ class DashboardController extends Controller
         }
         $recentActivity = $recentActivity->sortByDesc('updated_at')->take(10);
 
+        $pageSubtitle = 'Hello, ' . $user->name . '!';
+
         return view('pages.leader.dashboard', compact(
             'user',
             'projects',
@@ -140,7 +142,8 @@ class DashboardController extends Controller
             'reviewTasks',
             'highPriorityTasks',
             'teamMembers',
-            'recentActivity'
+            'recentActivity',
+            'pageSubtitle'
         ));
     }
 }

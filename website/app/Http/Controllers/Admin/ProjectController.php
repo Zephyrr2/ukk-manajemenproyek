@@ -14,9 +14,49 @@ use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
-    public function tampilProject()
+    public function tampilProject(Request $request)
     {
-        $projects = Project::with(['user', 'membersWithUsers', 'boards.cards'])->get();
+        $query = Project::with(['user', 'membersWithUsers', 'boards.cards']);
+
+        // Search functionality
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('project_name', 'like', '%' . $search . '%')
+                  ->orWhere('description', 'like', '%' . $search . '%');
+            });
+        }
+
+        $projects = $query->get();
+
+        // Calculate progress for each project
+        foreach ($projects as $project) {
+            $totalCards = 0;
+            $completedCards = 0;
+            $inProgressCards = 0;
+
+            foreach ($project->boards as $board) {
+                foreach ($board->cards as $card) {
+                    $totalCards++;
+                    if ($card->status === 'done') {
+                        $completedCards++;
+                    }
+                    if ($card->status === 'in_progress') {
+                        $inProgressCards++;
+                    }
+                }
+            }
+
+            $progress = $totalCards > 0 ? round(($completedCards / $totalCards) * 100) : 0;
+
+            $project->total_tasks = $totalCards;
+            $project->completed_tasks = $completedCards;
+            $project->in_progress_tasks = $inProgressCards;
+            $project->progress_percentage = $progress;
+            $project->tasks_count = $totalCards;
+            $project->team_members_count = $project->membersWithUsers->count() + 1; // +1 for creator
+        }
+
         return view('pages.admin.projects', compact('projects'));
     }
 
@@ -169,20 +209,33 @@ class ProjectController extends Controller
             ->with(['user', 'membersWithUsers', 'boards.cards.user'])
             ->firstOrFail();
 
-        // Calculate progress data
-        $totalTasks = $project->cards()->count();
-        $completedTasks = $project->cards()->where('status', 'completed')->count();
-        $inProgressTasks = $project->cards()->where('status', 'in_progress')->count();
-        $todoTasks = $project->cards()->where('status', 'todo')->count();
+        // Calculate progress data - FIXED: use 'done' not 'completed'
+        $totalTasks = 0;
+        $completedTasks = 0;
+        $inProgressTasks = 0;
+        $todoTasks = 0;
+
+        foreach ($project->boards as $board) {
+            foreach ($board->cards as $card) {
+                $totalTasks++;
+                if ($card->status === 'done') {
+                    $completedTasks++;
+                } elseif ($card->status === 'in_progress') {
+                    $inProgressTasks++;
+                } elseif ($card->status === 'todo') {
+                    $todoTasks++;
+                }
+            }
+        }
 
         $progressPercentage = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
 
         // Get recent activities (recent card updates)
-        $recentActivities = $project->cards()
-            ->with('user')
-            ->orderBy('updated_at', 'desc')
-            ->take(5)
-            ->get();
+        $recentActivities = collect();
+        foreach ($project->boards as $board) {
+            $recentActivities = $recentActivities->merge($board->cards);
+        }
+        $recentActivities = $recentActivities->sortByDesc('updated_at')->take(5);
 
         return view('pages.admin.project-detail', compact(
             'project',
@@ -233,7 +286,25 @@ class ProjectController extends Controller
             ->with(['user', 'projectMembers.user'])
             ->firstOrFail();
 
-        return view('pages.admin.add-task', compact('project'));
+        // Get all project members with their work status
+        $projectUsers = collect();
+
+        // Add project members with status
+        foreach ($project->projectMembers as $member) {
+            if ($member->user) {
+                $hasActiveTask = Card::where('user_id', $member->user_id)
+                    ->where('status', '!=', 'done')
+                    ->exists();
+
+                $projectUsers->push([
+                    'user' => $member->user,
+                    'role' => $member->role,
+                    'is_working' => $hasActiveTask
+                ]);
+            }
+        }
+
+        return view('pages.admin.add-task', compact('project', 'projectUsers'));
     }
 
     public function addMember(Request $request, $slug)
@@ -348,6 +419,19 @@ class ProjectController extends Controller
             'due_date' => 'nullable|date|after_or_equal:today',
             'estimated_hours' => 'nullable|numeric|min:0|max:999.99',
         ]);
+
+        // CHECK: User hanya bisa punya 1 task aktif (belum done)
+        if ($request->assignee) {
+            $hasActiveTask = Card::where('user_id', $request->assignee)
+                ->where('status', '!=', 'done')
+                ->exists();
+
+            if ($hasActiveTask) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'User already has an active task. Please complete the current task first.');
+            }
+        }
 
         $project = Project::where('slug', $slug)->firstOrFail();
 

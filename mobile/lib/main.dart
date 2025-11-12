@@ -5,6 +5,7 @@ import 'screens/dashboard_screen.dart';
 import 'utils/constants.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

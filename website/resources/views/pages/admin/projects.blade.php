@@ -9,42 +9,63 @@
         <div class="space-y-6">
             <!-- Header Actions -->
             <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('admin.projects.create') }}"
-                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center transition-colors">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        </svg>
-                        Add Project
-                    </a>
+                <a href="{{ route('admin.projects.create') }}"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center transition-colors">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    Add Project
+                </a>
 
-                    <div class="flex items-center space-x-2">
-                        <div class="relative">
-                            <input type="text" placeholder="Search projects..."
-                                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <svg class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <form method="GET" action="{{ route('admin.projects') }}" class="flex items-center space-x-2" id="searchForm">
+                    <div class="relative">
+                        <input type="text"
+                               name="search"
+                               id="searchInput"
+                               value="{{ request('search') }}"
+                               placeholder="Search projects..."
+                               class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64">
+                        <svg class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+
+                    @if(request('search'))
+                        <a href="{{ route('admin.projects') }}"
+                           class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 bg-white hover:bg-gray-50"
+                           title="Reset Search">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
+                        </a>
+                    @endif
+                </form>
+            </div>
+
+            <!-- Active Search Info -->
+            @if(request('search'))
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-blue-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                        </svg>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-blue-800">
+                                Hasil pencarian untuk: <strong>"{{ request('search') }}"</strong>
+                            </p>
+                            <p class="text-xs text-blue-600 mt-1">
+                                Menampilkan {{ $projects->count() }} project
+                            </p>
                         </div>
                     </div>
                 </div>
-
-                <div class="flex items-center space-x-3">
-                    <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option>All Status</option>
-                        <option>Active</option>
-                        <option>Completed</option>
-                        <option>On Hold</option>
-                    </select>
-                </div>
-            </div>
+            @endif
 
             <!-- Projects Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Project Card 1 -->
-                @foreach ($projects as $p)
+                @forelse ($projects as $p)
                     <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
                          onclick="window.location.href='{{ route('admin.projects.show', $p->slug) }}'">
                         <div class="p-6">
@@ -105,10 +126,10 @@
                             <div class="mb-4">
                                 <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
                                     <span>Progress</span>
-                                    <span>{{ $p->progress_percentage }}%</span>
+                                    <span class="font-semibold">{{ $p->progress_percentage ?? 0 }}%</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-green-600 h-2 rounded-full" style="width: {{ $p->progress_percentage }}%"></div>
+                                    <div class="bg-green-600 h-2 rounded-full transition-all duration-300" style="width: {{ $p->progress_percentage ?? 0 }}%"></div>
                                 </div>
                             </div>
 
@@ -175,13 +196,43 @@
                             </div>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="col-span-full">
+                        <div class="bg-white rounded-lg border border-gray-200 p-12 text-center">
+                            @if(request('search'))
+                                <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">No projects found</h3>
+                                <p class="text-gray-500 mb-4">We couldn't find any projects matching "{{ request('search') }}"</p>
+                                <a href="{{ route('admin.projects') }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                    Clear search
+                                </a>
+                            @else
+                                <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">No projects yet</h3>
+                                <p class="text-gray-500 mb-4">Get started by creating your first project</p>
+                                <a href="{{ route('admin.projects.create') }}" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                    </svg>
+                                    Create Project
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                @endforelse
             </div>
         </div>
     </div>
 </div>
 
-    <!-- Scripts for dropdown functionality -->
+    <!-- Scripts for dropdown and search functionality -->
     <script>
         function toggleDropdown(dropdownId) {
             const dropdown = document.getElementById(dropdownId);
@@ -201,5 +252,28 @@
                 });
             }
         });
+
+        // Live search functionality
+        let searchTimeout;
+        const searchInput = document.getElementById('searchInput');
+        const searchForm = document.getElementById('searchForm');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function() {
+                    searchForm.submit();
+                }, 500); // Wait 500ms after user stops typing
+            });
+
+            // Submit on Enter key
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    clearTimeout(searchTimeout);
+                    searchForm.submit();
+                }
+            });
+        }
     </script>
 @endsection

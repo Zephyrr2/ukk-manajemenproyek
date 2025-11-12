@@ -6,7 +6,6 @@
 
 @section('title', 'Subtasks')
 @section('page-title', 'SUBTASKS')
-@section('page-subtitle', 'Kelola subtask untuk: ' . $task->card_title)
 
 @section('content')
 <!-- Flash Messages -->
@@ -65,10 +64,14 @@
         </div>
     </div>
     <div class="px-4 py-5 sm:p-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
             <div class="text-center">
                 <div class="text-2xl font-bold text-gray-900">{{ $subtaskStats['total'] }}</div>
-                <div class="text-sm text-gray-500">Total Subtasks</div>
+                <div class="text-sm text-gray-500">Total</div>
+            </div>
+            <div class="text-center">
+                <div class="text-2xl font-bold text-gray-600">{{ $subtaskStats['todo'] }}</div>
+                <div class="text-sm text-gray-500">To Do</div>
             </div>
             <div class="text-center">
                 <div class="text-2xl font-bold text-yellow-600">{{ $subtaskStats['in_progress'] }}</div>
@@ -79,7 +82,7 @@
                 <div class="text-sm text-gray-500">Completed</div>
             </div>
             <div class="text-center">
-                <div class="text-2xl font-bold text-green-600">{{ number_format($subtaskStats['total_estimated'], 1) }}h</div>
+                <div class="text-2xl font-bold text-blue-600">{{ number_format($subtaskStats['total_estimated'], 1) }}h</div>
                 <div class="text-sm text-gray-500">Est. Hours</div>
             </div>
         </div>
@@ -119,22 +122,22 @@
                 <div class="border border-gray-200 rounded-lg p-4 {{ $subtask->status === 'done' ? 'bg-green-50' : '' }}">
                     <div class="flex items-start justify-between">
                         <div class="flex items-start space-x-3 flex-1">
-                            <!-- Status Toggle -->
-                            <form action="{{ route('user.subtasks.toggle', [$task->id, $subtask->id]) }}" method="POST" class="inline">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="mt-0.5">
-                                    @if($subtask->status === 'done')
-                                        <svg class="h-6 w-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                        </svg>
-                                    @else
-                                        <svg class="h-6 w-6 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                    @endif
-                                </button>
-                            </form>
+                            <!-- Status Icon -->
+                            <div class="mt-0.5">
+                                @if($subtask->status === 'done')
+                                    <svg class="h-6 w-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                @elseif($subtask->status === 'in_progress')
+                                    <svg class="h-6 w-6 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                    </svg>
+                                @else
+                                    <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                @endif
+                            </div>
 
                             <!-- Subtask Content -->
                             <div class="flex-1 min-w-0">
@@ -156,7 +159,7 @@
                                         </span>
                                     @endif
                                     @if($subtask->actual_hours)
-                                        <span class="flex items-center">
+                                        <span class="flex items-center text-green-600 font-medium">
                                             <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                             </svg>
@@ -165,9 +168,11 @@
                                     @endif
                                     <span class="flex items-center">
                                         @if($subtask->status === 'done')
-                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Completed</span>
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">✓ Completed</span>
+                                        @elseif($subtask->status === 'in_progress')
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">⏱️ In Progress</span>
                                         @else
-                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">In Progress</span>
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">To Do</span>
                                         @endif
                                     </span>
                                 </div>
@@ -177,41 +182,68 @@
                         <!-- Actions -->
                         <div class="ml-4 flex-shrink-0 flex space-x-2">
                             <!-- Time Tracking Buttons -->
-                            @if($subtask->status === 'in_progress')
-                                {{-- Show pause/resume based on parent task session --}}
-                                @if($user->status === 'paused' && $pausedSession && $pausedSession->card_id == $task->id)
-                                    <!-- Resume Button (user paused on parent task) -->
-                                    <form action="{{ route('user.time-tracking.resume') }}" method="POST" class="inline">
+                            @php
+                                $activeSubtaskLog = \App\Models\Time_Log::where('user_id', $user->id)
+                                    ->where('subtask_id', $subtask->id)
+                                    ->whereNull('end_time')
+                                    ->first();
+                            @endphp
+
+                            @if($subtask->status === 'todo')
+                                <!-- Start Button -->
+                                <form action="{{ route('user.subtasks.start', [$task->id, $subtask->id]) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit"
+                                        class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                        onclick="return confirm('Mulai mengerjakan subtask ini?')">
+                                        <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+                                        </svg>
+                                        Start
+                                    </button>
+                                </form>
+                            @elseif($subtask->status === 'in_progress')
+                                <!-- Pause Button -->
+                                @if($activeSubtaskLog)
+                                    <form action="{{ route('user.subtasks.pause', [$task->id, $subtask->id]) }}" method="POST" class="inline">
                                         @csrf
                                         <button type="submit"
-                                            class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                            onclick="return confirm('Lanjutkan pekerjaan? Timer akan aktif kembali.')">
-                                            ▶️ Resume
-                                        </button>
-                                    </form>
-                                @elseif($activeSession && $activeSession->card_id == $task->id)
-                                    <!-- Pause Button (user working on parent task) -->
-                                    <form action="{{ route('user.time-tracking.pause') }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit"
-                                            class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                                            onclick="return confirm('Jeda pekerjaan? Waktu yang sudah berjalan akan disimpan.')">
-                                            ⏸️ Pause
+                                            class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+                                            onclick="return confirm('Pause subtask? Time will be saved.')">
+                                            <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                            </svg>
+                                            Pause
                                         </button>
                                     </form>
                                 @endif
+
+                                <!-- Done Button -->
+                                <form action="{{ route('user.subtasks.complete', [$task->id, $subtask->id]) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit"
+                                        class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                        onclick="return confirm('Mark subtask as completed?')">
+                                        <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                        Done
+                                    </button>
+                                </form>
                             @endif
 
                             <!-- Edit Button -->
-                            <a href="{{ route('user.subtasks.edit', [$task->id, $subtask->id]) }}"
-                               class="inline-flex items-center px-2 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                </svg>
-                            </a>
+                            @if($subtask->status !== 'done')
+                                <a href="{{ route('user.subtasks.edit', [$task->id, $subtask->id]) }}"
+                                   class="inline-flex items-center px-2 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </a>
+                            @endif
 
                             <!-- Delete Button -->
-                            <form action="{{ route('user.subtasks.destroy', [$task->id, $subtask->id]) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus subtask ini?')">
+                            <form action="{{ route('user.subtasks.destroy', [$task->id, $subtask->id]) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this subtask?')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
@@ -229,11 +261,8 @@
                         <button type="button"
                                 onclick="document.getElementById('subtask-comments-{{ $subtask->id }}').classList.toggle('hidden')"
                                 class="flex items-center text-sm text-gray-600 hover:text-gray-900 font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24">
-                                <path fill="currentColor" d="M7 10.597a.75.75 0 0 1 .75-.75h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1-.75-.75m.75 2.25a.75.75 0 0 0 0 1.5h5a.75.75 0 0 0 0-1.5z"/>
-                                <path fill="currentColor" fill-rule="evenodd" d="M2.5 12.096a9.5 9.5 0 1 1 9.5 9.5H3.25a.75.75 0 0 1-.53-1.28l2.053-2.054A9.47 9.47 0 0 1 2.5 12.096m9.5-8a8 8 0 0 0-5.657 13.657a.75.75 0 0 1 0 1.06l-1.282 1.283H12a8 8 0 1 0 0-16" clip-rule="evenodd"/>
-                            </svg>
-                            Komentar ({{ $subtask->comments->count() }})
+                            <span class="mr-2">💬</span>
+                            Comments ({{ $subtask->comments->count() }})
                             <svg class="w-4 h-4 ml-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
@@ -246,7 +275,7 @@
                                     @csrf
                                     <div>
                                         <label class="block text-xs font-medium text-gray-700 mb-1">
-                                            Tambah Komentar
+                                            Add Comment
                                         </label>
                                         <textarea
                                             name="comment_text"
@@ -254,9 +283,9 @@
                                             required
                                             maxlength="1000"
                                             class="block w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                            placeholder="Tulis komentar untuk subtask ini..."
+                                            placeholder="Write a comment for this subtask..."
                                         ></textarea>
-                                        <p class="mt-1 text-xs text-gray-500">Maksimal 1000 karakter</p>
+                                        <p class="mt-1 text-xs text-gray-500">Maximum 1000 characters</p>
                                     </div>
                                     <div class="flex justify-end">
                                         <button type="submit" class="inline-flex items-center px-3 py-1 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 transition">
@@ -264,7 +293,7 @@
                                                 <path fill="currentColor" d="M7 10.597a.75.75 0 0 1 .75-.75h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1-.75-.75m.75 2.25a.75.75 0 0 0 0 1.5h5a.75.75 0 0 0 0-1.5z"/>
                                                 <path fill="currentColor" fill-rule="evenodd" d="M2.5 12.096a9.5 9.5 0 1 1 9.5 9.5H3.25a.75.75 0 0 1-.53-1.28l2.053-2.054A9.47 9.47 0 0 1 2.5 12.096m9.5-8a8 8 0 0 0-5.657 13.657a.75.75 0 0 1 0 1.06l-1.282 1.283H12a8 8 0 1 0 0-16" clip-rule="evenodd"/>
                                             </svg>
-                                            Kirim
+                                            Send
                                         </button>
                                     </div>
                                 </form>
@@ -289,7 +318,7 @@
 
                                             @if(auth()->user()->id == $comment->user_id ||
                                                 (auth()->user()->role == 'leader' && $task->board->project->user_id == auth()->user()->id))
-                                                <form action="{{ route(auth()->user()->role . '.comments.destroy', $comment->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus komentar ini?')">
+                                                <form action="{{ route(auth()->user()->role . '.comments.destroy', $comment->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this comment?')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-400 hover:text-red-600 transition-colors">
@@ -306,7 +335,7 @@
                                     </div>
                                 @empty
                                     <div class="text-center py-4">
-                                        <p class="text-xs text-gray-500">Belum ada komentar untuk subtask ini.</p>
+                                        <p class="text-xs text-gray-500">No comments for this subtask yet.</p>
                                     </div>
                                 @endforelse
                             </div>
@@ -320,8 +349,8 @@
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                 </svg>
-                <h3 class="mt-2 text-sm font-medium text-gray-900">Belum ada subtask</h3>
-                <p class="mt-1 text-sm text-gray-500">Mulai dengan menambahkan subtask pertama untuk task ini.</p>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No subtasks yet</h3>
+                <p class="mt-1 text-sm text-gray-500">Start by adding your first subtask for this task.</p>
             </div>
         @endif
     </div>

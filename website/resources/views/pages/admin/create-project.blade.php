@@ -127,7 +127,7 @@
 
                             <div>
                                 <label for="team_lead_search" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Team Leader (optional)
+                                    Team Leader
                                 </label>
                                 <div class="relative">
                                     <input type="text"

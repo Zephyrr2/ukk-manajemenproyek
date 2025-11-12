@@ -114,24 +114,27 @@
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('assignee') border-red-500 @enderror">
                                     <option value="">Select Assignee</option>
 
-                                    <!-- Project Owner -->
-                                    <option value="{{ $project->user->id }}"
-                                            {{ old('assignee') == $project->user->id ? 'selected' : '' }}
-                                            class="font-semibold">
-                                        {{ $project->user->name }} (Project Owner)
-                                    </option>
-
-                                    <!-- Project Members -->
-                                    @foreach($project->projectMembers as $member)
-                                        <option value="{{ $member->user->id }}"
-                                                {{ old('assignee') == $member->user->id ? 'selected' : '' }}>
-                                            {{ $member->user->name }} ({{ ucfirst($member->role) }})
-                                        </option>
-                                    @endforeach
+                                    @if(isset($projectUsers) && $projectUsers->count() > 0)
+                                        @foreach($projectUsers as $userData)
+                                            <option value="{{ $userData['user']->id }}"
+                                                    {{ old('assignee') == $userData['user']->id ? 'selected' : '' }}
+                                                    @if($userData['is_working']) disabled class="text-gray-400" @endif>
+                                                {{ $userData['user']->name }}
+                                                @if($userData['is_working'])
+                                                    (work)
+                                                @else
+                                                    ({{ ucfirst($userData['role']) }})
+                                                @endif
+                                            </option>
+                                        @endforeach
+                                    @else
+                                        <option value="" disabled>No project members found</option>
+                                    @endif
                                 </select>
                                 @error('assignee')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
+                                <p class="mt-1 text-sm text-gray-500">Users with (work) status are currently working on a task</p>
                             </div>
 
                             <div>

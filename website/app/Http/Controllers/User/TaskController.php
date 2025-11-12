@@ -74,6 +74,8 @@ class TaskController extends Controller
             ->orderBy('end_time', 'desc')
             ->first();
 
+        $pageSubtitle = 'Manage tasks assigned to you';
+
         return view('pages.user.tasks', compact(
             'projects',
             'taskStats',
@@ -81,7 +83,8 @@ class TaskController extends Controller
             'allTasks',
             'user',
             'activeSession',
-            'pausedSession'
+            'pausedSession',
+            'pageSubtitle'
         ));
     }
 

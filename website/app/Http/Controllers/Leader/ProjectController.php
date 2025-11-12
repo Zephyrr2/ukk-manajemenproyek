@@ -20,18 +20,18 @@ class ProjectController extends Controller
         $user = Auth::user();
 
         // Get projects where current user is assigned as member or created by them
-        $userProjects = Project::where(function ($query) use ($user) {
-            $query->where('user_id', $user->id) // Projects created by this user
-                  ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
-                      $subQuery->where('user_id', $user->id); // Projects where user is a member
-                  });
+        $userProjects = Project::where(function ($q) use ($user) {
+            $q->where('user_id', $user->id) // Projects created by this user
+              ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
+                  $subQuery->where('user_id', $user->id); // Projects where user is a member
+              });
         })
         ->with(['user', 'boards.cards', 'projectMembers.user'])
-        ->orderBy('created_at', 'desc')
-        ->get();
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         // Calculate project statistics
-        $projectStats = $userProjects->map(function ($project) {
+        $userProjects->each(function ($project) {
             $totalCards = 0;
             $completedCards = 0;
             $inProgressCards = 0;
@@ -55,8 +55,6 @@ class ProjectController extends Controller
 
             // Add team members count (including project creator)
             $project->team_members_count = $project->projectMembers->count() + 1; // +1 for creator
-
-            return $project;
         });
 
         // Auto-redirect logic: If user has only one project, redirect to it
@@ -72,15 +70,14 @@ class ProjectController extends Controller
 
         // Calculate overall statistics
         $totalActiveProjects = $userProjects->count();
-        $totalCompletedTasks = $projectStats->sum('completed_tasks');
-        $totalPendingTasks = $projectStats->sum(function ($project) {
+        $totalCompletedTasks = $userProjects->sum('completed_tasks');
+        $totalPendingTasks = $userProjects->sum(function ($project) {
             return $project->total_tasks - $project->completed_tasks;
         });
-        $totalTeamMembers = $projectStats->sum('team_members_count');
+        $totalTeamMembers = $userProjects->sum('team_members_count');
 
         return view('pages.leader.projects', compact(
             'userProjects',
-            'projectStats',
             'totalActiveProjects',
             'totalCompletedTasks',
             'totalPendingTasks',
@@ -88,7 +85,7 @@ class ProjectController extends Controller
         ));
     }
 
-    public function board($projectId)
+    public function board(Request $request, $projectId)
     {
         $user = Auth::user();
 
@@ -117,11 +114,23 @@ class ProjectController extends Controller
             'position' => 1
         ]);
 
-        // Get cards from database, grouped by status
-        $cards = Card::where('board_id', $board->id)
-            ->with(['user', 'assignedUsers', 'comments.user'])
-            ->orderBy('position')
-            ->get();
+        // Get cards from database with search functionality
+        $cardsQuery = Card::where('board_id', $board->id)
+            ->with(['user', 'assignedUsers', 'comments.user']);
+
+        // Search functionality
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $cardsQuery->where(function($q) use ($search) {
+                $q->where('card_title', 'like', '%' . $search . '%')
+                  ->orWhere('description', 'like', '%' . $search . '%')
+                  ->orWhereHas('user', function($userQuery) use ($search) {
+                      $userQuery->where('name', 'like', '%' . $search . '%');
+                  });
+            });
+        }
+
+        $cards = $cardsQuery->orderBy('position')->get();
 
         $boardData = [
             'todo' => $cards->where('status', 'todo')->values()->all(),
@@ -170,11 +179,24 @@ class ProjectController extends Controller
         ->with(['user', 'boards.cards', 'projectMembers.user'])
         ->firstOrFail();
 
-        // Calculate statistics
-        $totalCards = $project->boards->flatMap->cards->count();
-        $completedCards = $project->boards->flatMap->cards->where('status', 'done')->count();
-        $inProgressCards = $project->boards->flatMap->cards->where('status', 'in_progress')->count();
-        $todoCards = $project->boards->flatMap->cards->where('status', 'todo')->count();
+        // Calculate statistics - FIXED: use manual counting instead of flatMap
+        $totalCards = 0;
+        $completedCards = 0;
+        $inProgressCards = 0;
+        $todoCards = 0;
+
+        foreach ($project->boards as $board) {
+            foreach ($board->cards as $card) {
+                $totalCards++;
+                if ($card->status === 'done') {
+                    $completedCards++;
+                } elseif ($card->status === 'in_progress') {
+                    $inProgressCards++;
+                } elseif ($card->status === 'todo') {
+                    $todoCards++;
+                }
+            }
+        }
 
         $progressPercentage = $totalCards > 0 ? round(($completedCards / $totalCards) * 100, 1) : 0;
 
@@ -338,7 +360,25 @@ class ProjectController extends Controller
             'position' => 1
         ]);
 
-        return view('pages.leader.create-task', compact('project', 'board'));
+        // Get all project members with their work status
+        $projectUsers = collect();
+
+        // Add project members with status
+        foreach ($project->projectMembers as $member) {
+            if ($member->user) {
+                $hasActiveTask = Card::where('user_id', $member->user_id)
+                    ->where('status', '!=', 'done')
+                    ->exists();
+
+                $projectUsers->push([
+                    'user' => $member->user,
+                    'role' => $member->role,
+                    'is_working' => $hasActiveTask
+                ]);
+            }
+        }
+
+        return view('pages.leader.create-task', compact('project', 'board', 'projectUsers'));
     }
 
     public function storeTask(Request $request)
@@ -390,6 +430,17 @@ class ProjectController extends Controller
             return redirect()->back()
                            ->with('error', 'Assigned user is not a project member.')
                            ->withInput();
+        }
+
+        // CHECK: User hanya bisa punya 1 task aktif (belum done)
+        $hasActiveTask = Card::where('user_id', $request->user_id)
+            ->where('status', '!=', 'done')
+            ->exists();
+
+        if ($hasActiveTask) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'User already has an active task. Please complete the current task first.');
         }
 
         // Generate slug from title

@@ -27,6 +27,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
   final _commentController = TextEditingController();
   final _subtaskTitleController = TextEditingController();
   final _subtaskDescController = TextEditingController();
+  final _subtaskEstimatedHoursController = TextEditingController();
 
   @override
   void initState() {
@@ -41,10 +42,13 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
     _commentController.dispose();
     _subtaskTitleController.dispose();
     _subtaskDescController.dispose();
+    _subtaskEstimatedHoursController.dispose();
     super.dispose();
   }
 
   Future<void> _loadTaskDetails() async {
+    if (!mounted) return;
+    
     try {
       setState(() {
         _isLoading = true;
@@ -52,14 +56,27 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
 
       // Load task details
       final taskData = await ApiService.getTaskDetails(widget.taskId);
-      if (taskData != null) {
-        setState(() {
-          _task = TaskCard.fromJson(taskData['task'] ?? taskData);
-        });
+      
+      if (!mounted) return;
+      
+      if (taskData != null && taskData['success'] == true) {
+        final data = taskData['data'];
+        if (data != null) {
+          setState(() {
+            _task = TaskCard.fromJson(data);
+          });
+        } else {
+          throw Exception('Task data is null');
+        }
+      } else {
+        throw Exception(taskData?['message'] ?? 'Failed to load task');
       }
 
       // Load subtasks
       final subtasksData = await ApiService.getSubtasks(widget.taskId);
+      
+      if (!mounted) return;
+      
       if (subtasksData != null) {
         setState(() {
           _subtasks = subtasksData.map((json) => Subtask.fromJson(json)).toList();
@@ -68,27 +85,37 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
 
       // Load comments
       final commentsData = await ApiService.getTaskComments(widget.taskId);
+      
+      if (!mounted) return;
+      
       if (commentsData != null) {
         setState(() {
           _comments = commentsData.map((json) => Comment.fromJson(json)).toList();
         });
       }
 
+      if (!mounted) return;
+      
       setState(() {
         _isLoading = false;
       });
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error loading task details: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      print('Error loading task details: $e');
+      
+      if (!mounted) return;
+      
+      setState(() {
+        _isLoading = false;
+        _task = null;
+      });
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error loading task details: ${e.toString()}'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
+        ),
+      );
     }
   }
 
@@ -123,14 +150,26 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
   }
 
   Future<void> _addComment() async {
-    if (_commentController.text.trim().isEmpty) return;
+    if (_commentController.text.trim().isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Comment cannot be empty'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+      return;
+    }
 
-    final success = await ApiService.addTaskComment(
+    final result = await ApiService.addTaskComment(
       widget.taskId,
       _commentController.text.trim(),
     );
 
-    if (success && mounted) {
+    if (!mounted) return;
+
+    if (result['success'] == true) {
       _commentController.clear();
       _loadTaskDetails(); // Refresh data
       ScaffoldMessenger.of(context).showSnackBar(
@@ -139,11 +178,12 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
           backgroundColor: Colors.green,
         ),
       );
-    } else if (mounted) {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to add comment'),
+        SnackBar(
+          content: Text(result['message'] ?? 'Failed to add comment'),
           backgroundColor: Colors.red,
+          duration: const Duration(seconds: 4),
         ),
       );
     }
@@ -152,15 +192,23 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
   Future<void> _addSubtask() async {
     if (_subtaskTitleController.text.trim().isEmpty) return;
 
+    // Parse estimated hours
+    double? estimatedHours;
+    if (_subtaskEstimatedHoursController.text.trim().isNotEmpty) {
+      estimatedHours = double.tryParse(_subtaskEstimatedHoursController.text.trim());
+    }
+
     final result = await ApiService.createSubtask(
       taskId: widget.taskId,
       title: _subtaskTitleController.text.trim(),
       description: _subtaskDescController.text.trim(),
+      estimatedHours: estimatedHours,
     );
 
     if (result != null && mounted) {
       _subtaskTitleController.clear();
       _subtaskDescController.clear();
+      _subtaskEstimatedHoursController.clear();
       Navigator.of(context).pop();
       _loadTaskDetails(); // Refresh data
       ScaffoldMessenger.of(context).showSnackBar(
@@ -711,6 +759,29 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
                     ),
                   ),
                 ],
+                if (subtask.estimatedHours != null || subtask.actualHours != null) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.access_time,
+                        size: 12,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        subtask.actualHours != null
+                            ? '${subtask.actualHours}h (actual)'
+                            : '${subtask.estimatedHours}h (est.)',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),
@@ -873,32 +944,46 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Add Subtask'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: _subtaskTitleController,
-              decoration: const InputDecoration(
-                labelText: 'Title',
-                border: OutlineInputBorder(),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _subtaskTitleController,
+                decoration: const InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _subtaskDescController,
-              decoration: const InputDecoration(
-                labelText: 'Description (optional)',
-                border: OutlineInputBorder(),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _subtaskDescController,
+                decoration: const InputDecoration(
+                  labelText: 'Description (optional)',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
               ),
-              maxLines: 3,
-            ),
-          ],
+              const SizedBox(height: 16),
+              TextField(
+                controller: _subtaskEstimatedHoursController,
+                decoration: const InputDecoration(
+                  labelText: 'Estimated Hours',
+                  border: OutlineInputBorder(),
+                  hintText: 'e.g., 2',
+                  suffixIcon: Icon(Icons.access_time),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () {
               _subtaskTitleController.clear();
               _subtaskDescController.clear();
+              _subtaskEstimatedHoursController.clear();
               Navigator.of(context).pop();
             },
             child: const Text('Cancel'),

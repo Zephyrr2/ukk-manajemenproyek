@@ -16,12 +16,14 @@ class CardController extends Controller
             $user = Auth::user();
 
             // Ambil task yang user buat atau di-assign ke user
+            // EXCLUDE task yang sudah done/complete
             $myTasks = Card::where(function ($query) use ($user) {
                 $query->where('user_id', $user->id)
                       ->orWhereHas('assignments', function ($subQuery) use ($user) {
                           $subQuery->where('user_id', $user->id);
                       });
             })
+            ->where('status', '!=', 'done') // Exclude completed tasks
             ->with(['user', 'assignments.user', 'board'])
             ->orderBy('due_date', 'asc')
             ->get();

@@ -6,7 +6,6 @@
 
 @section('title', 'My Tasks')
 @section('page-title', 'MY TASKS')
-@section('page-subtitle', 'Kelola task yang assigned kepada Anda')
 
 @section('content')
     <!-- Flash Messages -->
@@ -231,7 +230,7 @@
                                     @if ($task->status === 'todo')
                                         <form action="{{ route('user.tasks.start', $task->id) }}" method="POST"
                                             class="inline"
-                                            onsubmit="return confirm('Apakah Anda yakin ingin memulai task ini?')">
+                                            onsubmit="return confirm('Are you sure you want to start this task?')">
                                             @csrf
                                             <button type="submit"
                                                 class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
@@ -246,7 +245,7 @@
                                                 @csrf
                                                 <button type="submit"
                                                     class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                                    onclick="return confirm('Lanjutkan pekerjaan? Timer akan aktif kembali.')">
+                                                    onclick="return confirm('Resume work? Timer will be reactivated.')">
                                                     ▶️ Resume
                                                 </button>
                                             </form>
@@ -256,7 +255,7 @@
                                                 @csrf
                                                 <button type="submit"
                                                     class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                                                    onclick="return confirm('Jeda pekerjaan? Waktu yang sudah berjalan akan disimpan.')">
+                                                    onclick="return confirm('Pause work? Your time will be saved.')">
                                                     ⏸️ Pause
                                                 </button>
                                             </form>
@@ -265,7 +264,7 @@
                                         <!-- Submit for Review Button -->
                                         <form action="{{ route('user.tasks.submit', $task->id) }}" method="POST"
                                             class="inline"
-                                            onsubmit="return confirm('Apakah Anda yakin ingin submit task ini untuk review?')">
+                                            onsubmit="return confirm('Are you sure you want to submit this task for review?')">
                                             @csrf
                                             <button type="submit"
                                                 class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
@@ -316,8 +315,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
-                    <h3 class="mt-2 text-sm font-medium text-gray-900">Tidak ada task</h3>
-                    <p class="mt-1 text-sm text-gray-500">Tidak ada task yang assigned kepada Anda saat ini.</p>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">No tasks</h3>
+                    <p class="mt-1 text-sm text-gray-500">There are no tasks assigned to you at this time.</p>
                 </div>
             @endif
         </div>
@@ -366,12 +365,12 @@
                                 <input type="hidden" name="task_id" id="modal_task_id" value="">
                                 <div>
                                     <label for="modal_comment_text" class="block text-sm font-medium text-gray-700 mb-2">
-                                        Tambah Komentar
+                                        Add Comment
                                     </label>
                                     <textarea name="comment_text" id="modal_comment_text" rows="4" required maxlength="1000"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-none"
-                                        placeholder="Tulis komentar Anda..."></textarea>
-                                    <p class="mt-1 text-xs text-gray-500">Maksimal 1000 karakter</p>
+                                        placeholder="Write your comment..."></textarea>
+                                    <p class="mt-1 text-xs text-gray-500">Maximum 1000 characters</p>
                                 </div>
                                 <div class="flex justify-end">
                                     <button type="submit"
@@ -384,7 +383,7 @@
                                                 d="M2.5 12.096a9.5 9.5 0 1 1 9.5 9.5H3.25a.75.75 0 0 1-.53-1.28l2.053-2.054A9.47 9.47 0 0 1 2.5 12.096m9.5-8a8 8 0 0 0-5.657 13.657a.75.75 0 0 1 0 1.06l-1.282 1.283H12a8 8 0 1 0 0-16"
                                                 clip-rule="evenodd" />
                                         </svg>
-                                        Kirim Komentar
+                                        Send Comment
                                     </button>
                                 </div>
                             </form>
@@ -482,7 +481,7 @@
                 </div>
 
                 ${comment.user_id == currentUserId ? `
-                                <form action="/user/comments/${comment.id}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus komentar ini?')">
+                                <form action="/user/comments/${comment.id}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this comment?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-400 hover:text-red-600 transition-colors">
@@ -506,10 +505,10 @@
             const now = new Date();
             const diffInSeconds = Math.floor((now - date) / 1000);
 
-            if (diffInSeconds < 60) return 'beberapa detik yang lalu';
-            if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} menit yang lalu`;
-            if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} jam yang lalu`;
-            return `${Math.floor(diffInSeconds / 86400)} hari yang lalu`;
+            if (diffInSeconds < 60) return 'a few seconds ago';
+            if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+            if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+            return `${Math.floor(diffInSeconds / 86400)} days ago`;
         }
     </script>
 

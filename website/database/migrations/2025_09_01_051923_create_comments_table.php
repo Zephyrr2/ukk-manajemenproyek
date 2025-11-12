@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('card_id')->constrained()->onDelete(null)->nullable();
-            $table->foreignId('subtask_id')->constrained()->onDelete(null)->nullable();
+            $table->foreignId('card_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('subtask_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->text('comment_text');
             $table->enum('comment_type', ['card', 'subtask']);

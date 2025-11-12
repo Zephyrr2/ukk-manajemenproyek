@@ -8,6 +8,9 @@ class AppColors {
   static const Color background = Color(0xFFF3F4F6); // gray-100
   static const Color surface = Colors.white;
   static const Color error = Color(0xFFEF4444); // red-500
+  static const Color success = Color(0xFF10B981); // green-500
+  static const Color warning = Color(0xFFF59E0B); // amber-500
+  static const Color info = Color(0xFF3B82F6); // blue-500
   static const Color onPrimary = Colors.white;
   static const Color onSurface = Color(0xFF111827); // gray-900
   static const Color onBackground = Color(0xFF111827);
@@ -29,7 +32,9 @@ class AppColors {
   static const Color green600 = Color(0xFF16A34A);
   static const Color green700 = Color(0xFF15803D);
   
+  static const Color blue50 = Color(0xFFEFF6FF);
   static const Color blue100 = Color(0xFFDBEAFE);
+  static const Color blue200 = Color(0xFFBFDBFE);
   static const Color blue600 = Color(0xFF2563EB);
   
   static const Color purple100 = Color(0xFFF3E8FF);
