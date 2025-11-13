@@ -10,25 +10,25 @@
 @section('content')
     <div class="space-y-6">
         <!-- Project Header -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+            <div class="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
+                <div class="flex items-start space-x-3 sm:space-x-4">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
                     </div>
-                    <div>
-                        <h1 class="text-xl font-semibold text-gray-900">{{ $project->project_name }}</h1>
-                        <p class="text-gray-500 text-sm">{{ $project->description ?? 'No description available' }}</p>
+                    <div class="flex-1 min-w-0">
+                        <h1 class="text-lg sm:text-xl font-semibold text-gray-900 break-words">{{ $project->project_name }}</h1>
+                        <p class="text-gray-500 text-xs sm:text-sm mt-1 break-words">{{ $project->description ?? 'No description available' }}</p>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
+                <div class="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
                     <div class="text-sm text-gray-500">Progress: <span
                             class="font-medium text-gray-900">{{ number_format($progressPercentage, 1) }}%</span></div>
-                    <div class="w-32 bg-gray-200 rounded-full h-2">
-                        <div class="bg-green-600 h-2 rounded-full" style="width: {{ $progressPercentage }}%"></div>
+                    <div class="w-full sm:w-32 bg-gray-200 rounded-full h-2">
+                        <div class="bg-green-600 h-2 rounded-full transition-all" style="width: {{ $progressPercentage }}%"></div>
                     </div>
                 </div>
             </div>
@@ -36,12 +36,12 @@
 
         <!-- Board Actions -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-            <div class="flex items-center justify-between">
-                <form method="GET" action="{{ route('leader.projects.board', $project->id) }}" class="flex items-center space-x-2" id="searchForm">
-                    <div class="relative">
+            <div class="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+                <form method="GET" action="{{ route('leader.projects.board', $project->id) }}" class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 flex-1 sm:flex-initial" id="searchForm">
+                    <div class="relative flex-1 sm:flex-initial">
                         <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
                             placeholder="Search tasks..." autocomplete="off"
-                            class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            class="w-full sm:w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -51,17 +51,18 @@
                     </div>
                     @if(request('search'))
                         <a href="{{ route('leader.projects.board', $project->id) }}"
-                           class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                           class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
-                            Clear
+                            <span class="sm:hidden">Clear Search</span>
+                            <span class="hidden sm:inline">Clear</span>
                         </a>
                     @endif
                 </form>
 
                 <a href="{{ route('leader.projects.create-task', $project->id) }}"
-                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2 w-full sm:w-auto">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -89,7 +90,7 @@
         </div>
 
         <!-- Kanban Board -->
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             @foreach (['todo' => 'To Do', 'in_progress' => 'In Progress', 'review' => 'Review', 'done' => 'Done'] as $status => $statusLabel)
                 <!-- {{ $statusLabel }} Column -->
                 <div class="bg-gray-50 rounded-lg p-4">

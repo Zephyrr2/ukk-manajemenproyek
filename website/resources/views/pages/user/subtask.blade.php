@@ -42,48 +42,48 @@
 <!-- Task Information -->
 <div class="bg-white shadow rounded-lg mb-6">
     <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-        <div class="flex items-center justify-between">
-            <div>
+        <div class="flex flex-col space-y-4 sm:flex-row sm:items-start sm:justify-between">
+            <div class="flex-1">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Task Information</h3>
-                <p class="mt-1 text-sm text-gray-500">{{ $task->card_title }}</p>
+                <p class="mt-1 text-sm text-gray-500 break-words">{{ $task->card_title }}</p>
             </div>
-            <div class="flex items-center space-x-2">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
                 @if($task->status === 'todo')
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">To Do</span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 w-fit">To Do</span>
                 @elseif($task->status === 'in_progress')
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">In Progress</span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 w-fit">In Progress</span>
                 @elseif($task->status === 'review')
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 w-fit">In Review</span>
                 @else
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Done</span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 w-fit">Done</span>
                 @endif
-                <a href="{{ route('user.tasks') }}" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <a href="{{ route('user.tasks') }}" class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full sm:w-auto">
                     ← Back to Tasks
                 </a>
             </div>
         </div>
     </div>
     <div class="px-4 py-5 sm:p-6">
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
             <div class="text-center">
-                <div class="text-2xl font-bold text-gray-900">{{ $subtaskStats['total'] }}</div>
-                <div class="text-sm text-gray-500">Total</div>
+                <div class="text-xl sm:text-2xl font-bold text-gray-900">{{ $subtaskStats['total'] }}</div>
+                <div class="text-xs sm:text-sm text-gray-500">Total</div>
             </div>
             <div class="text-center">
-                <div class="text-2xl font-bold text-gray-600">{{ $subtaskStats['todo'] }}</div>
-                <div class="text-sm text-gray-500">To Do</div>
+                <div class="text-xl sm:text-2xl font-bold text-gray-600">{{ $subtaskStats['todo'] }}</div>
+                <div class="text-xs sm:text-sm text-gray-500">To Do</div>
             </div>
             <div class="text-center">
-                <div class="text-2xl font-bold text-yellow-600">{{ $subtaskStats['in_progress'] }}</div>
-                <div class="text-sm text-gray-500">In Progress</div>
+                <div class="text-xl sm:text-2xl font-bold text-yellow-600">{{ $subtaskStats['in_progress'] }}</div>
+                <div class="text-xs sm:text-sm text-gray-500">In Progress</div>
             </div>
             <div class="text-center">
-                <div class="text-2xl font-bold text-green-600">{{ $subtaskStats['done'] }}</div>
-                <div class="text-sm text-gray-500">Completed</div>
+                <div class="text-xl sm:text-2xl font-bold text-green-600">{{ $subtaskStats['done'] }}</div>
+                <div class="text-xs sm:text-sm text-gray-500">Completed</div>
             </div>
-            <div class="text-center">
-                <div class="text-2xl font-bold text-blue-600">{{ number_format($subtaskStats['total_estimated'], 1) }}h</div>
-                <div class="text-sm text-gray-500">Est. Hours</div>
+            <div class="text-center col-span-2 sm:col-span-1">
+                <div class="text-xl sm:text-2xl font-bold text-blue-600">{{ number_format($subtaskStats['total_estimated'], 1) }}h</div>
+                <div class="text-xs sm:text-sm text-gray-500">Est. Hours</div>
             </div>
         </div>
     </div>
@@ -92,10 +92,10 @@
 <!-- Add New Subtask -->
 <div class="bg-white shadow rounded-lg mb-6">
     <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
             <h3 class="text-lg leading-6 font-medium text-gray-900">Subtasks Management</h3>
             <a href="{{ route('user.subtasks.create', $task->id) }}"
-               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+               class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full sm:w-auto">
                 <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
@@ -120,10 +120,10 @@
             <div class="space-y-4">
                 @foreach($subtasks as $subtask)
                 <div class="border border-gray-200 rounded-lg p-4 {{ $subtask->status === 'done' ? 'bg-green-50' : '' }}">
-                    <div class="flex items-start justify-between">
-                        <div class="flex items-start space-x-3 flex-1">
+                    <div class="flex flex-col lg:flex-row items-start space-y-4 lg:space-y-0">
+                        <div class="flex items-start space-x-3 flex-1 w-full">
                             <!-- Status Icon -->
-                            <div class="mt-0.5">
+                            <div class="mt-0.5 flex-shrink-0">
                                 @if($subtask->status === 'done')
                                     <svg class="h-6 w-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
@@ -140,16 +140,16 @@
                             </div>
 
                             <!-- Subtask Content -->
-                            <div class="flex-1 min-w-0">
-                                <h4 class="text-sm font-medium text-gray-900 {{ $subtask->status === 'done' ? 'line-through text-gray-500' : '' }}">
+                            <div class="flex-1 min-w-0 w-full">
+                                <h4 class="text-sm font-medium text-gray-900 break-words {{ $subtask->status === 'done' ? 'line-through text-gray-500' : '' }}">
                                     {{ $subtask->subtask_title }}
                                 </h4>
                                 @if($subtask->description)
-                                    <p class="text-sm text-gray-500 mt-1 {{ $subtask->status === 'done' ? 'line-through' : '' }}">
+                                    <p class="text-sm text-gray-500 mt-1 break-words {{ $subtask->status === 'done' ? 'line-through' : '' }}">
                                         {{ $subtask->description }}
                                     </p>
                                 @endif
-                                <div class="flex items-center space-x-4 mt-2 text-xs text-gray-500">
+                                <div class="flex flex-wrap items-center gap-3 sm:gap-4 mt-2 text-xs text-gray-500">
                                     @if($subtask->estimated_hours)
                                         <span class="flex items-center">
                                             <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -180,7 +180,7 @@
                         </div>
 
                         <!-- Actions -->
-                        <div class="ml-4 flex-shrink-0 flex space-x-2">
+                        <div class="w-full lg:w-auto lg:ml-4 flex-shrink-0 flex flex-wrap gap-2 justify-start lg:justify-end">
                             <!-- Time Tracking Buttons -->
                             @php
                                 $activeSubtaskLog = \App\Models\Time_Log::where('user_id', $user->id)

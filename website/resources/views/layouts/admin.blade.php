@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-gray-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,18 +7,17 @@
     <title>@yield('title', 'Admin Dashboard') - Project Management</title>
 
     <!-- Tailwind CSS via Vite -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     <!-- Additional CSS -->
     @yield('styles')
 </head>
-<body class="bg-gray-100 font-sans">
-    <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
-        @include('partials.sidebar-admin')
+<body class="h-full bg-gray-100 font-sans antialiased">
+    <!-- Sidebar -->
+    @include('partials.sidebar-admin')
 
-        <!-- Main Content -->
-        <div class="flex-1 flex flex-col overflow-hidden lg:ml-64">
+    <!-- Main Content Wrapper -->
+    <div class="min-h-screen bg-gray-100 lg:ml-64">
             <!-- Top Header -->
             <header class="bg-white shadow-sm border-b border-gray-200">
                 <div class="flex items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
@@ -50,11 +49,10 @@
                 </div>
             </header>
 
-            <!-- Main Content Area -->
-            <main class="flex-1 overflow-y-auto">
-                @yield('content')
-            </main>
-        </div>
+        <!-- Main Content Area -->
+        <main>
+            @yield('content')
+        </main>
     </div>
 
     <!-- JavaScript -->
@@ -63,9 +61,30 @@
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
 
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
+            if (sidebar && overlay) {
+                const isHidden = sidebar.classList.contains('-translate-x-full');
+
+                if (isHidden) {
+                    sidebar.classList.remove('-translate-x-full');
+                    overlay.classList.remove('hidden');
+                } else {
+                    sidebar.classList.add('-translate-x-full');
+                    overlay.classList.add('hidden');
+                }
+            }
         }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const menuButton = event.target.closest('button[onclick*="toggleSidebar"]');
+
+            if (overlay && !overlay.classList.contains('hidden') && !sidebar.contains(event.target) && !menuButton) {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        });
     </script>
 
     @yield('scripts')

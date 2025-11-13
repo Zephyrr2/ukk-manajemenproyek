@@ -99,7 +99,7 @@ class CommentController extends Controller
             $comment = Comment::create([
                 'card_id' => $taskId,
                 'user_id' => $user->id,
-                'comment_text' => $request->content,
+                'comment_text' => $request->input('content'),
                 'comment_type' => 'card',
             ]);
 

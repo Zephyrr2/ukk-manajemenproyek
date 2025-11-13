@@ -1,5 +1,5 @@
 <!-- User Sidebar -->
-<div class="fixed inset-y-0 left-0 z-50 w-64 bg-emerald-900 shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0" id="sidebar">
+<div class="fixed inset-y-0 left-0 z-50 w-64 bg-emerald-900 shadow-lg transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out" id="sidebar">
     <!-- Logo -->
     <div class="flex items-center justify-center h-16 px-4 bg-emerald-800">
         <h1 class="text-xl font-bold text-white">ProjectManager</h1>
@@ -68,4 +68,4 @@
 </div>
 
 <!-- Sidebar Overlay for Mobile -->
-<div id="sidebar-overlay" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-40 lg:hidden hidden"></div>
+<div id="sidebar-overlay" class="fixed inset-0 bg-transparent z-40 lg:hidden hidden"></div>

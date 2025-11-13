@@ -11,29 +11,31 @@
 <div class="space-y-6">
     <!-- Date Range Filter -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div class="p-6">
+        <div class="p-4 sm:p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Filter Time Logs</h3>
 
-            <form method="GET" action="{{ route('user.time-tracking') }}" class="flex flex-wrap items-end gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-                    <input type="date" name="start_date" value="{{ $startDate }}"
-                           class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+            <form method="GET" action="{{ route('user.time-tracking') }}" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                        <input type="date" name="start_date" value="{{ $startDate }}"
+                               class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                        <input type="date" name="end_date" value="{{ $endDate }}"
+                               class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-                    <input type="date" name="end_date" value="{{ $endDate }}"
-                           class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
-                </div>
-
-                <div>
+                <div class="flex flex-col sm:flex-row gap-3">
                     <button type="submit"
-                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors">
-                        Filter
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium transition-colors">
+                        Apply Filter
                     </button>
                     <a href="{{ route('user.time-tracking') }}"
-                       class="ml-2 bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-md font-medium transition-colors">
+                       class="text-center bg-gray-300 hover:bg-gray-400 text-gray-700 px-6 py-2 rounded-md font-medium transition-colors">
                         Reset
                     </a>
                 </div>
@@ -42,7 +44,7 @@
     </div>
 
     <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <div class="bg-white overflow-hidden shadow-sm rounded-lg border border-gray-200">
             <div class="p-5">
                 <div class="flex items-center">

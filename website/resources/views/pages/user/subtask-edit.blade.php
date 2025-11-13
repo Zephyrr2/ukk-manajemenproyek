@@ -133,18 +133,16 @@
                 </div>
 
                 <!-- Form Actions -->
-                <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-200">
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mt-8 pt-6 border-t border-gray-200">
                     <a href="{{ route('user.subtasks', $task->id) }}"
-                       class="px-6 py-3 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                       class="px-6 py-3 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-center">
                         Cancel
                     </a>
 
-                    <div class="flex items-center space-x-4">
-                        <button type="submit"
-                                class="px-6 py-3 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
-                            Update Subtask
-                        </button>
-                    </div>
+                    <button type="submit"
+                            class="px-6 py-3 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
+                        Update Subtask
+                    </button>
                 </div>
             </form>
         </div>

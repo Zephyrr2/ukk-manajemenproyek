@@ -109,19 +109,19 @@
                         <div class="space-y-4">
                             @foreach ($tasksForReview as $task)
                                 <div class="border border-gray-200 rounded-lg p-4">
-                                    <div class="flex items-start justify-between">
+                                    <div class="flex flex-col space-y-3 sm:flex-row sm:items-start sm:justify-between sm:space-y-0">
                                         <div class="flex-1 min-w-0">
-                                            <h4 class="text-sm font-medium text-gray-900 truncate">{{ $task->card_title }}
+                                            <h4 class="text-sm font-medium text-gray-900 break-words">{{ $task->card_title }}
                                             </h4>
-                                            <p class="text-sm text-gray-500 mt-1">{{ Str::limit($task->description, 80) }}
+                                            <p class="text-sm text-gray-500 mt-1 break-words">{{ Str::limit($task->description, 80) }}
                                             </p>
-                                            <div class="mt-2 flex items-center space-x-4">
+                                            <div class="mt-2 flex flex-wrap items-center gap-2 sm:gap-4">
                                                 <span
-                                                    class="text-xs text-gray-500">{{ $task->board->project->project_name ?? 'N/A' }}</span>
+                                                    class="text-xs text-gray-500 break-all">{{ $task->board->project->project_name ?? 'N/A' }}</span>
                                                 @if ($task->user)
                                                     <div class="flex items-center">
                                                         <div
-                                                            class="h-6 w-6 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xs">
+                                                            class="h-6 w-6 flex-shrink-0 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xs">
                                                             {{ substr($task->user->name, 0, 1) }}
                                                         </div>
                                                         <span
@@ -136,13 +136,13 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="ml-4 flex-shrink-0 flex space-x-2">
+                                        <div class="flex flex-row gap-2 sm:ml-4 sm:flex-shrink-0">
                                             <!-- Approve Form -->
                                             <form action="{{ route('leader.tasks.approve', $task->id) }}" method="POST"
-                                                class="inline">
+                                                class="flex-1 sm:flex-initial">
                                                 @csrf
                                                 <button type="submit"
-                                                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                                    class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                                                     onclick="return confirm('Apakah Anda yakin ingin approve task ini?')">
                                                     ✓ Approve
                                                 </button>
@@ -150,10 +150,10 @@
 
                                             <!-- Reject Form -->
                                             <form action="{{ route('leader.tasks.reject', $task->id) }}" method="POST"
-                                                class="inline">
+                                                class="flex-1 sm:flex-initial">
                                                 @csrf
                                                 <button type="submit"
-                                                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                                    class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                                                     onclick="return confirm('Apakah Anda yakin ingin reject task ini?')">
                                                     ✗ Reject
                                                 </button>

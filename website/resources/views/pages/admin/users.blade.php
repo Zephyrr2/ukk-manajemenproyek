@@ -35,62 +35,70 @@
         @endif
 
         <!-- Header Actions -->
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <a href="{{ route('admin.users.create') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center">
+        <div class="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
+            <!-- Add Member Button -->
+            <div class="flex items-center">
+                <a href="{{ route('admin.users.create') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center w-full sm:w-auto justify-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
                     Add Member
                 </a>
-
             </div>
 
-            <form method="GET" action="{{ route('admin.users') }}" class="flex items-center space-x-3" id="filterForm">
-                <div class="relative">
-                    <input type="text"
-                           name="search"
-                           id="searchInput"
-                           value="{{ request('search') }}"
-                           placeholder="Cari anggota..."
-                           class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64">
-                    <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
-
-                <select name="role"
-                        id="roleFilter"
-                        class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        onchange="document.getElementById('filterForm').submit()">
-                    <option value="all" {{ request('role') == 'all' || !request('role') ? 'selected' : '' }}>Semua Role</option>
-                    <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                    <option value="leader" {{ request('role') == 'leader' ? 'selected' : '' }}>Leader</option>
-                    <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>User</option>
-                </select>
-
-                <select name="status"
-                        id="statusFilter"
-                        class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        onchange="document.getElementById('filterForm').submit()">
-                    <option value="all" {{ request('status') == 'all' || !request('status') ? 'selected' : '' }}>Semua Status</option>
-                    <option value="free" {{ request('status') == 'free' ? 'selected' : '' }}>Free</option>
-                    <option value="working" {{ request('status') == 'working' ? 'selected' : '' }}>Working</option>
-                    <option value="paused" {{ request('status') == 'paused' ? 'selected' : '' }}>Paused</option>
-                </select>
-
-                @if(request('search') || request('role') != 'all' || request('status') != 'all')
-                    <a href="{{ route('admin.users') }}"
-                       class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 bg-white hover:bg-gray-50"
-                       title="Reset Filter">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            <!-- Filter Form -->
+            <form method="GET" action="{{ route('admin.users') }}" class="w-full lg:w-auto" id="filterForm">
+                <div class="flex flex-col space-y-3 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-3">
+                    <!-- Search Input -->
+                    <div class="relative flex-1 sm:flex-initial">
+                        <input type="text"
+                               name="search"
+                               id="searchInput"
+                               value="{{ request('search') }}"
+                               placeholder="Cari anggota..."
+                               class="w-full sm:w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
-                    </a>
-                @endif
+                    </div>
+
+                    <!-- Role Filter -->
+                    <select name="role"
+                            id="roleFilter"
+                            class="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            onchange="document.getElementById('filterForm').submit()">
+                        <option value="all" {{ request('role') == 'all' || !request('role') ? 'selected' : '' }}>Semua Role</option>
+                        <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                        <option value="leader" {{ request('role') == 'leader' ? 'selected' : '' }}>Leader</option>
+                        <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>User</option>
+                    </select>
+
+                    <!-- Status Filter -->
+                    <select name="status"
+                            id="statusFilter"
+                            class="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            onchange="document.getElementById('filterForm').submit()">
+                        <option value="all" {{ request('status') == 'all' || !request('status') ? 'selected' : '' }}>Semua Status</option>
+                        <option value="free" {{ request('status') == 'free' ? 'selected' : '' }}>Free</option>
+                        <option value="working" {{ request('status') == 'working' ? 'selected' : '' }}>Working</option>
+                        <option value="paused" {{ request('status') == 'paused' ? 'selected' : '' }}>Paused</option>
+                    </select>
+
+                    <!-- Reset Button -->
+                    @if(request('search') || request('role') != 'all' || request('status') != 'all')
+                        <a href="{{ route('admin.users') }}"
+                           class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 bg-white hover:bg-gray-50 w-full sm:w-auto"
+                           title="Reset Filter">
+                            <svg class="w-4 h-4 sm:mr-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            <span class="ml-2 sm:hidden">Reset Filter</span>
+                        </a>
+                    @endif
+                </div>
             </form>
         </div>
 

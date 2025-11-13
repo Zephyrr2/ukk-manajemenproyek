@@ -11,8 +11,8 @@
 @section('content')
 <div class="space-y-6">
     <!-- Back Button and Actions -->
-    <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-4">
+    <div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+        <div class="flex items-center">
             <a href="{{ route('leader.projects') }}"
                 class="text-gray-600 hover:text-gray-900 flex items-center space-x-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -23,9 +23,9 @@
             </a>
         </div>
 
-        <div class="flex items-center space-x-3">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <a href="{{ route('leader.projects.board', $project->id) }}"
-                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center transition-colors">
+                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center transition-colors">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -33,7 +33,7 @@
                 View Board
             </a>
             <a href="{{ route('leader.projects.create-task', $project->id) }}"
-                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center transition-colors">
+                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center transition-colors">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -45,27 +45,27 @@
 
     <!-- Project Header -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div class="p-6">
-            <div class="flex items-start justify-between">
+        <div class="p-4 sm:p-6">
+            <div class="flex items-start">
                 <div class="flex-1">
-                    <div class="flex items-center space-x-3 mb-4">
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor"
+                    <div class="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-3 mb-4">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-green-600" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012 2v2M7 7h10" />
                             </svg>
                         </div>
-                        <div>
-                            <h1 class="text-2xl font-bold text-gray-900">{{ $project->project_name }}</h1>
-                            <p class="text-gray-500">Created on {{ $project->created_at->format('M d, Y') }}</p>
+                        <div class="flex-1 min-w-0">
+                            <h1 class="text-xl sm:text-2xl font-bold text-gray-900 break-words">{{ $project->project_name }}</h1>
+                            <p class="text-gray-500 text-sm mt-1">Created on {{ $project->created_at->format('M d, Y') }}</p>
                         </div>
                     </div>
 
                     <div class="space-y-4">
                         <div>
                             <h3 class="font-medium text-gray-900 mb-2">Description</h3>
-                            <p class="text-gray-700 leading-relaxed">
+                            <p class="text-gray-700 text-sm sm:text-base leading-relaxed break-words">
                                 {{ $project->description ?? 'No description provided.' }}
                             </p>
                         </div>

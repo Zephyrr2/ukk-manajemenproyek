@@ -10,7 +10,7 @@
 @section('content')
 <div class="space-y-6">
     <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
             <div class="flex items-center justify-between">
                 <div>
@@ -81,16 +81,16 @@
 
         @if($currentTask)
         <!-- Current Task Card -->
-        <div class="border border-gray-200 rounded-lg p-6">
-            <div class="flex items-center justify-between mb-4">
+        <div class="border border-gray-200 rounded-lg p-4 sm:p-6">
+            <div class="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 mb-4">
                 <div class="flex items-center flex-1">
                     <div class="w-3 h-3
                         @if($currentTask->priority === 'high') bg-red-500
                         @elseif($currentTask->priority === 'medium') bg-yellow-500
-                        @else bg-green-500 @endif rounded-full mr-3"></div>
-                    <h3 class="font-medium text-gray-900 text-lg">{{ $currentTask->card_title }}</h3>
+                        @else bg-green-500 @endif rounded-full mr-3 flex-shrink-0"></div>
+                    <h3 class="font-medium text-gray-900 text-base sm:text-lg break-words">{{ $currentTask->card_title }}</h3>
                 </div>
-                <span class="px-3 py-1 rounded-full text-sm font-medium
+                <span class="px-3 py-1 rounded-full text-sm font-medium w-fit
                     @if($currentTask->status === 'in_progress') bg-yellow-100 text-yellow-800
                     @elseif($currentTask->status === 'review') bg-blue-100 text-blue-800
                     @else bg-gray-100 text-gray-800 @endif">
@@ -102,7 +102,7 @@
             <p class="text-gray-600 mb-4">{{ $currentTask->description }}</p>
             @endif
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 <div>
                     <span class="text-sm text-gray-600">Priority:</span>
                     <div class="font-medium
@@ -151,7 +151,7 @@
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex flex-wrap gap-3">
+            <div class="flex flex-col sm:flex-row flex-wrap gap-3">
                 @if($user->status === 'paused')
                 <!-- Resume Work Form (when paused) -->
                 <form action="{{ route('user.time-tracking.resume') }}" method="POST" class="inline">
@@ -229,8 +229,8 @@
             </a>
         </div>
 
-        <!-- Task List Table -->
-        <div class="overflow-x-auto">
+        <!-- Task List Table - Desktop -->
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full">
                 <thead>
                     <tr class="border-b border-gray-200">
@@ -298,6 +298,58 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        <!-- Task List Cards - Mobile -->
+        <div class="md:hidden space-y-3">
+            @forelse($recentTasks as $task)
+            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div class="flex items-start justify-between mb-2">
+                    <div class="flex-1">
+                        <div class="font-medium text-gray-900 mb-1">{{ $task->card_title }}</div>
+                        <div class="text-xs text-gray-500">{{ $task->board->project->project_name ?? 'N/A' }}</div>
+                    </div>
+                    <span class="px-2 py-1 text-xs rounded-full
+                        @if($task->priority === 'high') bg-red-100 text-red-700
+                        @elseif($task->priority === 'medium') bg-yellow-100 text-yellow-700
+                        @else bg-green-100 text-green-700 @endif">
+                        {{ ucfirst($task->priority) }}
+                    </span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3
+                            @if($task->status === 'in_progress') bg-yellow-500
+                            @elseif($task->status === 'review') bg-blue-500
+                            @elseif($task->status === 'done') bg-green-500
+                            @else bg-gray-400 @endif rounded-full mr-2"></div>
+                        <span class="text-gray-600">{{ ucfirst(str_replace('_', ' ', $task->status)) }}</span>
+                    </div>
+                    @if($task->due_date)
+                        @php
+                            $daysUntil = \Carbon\Carbon::parse($task->due_date)->diffInDays(now(), false);
+                            $isOverdue = $daysUntil > 0;
+                            $isToday = \Carbon\Carbon::parse($task->due_date)->isToday();
+                        @endphp
+                        <span class="text-xs
+                            @if($isOverdue) text-red-600 font-medium
+                            @elseif($isToday) text-orange-600 font-medium
+                            @else text-gray-600 @endif">
+                            {{ \Carbon\Carbon::parse($task->due_date)->format('d M Y') }}
+                        </span>
+                    @endif
+                </div>
+                @if($task->subtasks->count() > 0)
+                <div class="text-xs text-gray-500 mt-2">
+                    {{ $task->subtasks->where('status', 'done')->count() }}/{{ $task->subtasks->count() }} subtasks
+                </div>
+                @endif
+            </div>
+            @empty
+            <div class="py-8 text-center text-gray-500">
+                No tasks at the moment.
+            </div>
+            @endforelse
         </div>
     </div>
 

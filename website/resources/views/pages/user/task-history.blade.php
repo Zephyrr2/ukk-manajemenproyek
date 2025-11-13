@@ -63,9 +63,9 @@
 <!-- Assignment History -->
 <div class="bg-white shadow rounded-lg">
     <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
             <h3 class="text-lg leading-6 font-medium text-gray-900">Assignment History</h3>
-            <a href="{{ route('user.tasks') }}" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <a href="{{ route('user.tasks') }}" class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full sm:w-auto">
                 ← Back to Tasks
             </a>
         </div>
@@ -74,51 +74,51 @@
         @if($history->count() > 0)
             <div class="space-y-4">
                 @foreach($history as $assignment)
-                <div class="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg">
-                    <div class="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-medium">
+                <div class="flex flex-col sm:flex-row items-start space-y-3 sm:space-y-0 sm:space-x-3 p-4 border border-gray-200 rounded-lg">
+                    <div class="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-medium flex-shrink-0">
                         {{ strtoupper(substr($assignment->user->name, 0, 1)) }}
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center space-x-2 mb-2">
+                    <div class="flex-1 min-w-0 w-full">
+                        <div class="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 mb-2">
                             <h4 class="text-sm font-medium text-gray-900">{{ $assignment->user->name }}</h4>
                             @if($assignment->assignment_status === 'completed')
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Completed</span>
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 w-fit">Completed</span>
                             @elseif($assignment->assignment_status === 'in_progress')
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">In Progress</span>
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 w-fit">In Progress</span>
                             @else
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">{{ ucfirst($assignment->assignment_status) }}</span>
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 w-fit">{{ ucfirst($assignment->assignment_status) }}</span>
                             @endif
                         </div>
 
-                        <div class="text-sm text-gray-500 space-y-1">
-                            <div class="flex items-center">
-                                <svg class="h-4 w-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="text-sm text-gray-500 space-y-2">
+                            <div class="flex items-start break-words">
+                                <svg class="h-4 w-4 mr-1 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
-                                <span>Assigned: {{ $assignment->assigned_at ? $assignment->assigned_at->format('M d, Y H:i') : 'N/A' }}</span>
+                                <span class="break-words">Assigned: {{ $assignment->assigned_at ? $assignment->assigned_at->format('M d, Y H:i') : 'N/A' }}</span>
                             </div>
 
                             @if($assignment->started_at)
-                            <div class="flex items-center">
-                                <svg class="h-4 w-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="flex items-start break-words">
+                                <svg class="h-4 w-4 mr-1 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                                 </svg>
-                                <span>Started: {{ $assignment->started_at->format('M d, Y H:i') }}</span>
+                                <span class="break-words">Started: {{ $assignment->started_at->format('M d, Y H:i') }}</span>
                             </div>
                             @endif
 
                             @if($assignment->completed_at)
-                            <div class="flex items-center">
-                                <svg class="h-4 w-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="flex items-start break-words">
+                                <svg class="h-4 w-4 mr-1 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
-                                <span>Completed: {{ $assignment->completed_at->format('M d, Y H:i') }}</span>
+                                <span class="break-words">Completed: {{ $assignment->completed_at->format('M d, Y H:i') }}</span>
                             </div>
                             @endif
                         </div>
                     </div>
 
-                    <div class="text-xs text-gray-400">
+                    <div class="text-xs text-gray-400 w-full sm:w-auto text-left sm:text-right">
                         {{ $assignment->created_at->diffForHumans() }}
                     </div>
                 </div>

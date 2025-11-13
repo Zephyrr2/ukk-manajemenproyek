@@ -100,26 +100,26 @@
             <div class="divide-y divide-gray-200">
                 @foreach($userProjects as $project)
                     <div class="px-4 py-4 sm:px-6 hover:bg-gray-50">
-                        <div class="flex items-center justify-between">
+                        <div class="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
                             <div class="flex-1 min-w-0">
-                                <div class="flex items-center space-x-3">
-                                    <div class="h-10 w-10 rounded-lg bg-green-600 flex items-center justify-center">
+                                <div class="flex items-start space-x-3">
+                                    <div class="h-10 w-10 flex-shrink-0 rounded-lg bg-green-600 flex items-center justify-center">
                                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012 2v2M7 7h10"/>
                                         </svg>
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <h4 class="text-sm font-medium text-gray-900 truncate">
+                                        <h4 class="text-sm font-medium text-gray-900 break-words">
                                             {{ $project->project_name }}
                                         </h4>
-                                        <p class="text-sm text-gray-500">
+                                        <p class="text-xs sm:text-sm text-gray-500 mt-1">
                                             Created by {{ $project->user->name }} • {{ $project->team_members_count }} team members
                                         </p>
                                     </div>
                                 </div>
 
-                                <div class="mt-3">
-                                    <div class="flex items-center text-sm text-gray-600 space-x-4">
+                                <div class="mt-3 ml-0 sm:ml-13">
+                                    <div class="flex flex-wrap items-center text-xs sm:text-sm text-gray-600 gap-2 sm:gap-4">
                                         <div class="flex items-center">
                                             <svg class="h-4 w-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
@@ -141,7 +141,7 @@
                                     </div>
 
                                     <!-- Progress Bar -->
-                                    <div class="mt-2">
+                                    <div class="mt-3">
                                         <div class="flex items-center justify-between text-xs">
                                             <span class="text-gray-500">Progress</span>
                                             <span class="font-medium text-green-600">{{ $project->progress_percentage }}%</span>
@@ -153,13 +153,13 @@
                                 </div>
                             </div>
 
-                            <div class="ml-4 flex-shrink-0 flex space-x-2">
+                            <div class="flex flex-col sm:flex-row gap-2 lg:ml-4 lg:flex-shrink-0">
                                 <a href="{{ route('leader.projects.show', $project->id) }}"
-                                   class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                   class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                                     View Details
                                 </a>
                                 <a href="{{ route('leader.projects.board', $project->id) }}"
-                                   class="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+                                   class="inline-flex items-center justify-center px-3 py-2 border border-transparent shadow-sm text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
                                     Open Board
                                 </a>
                             </div>
