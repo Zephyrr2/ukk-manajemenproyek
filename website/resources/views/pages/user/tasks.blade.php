@@ -44,20 +44,20 @@
     @endif
 
     <!-- Task Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
         <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
+            <div class="p-3 sm:p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="h-5 w-5 sm:h-6 sm:w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
                     </div>
-                    <div class="ml-5 w-0 flex-1">
+                    <div class="ml-3 sm:ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Total Tasks</dt>
-                            <dd class="text-lg font-medium text-gray-900">{{ $taskStats['total'] }}</dd>
+                            <dt class="text-xs sm:text-sm font-medium text-gray-500 truncate">Total Tasks</dt>
+                            <dd class="text-base sm:text-lg font-medium text-gray-900">{{ $taskStats['total'] }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -65,18 +65,18 @@
         </div>
 
         <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
+            <div class="p-3 sm:p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="h-5 w-5 sm:h-6 sm:w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <div class="ml-5 w-0 flex-1">
+                    <div class="ml-3 sm:ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">To Do</dt>
-                            <dd class="text-lg font-medium text-gray-900">{{ $taskStats['todo'] }}</dd>
+                            <dt class="text-xs sm:text-sm font-medium text-gray-500 truncate">To Do</dt>
+                            <dd class="text-base sm:text-lg font-medium text-gray-900">{{ $taskStats['todo'] }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -84,18 +84,18 @@
         </div>
 
         <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
+            <div class="p-3 sm:p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="h-5 w-5 sm:h-6 sm:w-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                     </div>
-                    <div class="ml-5 w-0 flex-1">
+                    <div class="ml-3 sm:ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">In Progress</dt>
-                            <dd class="text-lg font-medium text-gray-900">{{ $taskStats['in_progress'] }}</dd>
+                            <dt class="text-xs sm:text-sm font-medium text-gray-500 truncate">In Progress</dt>
+                            <dd class="text-base sm:text-lg font-medium text-gray-900">{{ $taskStats['in_progress'] }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -103,20 +103,20 @@
         </div>
 
         <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
+            <div class="p-3 sm:p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="h-5 w-5 sm:h-6 sm:w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                     </div>
-                    <div class="ml-5 w-0 flex-1">
+                    <div class="ml-3 sm:ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">In Review</dt>
-                            <dd class="text-lg font-medium text-gray-900">{{ $taskStats['review'] }}</dd>
+                            <dt class="text-xs sm:text-sm font-medium text-gray-500 truncate">In Review</dt>
+                            <dd class="text-base sm:text-lg font-medium text-gray-900">{{ $taskStats['review'] }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -126,20 +126,20 @@
 
     <!-- My Tasks List -->
     <div class="bg-white shadow rounded-lg">
-        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+        <div class="px-3 py-4 sm:px-6 sm:py-5 border-b border-gray-200">
             <div class="flex items-center justify-between">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">My Tasks</h3>
+                <h3 class="text-base sm:text-lg leading-6 font-medium text-gray-900">My Tasks</h3>
                 <span
                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                     {{ $myTasks->count() }} tasks
                 </span>
             </div>
         </div>
-        <div class="px-4 py-5 sm:p-6">
+        <div class="px-3 py-4 sm:px-6 sm:py-5">
             @if ($myTasks->count() > 0)
                 <div class="space-y-4">
                     @foreach ($myTasks as $task)
-                        <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="border border-gray-200 rounded-lg p-3 sm:p-4">
                             <!-- Mobile & Desktop Layout -->
                             <div class="space-y-3">
                                 <!-- Header with badges -->
@@ -167,16 +167,16 @@
 
                                 <!-- Title and description -->
                                 <div>
-                                    <h4 class="text-sm font-medium text-gray-900 mb-1">{{ $task->card_title }}</h4>
-                                    <p class="text-sm text-gray-500 mb-2">{{ Str::limit($task->description, 100) }}</p>
+                                    <h4 class="text-sm sm:text-base font-medium text-gray-900 mb-1 break-words">{{ $task->card_title }}</h4>
+                                    <p class="text-xs sm:text-sm text-gray-500 mb-2 break-words">{{ Str::limit($task->description, 100) }}</p>
                                 </div>
 
                                 <!-- Task metadata -->
-                                <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500">
-                                    <span class="font-medium">{{ $task->board->project->project_name ?? 'N/A' }}</span>
+                                <div class="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-2 text-xs text-gray-500">
+                                    <span class="font-medium break-words">{{ $task->board->project->project_name ?? 'N/A' }}</span>
                                     @if ($task->due_date)
                                         <span class="flex items-center">
-                                            <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                             </svg>
                                             Due: {{ \Carbon\Carbon::parse($task->due_date)->format('M d, Y') }}
@@ -184,7 +184,7 @@
                                     @endif
                                     @if ($task->estimated_hours)
                                         <span class="flex items-center">
-                                            <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                             Est: {{ $task->estimated_hours }}h
@@ -192,7 +192,7 @@
                                     @endif
                                     @if ($task->actual_hours)
                                         <span class="flex items-center">
-                                            <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                             Actual: {{ $task->actual_hours }}h
@@ -200,7 +200,7 @@
                                     @endif
                                     @if ($task->subtasks->count() > 0)
                                         <span class="flex items-center">
-                                            <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                             </svg>
                                             Subtasks: {{ $task->subtasks->where('status', 'done')->count() }}/{{ $task->subtasks->count() }}
@@ -209,14 +209,14 @@
                                 </div>
 
                                 <!-- Action buttons - wrap on mobile -->
-                                <div class="flex flex-wrap gap-2 pt-2 border-t border-gray-100">
+                                <div class="flex flex-col sm:flex-row flex-wrap gap-2 pt-2 border-t border-gray-100">
                                     @if ($task->status === 'todo')
                                         <form action="{{ route('user.tasks.start', $task->id) }}" method="POST"
-                                            class="inline"
+                                            class="w-full sm:w-auto"
                                             onsubmit="return confirm('Are you sure you want to start this task?')">
                                             @csrf
                                             <button type="submit"
-                                                class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                                class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                                                 ▶ Start Task
                                             </button>
                                         </form>
@@ -224,20 +224,20 @@
                                         <!-- Time Tracking Buttons -->
                                         @if($user->status === 'paused' && $pausedSession && $pausedSession->card_id == $task->id)
                                             <!-- Resume Button (user paused on this task) -->
-                                            <form action="{{ route('user.time-tracking.resume') }}" method="POST" class="inline">
+                                            <form action="{{ route('user.time-tracking.resume') }}" method="POST" class="w-full sm:w-auto">
                                                 @csrf
                                                 <button type="submit"
-                                                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                                    class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                                                     onclick="return confirm('Resume work? Timer will be reactivated.')">
                                                     ▶️ Resume
                                                 </button>
                                             </form>
                                         @elseif($activeSession && $activeSession->card_id == $task->id)
                                             <!-- Pause Button (user working on this task) -->
-                                            <form action="{{ route('user.time-tracking.pause') }}" method="POST" class="inline">
+                                            <form action="{{ route('user.time-tracking.pause') }}" method="POST" class="w-full sm:w-auto">
                                                 @csrf
                                                 <button type="submit"
-                                                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                                                    class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                                                     onclick="return confirm('Pause work? Your time will be saved.')">
                                                     ⏸️ Pause
                                                 </button>
@@ -245,27 +245,27 @@
                                         @endif
 
                                         <!-- Submit for Review Button -->
-                                        <form action="{{ route('user.tasks.submit', $task->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to submit this task for review?')">
+                                        <form action="{{ route('user.tasks.submit', $task->id) }}" method="POST" class="w-full sm:w-auto" onsubmit="return confirm('Are you sure you want to submit this task for review?')">
                                             @csrf
-                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                            <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                                                 📤 Submit for Review
                                             </button>
                                         </form>
                                     @elseif($task->status === 'review')
-                                        <span class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 rounded-md">
+                                        <span class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 rounded-md">
                                             ⏳ Waiting for Review
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 rounded-md">
+                                        <span class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 rounded-md">
                                             ✅ Completed
                                         </span>
                                     @endif
 
-                                    <a href="{{ route('user.subtasks', $task->id) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    <a href="{{ route('user.subtasks', $task->id) }}" class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                         📋 Subtasks
                                     </a>
 
-                                    <button onclick="openCommentModal('task', {{ $task->id }}, {{ $task->id }})" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    <button onclick="openCommentModal('task', {{ $task->id }}, {{ $task->id }})" class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                         💬 Comment
                                         @if ($task->comments && $task->comments->count() > 0)
                                             <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">

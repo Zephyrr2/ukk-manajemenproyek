@@ -8,9 +8,9 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="space-y-6">
             <!-- Header Actions -->
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
                 <a href="{{ route('admin.projects.create') }}"
-                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center transition-colors">
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center transition-colors">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -18,14 +18,14 @@
                     Add Project
                 </a>
 
-                <form method="GET" action="{{ route('admin.projects') }}" class="flex items-center space-x-2" id="searchForm">
-                    <div class="relative">
+                <form method="GET" action="{{ route('admin.projects') }}" class="flex items-center space-x-2 w-full sm:w-auto" id="searchForm">
+                    <div class="relative flex-1 sm:flex-initial">
                         <input type="text"
                                name="search"
                                id="searchInput"
                                value="{{ request('search') }}"
                                placeholder="Search projects..."
-                               class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64">
+                               class="w-full sm:w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <svg class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -34,7 +34,7 @@
 
                     @if(request('search'))
                         <a href="{{ route('admin.projects') }}"
-                           class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 bg-white hover:bg-gray-50"
+                           class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 bg-white hover:bg-gray-50 flex-shrink-0"
                            title="Reset Search">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -68,22 +68,22 @@
                 @forelse ($projects as $p)
                     <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
                          onclick="window.location.href='{{ route('admin.projects.show', $p->slug) }}'">
-                        <div class="p-6">
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
+                        <div class="p-4 sm:p-6">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex items-start flex-1 min-w-0 mr-2">
+                                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                         </svg>
                                     </div>
-                                    <div class="ml-3">
-                                        <h3 class="font-semibold text-gray-900">{{ $p->project_name }}</h3>
-                                        <p class="text-sm text-gray-500">{{ strlen($p->description ?? '') > 50 ? substr($p->description, 0, 50) . '...' : ($p->description ?? 'No description') }}</p>
+                                    <div class="ml-3 min-w-0 flex-1">
+                                        <h3 class="font-semibold text-gray-900 text-sm sm:text-base break-words">{{ $p->project_name }}</h3>
+                                        <p class="text-xs sm:text-sm text-gray-500 break-words">{{ strlen($p->description ?? '') > 50 ? substr($p->description, 0, 50) . '...' : ($p->description ?? 'No description') }}</p>
                                     </div>
                                 </div>
-                                <div class="relative">
+                                <div class="relative flex-shrink-0">
                                     <button onclick="event.stopPropagation(); toggleDropdown('dropdown-{{ $p->id }}')" class="text-gray-400 hover:text-gray-600">
                                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                             <path
@@ -133,27 +133,27 @@
                                 </div>
                             </div>
 
-                            <div class="flex items-center justify-between text-sm">
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 text-xs sm:text-sm">
                                 <div class="flex items-center">
                                     <div class="flex items-center text-gray-500">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
                                         </svg>
-                                        <span>{{ $p->membersWithUsers->where('user_id', '!=', $p->user_id ?? 0)->count() + ($p->user ? 1 : 0) }} members</span>
+                                        <span class="break-words">{{ $p->membersWithUsers->where('user_id', '!=', $p->user_id ?? 0)->count() + ($p->user ? 1 : 0) }} members</span>
                                     </div>
                                 </div>
                                 <div class="flex items-center text-gray-500">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-4 h-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2z" />
                                     </svg>
-                                    <span>{{ $p->deadline ? \Carbon\Carbon::parse($p->deadline)->format('M d, Y') : 'No deadline' }}</span>
+                                    <span class="break-words">{{ $p->deadline ? \Carbon\Carbon::parse($p->deadline)->format('M d, Y') : 'No deadline' }}</span>
                                 </div>
                             </div>
 
-                            <div class="mt-4 flex items-center">
-                                <div class="flex -space-x-2">
+                            <div class="mt-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-0">
+                                <div class="flex -space-x-2 flex-1">
                                     @if($p->user)
                                         <img class="w-8 h-8 rounded-full border-2 border-white"
                                             src="https://ui-avatars.com/api/?name={{ urlencode($p->user->name) }}&background=random"
@@ -185,13 +185,13 @@
                                         </div>
                                     @endif
                                 </div>
-                                <div class="ml-auto flex items-center space-x-1">
-                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                                <div class="flex items-center space-x-1 w-full sm:w-auto justify-start sm:justify-end sm:ml-auto">
+                                    <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                     </svg>
-                                    <span class="text-sm text-gray-500">{{ $p->tasks_count }} tasks</span>
+                                    <span class="text-xs sm:text-sm text-gray-500">{{ $p->tasks_count }} tasks</span>
                                 </div>
                             </div>
                         </div>

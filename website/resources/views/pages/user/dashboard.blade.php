@@ -10,57 +10,57 @@
 @section('content')
 <div class="space-y-6">
     <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
             <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-600">Total Tugas</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $totalTasks }}</p>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs sm:text-sm text-gray-600">Total Tugas</p>
+                    <p class="text-xl sm:text-2xl font-bold text-gray-900">{{ $totalTasks }}</p>
                 </div>
-                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                     </svg>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
             <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-600">Selesai</p>
-                    <p class="text-2xl font-bold text-green-600">{{ $completedTasks }}</p>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs sm:text-sm text-gray-600">Selesai</p>
+                    <p class="text-xl sm:text-2xl font-bold text-green-600">{{ $completedTasks }}</p>
                 </div>
-                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
             <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-600">Hari Ini</p>
-                    <p class="text-2xl font-bold text-blue-600">{{ number_format($todayWorkTime, 1) }}h</p>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs sm:text-sm text-gray-600">Hari Ini</p>
+                    <p class="text-xl sm:text-2xl font-bold text-blue-600">{{ number_format($todayWorkTime, 1) }}h</p>
                 </div>
-                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
             <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-600">Progress</p>
-                    <p class="text-2xl font-bold text-orange-600">{{ $overallProgress }}%</p>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs sm:text-sm text-gray-600">Progress</p>
+                    <p class="text-xl sm:text-2xl font-bold text-orange-600">{{ $overallProgress }}%</p>
                 </div>
-                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                     </svg>
                 </div>
@@ -69,14 +69,14 @@
     </div>
 
     <!-- Current Task Section -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center mb-6">
-            <div class="w-8 h-8 bg-pink-500 rounded-lg flex items-center justify-center mr-3">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <div class="flex items-center mb-4 sm:mb-6">
+            <div class="w-8 h-8 bg-pink-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                 </svg>
             </div>
-            <h2 class="text-lg font-semibold text-gray-900">TUGAS SAAT INI</h2>
+            <h2 class="text-base sm:text-lg font-semibold text-gray-900">TUGAS SAAT INI</h2>
         </div>
 
         @if($currentTask)
@@ -151,51 +151,51 @@
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex flex-col sm:flex-row flex-wrap gap-3">
+            <div class="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
                 @if($user->status === 'paused')
                 <!-- Resume Work Form (when paused) -->
-                <form action="{{ route('user.time-tracking.resume') }}" method="POST" class="inline">
+                <form action="{{ route('user.time-tracking.resume') }}" method="POST" class="w-full sm:w-auto">
                     @csrf
-                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors duration-200" onclick="return confirm('Resume work? Timer will be reactivated.')">
+                    <button type="submit" class="w-full sm:w-auto bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors duration-200" onclick="return confirm('Resume work? Timer will be reactivated.')">
                         ▶️ Resume Work
                     </button>
                 </form>
 
                 <!-- Stop Work Form (can stop even when paused) -->
-                <form action="{{ route('user.time-tracking.stop') }}" method="POST" class="inline">
+                <form action="{{ route('user.time-tracking.stop') }}" method="POST" class="w-full sm:w-auto">
                     @csrf
-                    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors duration-200" onclick="return confirm('Stop working and save time?')">
+                    <button type="submit" class="w-full sm:w-auto bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors duration-200" onclick="return confirm('Stop working and save time?')">
                         ⏹️ Stop Work
                     </button>
                 </form>
                 @elseif($activeSession && $activeSession->card_id == $currentTask->id)
                 <!-- Stop Work Form -->
-                <form action="{{ route('user.time-tracking.stop') }}" method="POST" class="inline">
+                <form action="{{ route('user.time-tracking.stop') }}" method="POST" class="w-full sm:w-auto">
                     @csrf
-                    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors duration-200" onclick="return confirm('Stop working and save time?')">
+                    <button type="submit" class="w-full sm:w-auto bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors duration-200" onclick="return confirm('Stop working and save time?')">
                         ⏹️ Stop Work
                     </button>
                 </form>
 
                 <!-- Pause Work Form -->
-                <form action="{{ route('user.time-tracking.pause') }}" method="POST" class="inline">
+                <form action="{{ route('user.time-tracking.pause') }}" method="POST" class="w-full sm:w-auto">
                     @csrf
-                    <button type="submit" class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-700 transition-colors duration-200" onclick="return confirm('Pause work? Your time will be saved.')">
+                    <button type="submit" class="w-full sm:w-auto bg-gray-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-700 transition-colors duration-200" onclick="return confirm('Pause work? Your time will be saved.')">
                         ⏸️ Pause
                     </button>
                 </form>
                 @else
                 <!-- Start Work Form -->
-                <form action="{{ route('user.tasks.start', $currentTask->id) }}" method="POST" class="inline">
+                <form action="{{ route('user.tasks.start', $currentTask->id) }}" method="POST" class="w-full sm:w-auto">
                     @csrf
                     <input type="hidden" name="from" value="dashboard">
-                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors duration-200" onclick="return confirm('Start working on this task?\n\n• Task status: In Progress\n• Timer will start\n• Status: Working')">
+                    <button type="submit" class="w-full sm:w-auto bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors duration-200" onclick="return confirm('Start working on this task?\n\n• Task status: In Progress\n• Timer will start\n• Status: Working')">
                         🕐 Start Work
                     </button>
                 </form>
                 @endif
 
-                <a href="{{ route('user.tasks') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors duration-200">
+                <a href="{{ route('user.tasks') }}" class="w-full sm:w-auto text-center bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors duration-200">
                     📋 View Details
                 </a>
             </div>
@@ -211,20 +211,20 @@
     </div>
 
     <!-- My Task List -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center justify-between mb-6">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 sm:mb-6">
             <div class="flex items-center">
-                <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center mr-3">
+                <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-lg font-semibold text-gray-900">MY TASK LIST</h2>
+                    <h2 class="text-base sm:text-lg font-semibold text-gray-900">MY TASK LIST</h2>
                     <p class="text-xs text-gray-500 mt-0.5">Showing {{ $recentTasks->count() }} of {{ $totalTasks }} tasks</p>
                 </div>
             </div>
-            <a href="{{ route('user.tasks') }}" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition-colors">
+            <a href="{{ route('user.tasks') }}" class="w-full sm:w-auto text-center px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition-colors">
                 📋 View All ({{ $totalTasks }})
             </a>
         </div>
@@ -303,13 +303,13 @@
         <!-- Task List Cards - Mobile -->
         <div class="md:hidden space-y-3">
             @forelse($recentTasks as $task)
-            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                <div class="flex items-start justify-between mb-2">
-                    <div class="flex-1">
-                        <div class="font-medium text-gray-900 mb-1">{{ $task->card_title }}</div>
-                        <div class="text-xs text-gray-500">{{ $task->board->project->project_name ?? 'N/A' }}</div>
+            <div class="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 transition-colors">
+                <div class="flex items-start justify-between gap-2 mb-2">
+                    <div class="flex-1 min-w-0">
+                        <div class="font-medium text-sm text-gray-900 mb-1 break-words">{{ $task->card_title }}</div>
+                        <div class="text-xs text-gray-500 break-words">{{ $task->board->project->project_name ?? 'N/A' }}</div>
                     </div>
-                    <span class="px-2 py-1 text-xs rounded-full
+                    <span class="px-2 py-1 text-xs rounded-full flex-shrink-0
                         @if($task->priority === 'high') bg-red-100 text-red-700
                         @elseif($task->priority === 'medium') bg-yellow-100 text-yellow-700
                         @else bg-green-100 text-green-700 @endif">
@@ -322,8 +322,8 @@
                             @if($task->status === 'in_progress') bg-yellow-500
                             @elseif($task->status === 'review') bg-blue-500
                             @elseif($task->status === 'done') bg-green-500
-                            @else bg-gray-400 @endif rounded-full mr-2"></div>
-                        <span class="text-gray-600">{{ ucfirst(str_replace('_', ' ', $task->status)) }}</span>
+                            @else bg-gray-400 @endif rounded-full mr-2 flex-shrink-0"></div>
+                        <span class="text-xs text-gray-600">{{ ucfirst(str_replace('_', ' ', $task->status)) }}</span>
                     </div>
                     @if($task->due_date)
                         @php
@@ -354,30 +354,30 @@
     </div>
 
     <!-- Time Tracking Summary -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         <!-- Today's Work -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center mb-6">
-                <div class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center mr-3">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+            <div class="flex items-center mb-4 sm:mb-6">
+                <div class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
-                <h2 class="text-lg font-semibold text-gray-900">TODAY</h2>
+                <h2 class="text-base sm:text-lg font-semibold text-gray-900">TODAY</h2>
             </div>
 
-            <div class="space-y-4">
-                <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                    <div class="text-gray-600">Work Time</div>
-                    <div class="font-semibold text-gray-900">{{ number_format($todayWorkTime, 1) }} hours</div>
+            <div class="space-y-3 sm:space-y-4">
+                <div class="flex items-center justify-between py-2 sm:py-3 border-b border-gray-100">
+                    <div class="text-sm sm:text-base text-gray-600">Work Time</div>
+                    <div class="font-semibold text-sm sm:text-base text-gray-900">{{ number_format($todayWorkTime, 1) }} hours</div>
                 </div>
-                <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                    <div class="text-gray-600">Active Tasks</div>
-                    <div class="font-semibold text-gray-900">{{ $inProgressTasks->count() }}</div>
+                <div class="flex items-center justify-between py-2 sm:py-3 border-b border-gray-100">
+                    <div class="text-sm sm:text-base text-gray-600">Active Tasks</div>
+                    <div class="font-semibold text-sm sm:text-base text-gray-900">{{ $inProgressTasks->count() }}</div>
                 </div>
-                <div class="flex items-center justify-between py-3">
-                    <div class="text-gray-600">Tasks Completed Today</div>
-                    <div class="font-semibold text-green-600">{{ $doneTasks->where('updated_at', '>=', \Carbon\Carbon::today())->count() }}</div>
+                <div class="flex items-center justify-between py-2 sm:py-3">
+                    <div class="text-sm sm:text-base text-gray-600">Tasks Completed Today</div>
+                    <div class="font-semibold text-sm sm:text-base text-green-600">{{ $doneTasks->where('updated_at', '>=', \Carbon\Carbon::today())->count() }}</div>
                 </div>
 
                 @if($activeSession)
@@ -397,32 +397,32 @@
         </div>
 
         <!-- Weekly Summary -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center mb-6">
-                <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center mr-3">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+            <div class="flex items-center mb-4 sm:mb-6">
+                <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                     </svg>
                 </div>
-                <h2 class="text-lg font-semibold text-gray-900">THIS WEEK</h2>
+                <h2 class="text-base sm:text-lg font-semibold text-gray-900">THIS WEEK</h2>
             </div>
 
-            <div class="space-y-4">
-                <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                    <div class="text-gray-600">Total Hours</div>
-                    <div class="font-semibold text-gray-900">{{ number_format($weekWorkTime, 1) }} hours</div>
+            <div class="space-y-3 sm:space-y-4">
+                <div class="flex items-center justify-between py-2 sm:py-3 border-b border-gray-100">
+                    <div class="text-sm sm:text-base text-gray-600">Total Hours</div>
+                    <div class="font-semibold text-sm sm:text-base text-gray-900">{{ number_format($weekWorkTime, 1) }} hours</div>
                 </div>
-                <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                    <div class="text-gray-600">Average/day</div>
-                    <div class="font-semibold text-gray-900">{{ number_format($weekWorkTime / max(1, now()->dayOfWeek), 1) }} hours</div>
+                <div class="flex items-center justify-between py-2 sm:py-3 border-b border-gray-100">
+                    <div class="text-sm sm:text-base text-gray-600">Average/day</div>
+                    <div class="font-semibold text-sm sm:text-base text-gray-900">{{ number_format($weekWorkTime / max(1, now()->dayOfWeek), 1) }} hours</div>
                 </div>
-                <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                    <div class="text-gray-600">Completed Tasks</div>
-                    <div class="font-semibold text-green-600">{{ $doneTasks->where('updated_at', '>=', \Carbon\Carbon::now()->startOfWeek())->count() }}</div>
+                <div class="flex items-center justify-between py-2 sm:py-3 border-b border-gray-100">
+                    <div class="text-sm sm:text-base text-gray-600">Completed Tasks</div>
+                    <div class="font-semibold text-sm sm:text-base text-green-600">{{ $doneTasks->where('updated_at', '>=', \Carbon\Carbon::now()->startOfWeek())->count() }}</div>
                 </div>
-                <div class="flex items-center justify-between py-3">
-                    <div class="text-gray-600">Overall Progress</div>
-                    <div class="font-semibold text-blue-600">{{ $overallProgress }}%</div>
+                <div class="flex items-center justify-between py-2 sm:py-3">
+                    <div class="text-sm sm:text-base text-gray-600">Overall Progress</div>
+                    <div class="font-semibold text-sm sm:text-base text-blue-600">{{ $overallProgress }}%</div>
                 </div>
             </div>
         </div>

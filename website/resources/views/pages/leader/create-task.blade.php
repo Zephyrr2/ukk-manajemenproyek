@@ -215,24 +215,24 @@
                 </div>
 
                 <!-- Form Actions -->
-                <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-200">
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 mt-8 pt-6 border-t border-gray-200">
                     <a href="{{ route('leader.projects.board', $project->id) }}"
-                       class="px-6 py-3 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                       class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-center">
                         Cancel
                     </a>
 
-                    <div class="flex items-center space-x-4">
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 sm:flex-1 sm:justify-end">
                         <button type="submit"
                                 name="action"
                                 value="create_and_continue"
-                                class="px-6 py-3 text-sm font-medium text-green-700 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
+                                class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-green-700 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
                             Create & Add Another
                         </button>
 
                         <button type="submit"
                                 name="action"
                                 value="create_and_view"
-                                class="px-6 py-3 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
+                                class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
                             Create Task
                         </button>
                     </div>

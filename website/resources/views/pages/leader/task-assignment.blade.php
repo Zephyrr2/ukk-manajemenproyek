@@ -10,80 +10,80 @@
 
 @section('content')
     <!-- Task Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-200">
+            <div class="p-4 sm:p-5">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <dl>
+                            <dt class="text-xs sm:text-sm font-medium text-gray-500 mb-1">Total Tasks</dt>
+                            <dd class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $taskStats['total'] }}</dd>
+                        </dl>
+                    </div>
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
                     </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Total Tasks</dt>
-                            <dd class="text-lg font-medium text-gray-900">{{ $taskStats['total'] }}</dd>
-                        </dl>
-                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-200">
+            <div class="p-4 sm:p-5">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <dl>
+                            <dt class="text-xs sm:text-sm font-medium text-gray-500 mb-1">In Progress</dt>
+                            <dd class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $taskStats['in_progress'] }}</dd>
+                        </dl>
+                    </div>
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-yellow-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">In Progress</dt>
-                            <dd class="text-lg font-medium text-gray-900">{{ $taskStats['in_progress'] }}</dd>
-                        </dl>
-                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-200">
+            <div class="p-4 sm:p-5">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <dl>
+                            <dt class="text-xs sm:text-sm font-medium text-gray-500 mb-1">Needs Review</dt>
+                            <dd class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $taskStats['review'] }}</dd>
+                        </dl>
+                    </div>
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                     </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Needs Review</dt>
-                            <dd class="text-lg font-medium text-gray-900">{{ $taskStats['review'] }}</dd>
-                        </dl>
-                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-200">
+            <div class="p-4 sm:p-5">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <dl>
+                            <dt class="text-xs sm:text-sm font-medium text-gray-500 mb-1">Completed</dt>
+                            <dd class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $taskStats['done'] }}</dd>
+                        </dl>
+                    </div>
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Completed</dt>
-                            <dd class="text-lg font-medium text-gray-900">{{ $taskStats['done'] }}</dd>
-                        </dl>
                     </div>
                 </div>
             </div>
@@ -212,24 +212,6 @@
                                         </h4>
                                         <p class="text-xs text-gray-500">
                                             {{ $task->board->project->project_name ?? 'N/A' }}</p>
-                                    </div>
-                                    <div class="relative">
-                                        <button type="button" class="p-2 text-gray-400 hover:text-gray-600"
-                                            onclick="toggleTaskDropdown({{ $task->id }})">
-                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path
-                                                    d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                                            </svg>
-                                        </button>
-                                        <div id="dropdown-{{ $task->id }}"
-                                            class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
-                                            <div class="py-1">
-                                                <a href="#" onclick="viewTaskHistory({{ $task->id }})"
-                                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                    📜 View History
-                                                </a>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             @endforeach

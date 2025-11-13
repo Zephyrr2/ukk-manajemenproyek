@@ -145,6 +145,7 @@
                                        id="due_date"
                                        name="due_date"
                                        value="{{ old('due_date') }}"
+                                       min="{{ date('Y-m-d') }}"
                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('due_date') border-red-500 @enderror">
                                 @error('due_date')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

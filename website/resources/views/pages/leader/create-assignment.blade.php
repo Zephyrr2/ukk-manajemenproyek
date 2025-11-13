@@ -101,6 +101,7 @@
                                 <input type="date"
                                        id="start_date"
                                        name="start_date"
+                                       min="{{ date('Y-m-d') }}"
                                        required
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>
@@ -112,6 +113,7 @@
                                 <input type="date"
                                        id="due_date"
                                        name="due_date"
+                                       min="{{ date('Y-m-d') }}"
                                        required
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>
@@ -372,7 +374,7 @@ document.getElementById('due_date').min = today;
                                         <div class="form-group">
                                             <label for="start_date" class="form-label">Start Date <span class="text-danger">*</span></label>
                                             <input type="date" class="form-control @error('start_date') is-invalid @enderror"
-                                                   id="start_date" name="start_date" value="{{ old('start_date') }}" required>
+                                                   id="start_date" name="start_date" value="{{ old('start_date') }}" min="{{ date('Y-m-d') }}" required>
                                             @error('start_date')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -382,7 +384,7 @@ document.getElementById('due_date').min = today;
                                         <div class="form-group">
                                             <label for="due_date" class="form-label">Due Date <span class="text-danger">*</span></label>
                                             <input type="date" class="form-control @error('due_date') is-invalid @enderror"
-                                                   id="due_date" name="due_date" value="{{ old('due_date') }}" required>
+                                                   id="due_date" name="due_date" value="{{ old('due_date') }}" min="{{ date('Y-m-d') }}" required>
                                             @error('due_date')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror

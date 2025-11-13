@@ -118,6 +118,7 @@
                                        id="due_date"
                                        name="due_date"
                                        value="{{ old('due_date') }}"
+                                       min="{{ date('Y-m-d') }}"
                                        required
                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors @error('due_date') border-red-500 ring-2 ring-red-500 @enderror">
                                 @error('due_date')
@@ -143,7 +144,8 @@
 
                                     <!-- Search Results Dropdown -->
                                     <div id="team_lead_results"
-                                         class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                                         class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg overflow-y-scroll"
+                                         style="height: 120px;">
                                         <!-- Results will be populated here -->
                                     </div>
                                 </div>
@@ -237,31 +239,31 @@ function displaySearchResults(leaders) {
         const opacity = isDisabled ? 'opacity-60' : '';
 
         html += `
-            <div class="p-3 ${bgColor} ${cursor} ${opacity} border-b border-gray-100 last:border-b-0"
+            <div class="p-2 sm:p-3 ${bgColor} ${cursor} ${opacity} border-b border-gray-100 last:border-b-0"
                  ${!isDisabled ? `onclick="selectLeader(${leader.id}, '${leader.name}')"` : ''}>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center flex-1">
-                        <div class="w-8 h-8 ${isDisabled ? 'bg-gray-400' : 'bg-green-500'} rounded-full flex items-center justify-center mr-3">
-                            <span class="text-white text-sm font-semibold">${leader.name.charAt(0).toUpperCase()}</span>
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <div class="flex items-center flex-1 min-w-0">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 ${isDisabled ? 'bg-gray-400' : 'bg-green-500'} rounded-full flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
+                            <span class="text-white text-xs sm:text-sm font-semibold">${leader.name.charAt(0).toUpperCase()}</span>
                         </div>
-                        <div class="flex-1">
-                            <div class="font-medium text-gray-900">${leader.name}</div>
-                            <div class="text-sm text-gray-500">${leader.email}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm sm:text-base font-medium text-gray-900 truncate">${leader.name}</div>
+                            <div class="text-xs sm:text-sm text-gray-500 truncate">${leader.email}</div>
                         </div>
                     </div>
                     ${hasProject ? `
-                    <div class="ml-2">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                            <svg class="mr-1 h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                    <div class="ml-10 sm:ml-2 flex-shrink-0">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            <svg class="mr-1 h-3 w-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
                             </svg>
-                            Sudah punya: ${projectName}
+                            <span class="truncate max-w-[150px]">Sudah punya: ${projectName}</span>
                         </span>
                     </div>
                     ` : `
-                    <div class="ml-2">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            <svg class="mr-1 h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                    <div class="ml-10 sm:ml-2 flex-shrink-0">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <svg class="mr-1 h-3 w-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                             </svg>
                             Available

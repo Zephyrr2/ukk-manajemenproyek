@@ -4,20 +4,20 @@
     @include('partials.sidebar-admin')
 @endsection
 
-@section('title', 'Laporan & Analytics')
-@section('page-title', 'LAPORAN & ANALYTICS')
-@section('page-subtitle', 'Analisis performa dan insight proyek')
+@section('title', 'Reports & Analytics')
+@section('page-title', 'REPORTS & ANALYTICS')
+@section('page-subtitle', 'Performance analysis and project insights')
 
 @section('content')
     <div class="space-y-6">
         <!-- Filter Form -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
             <form method="GET" action="{{ route('admin.reports') }}" id="reportFilterForm">
-                <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between space-y-4 lg:space-y-0 lg:space-x-6">
+                <div class="space-y-4">
                     <!-- Date Range Filters -->
-                    <div class="flex flex-col sm:flex-row sm:items-end space-y-4 sm:space-y-0 sm:space-x-4">
-                        <div class="min-w-0">
-                            <label for="start_date" class="block text-sm font-medium text-gray-700 mb-2">Tanggal Mulai</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                            <label for="start_date" class="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
                             <input
                                 type="date"
                                 name="start_date"
@@ -27,8 +27,8 @@
                             >
                         </div>
 
-                        <div class="min-w-0">
-                            <label for="end_date" class="block text-sm font-medium text-gray-700 mb-2">Tanggal Selesai</label>
+                        <div>
+                            <label for="end_date" class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
                             <input
                                 type="date"
                                 name="end_date"
@@ -38,14 +38,14 @@
                             >
                         </div>
 
-                        <div class="min-w-0">
-                            <label for="project_id" class="block text-sm font-medium text-gray-700 mb-2">Filter Proyek</label>
+                        <div>
+                            <label for="project_id" class="block text-sm font-medium text-gray-700 mb-2">Filter Project</label>
                             <select
                                 name="project_id"
                                 id="project_id"
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                             >
-                                <option value="">Semua Proyek</option>
+                                <option value="">All Projects</option>
                                 @foreach($projects ?? [] as $project)
                                     <option value="{{ $project->id }}" {{ request('project_id') == $project->id ? 'selected' : '' }}>
                                         {{ $project->project_name }}
@@ -56,10 +56,10 @@
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="flex items-end space-x-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <button
                             type="submit"
-                            class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg font-medium flex items-center transition-colors duration-200 shadow-sm hover:shadow-md"
+                            class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg font-medium flex items-center justify-center transition-colors duration-200 shadow-sm hover:shadow-md w-full"
                         >
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -70,7 +70,7 @@
                         <button
                             type="button"
                             onclick="resetFilters()"
-                            class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium flex items-center transition-colors duration-200"
+                            class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center transition-colors duration-200 w-full"
                         >
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -81,7 +81,7 @@
                         <button
                             type="button"
                             onclick="window.print()"
-                            class="no-print bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center transition-colors duration-200"
+                            class="no-print bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center transition-colors duration-200 w-full"
                         >
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
@@ -93,81 +93,77 @@
 
                 <!-- Period Info -->
                 <div class="mt-4 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
-                    <div class="flex items-center text-sm">
-                        <svg class="w-4 h-4 mr-2 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <span class="text-emerald-800 font-medium">Periode Laporan:</span>
-                        <span class="text-emerald-700 ml-2">
+                    <div class="flex flex-col sm:flex-row sm:items-center text-sm space-y-2 sm:space-y-0">
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span class="text-emerald-800 font-medium">Report Period:</span>
+                        </div>
+                        <span class="text-emerald-700 sm:ml-2 break-words">
                             {{ \Carbon\Carbon::parse(request('start_date', now()->subMonth()))->format('d M Y') }} -
                             {{ \Carbon\Carbon::parse(request('end_date', now()))->format('d M Y') }}
                         </span>
-                        <span class="ml-4 text-emerald-600">•</span>
-                        <span class="text-emerald-700 ml-2">Update: {{ now()->format('d M Y, H:i') }} WIB</span>
+                        <span class="hidden sm:inline ml-4 text-emerald-600">•</span>
+                        <span class="text-emerald-700 sm:ml-2">Updated: {{ now()->format('d M Y, H:i') }} WIB</span>
                     </div>
                 </div>
             </form>
         </div>
         <!-- Key Metrics -->
-        <div class="print-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="keyMetrics"
+        <div class="print-section grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4" id="keyMetrics"
              data-period="{{ \Carbon\Carbon::parse(request('start_date', now()->subMonth()))->format('d M Y') }} - {{ \Carbon\Carbon::parse(request('end_date', now()))->format('d M Y') }}">
-            <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-2">Total Proyek</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ $totalProjects ?? 0 }}</p>
-                        <p class="text-xs text-green-600 mt-1 font-medium">Dalam periode ini</p>
+            <div class="bg-white rounded-xl p-4 sm:p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs sm:text-sm text-gray-500 mb-1">Total Projects</p>
+                        <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $totalProjects ?? 0 }}</p>
                     </div>
-                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                         </svg>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-2">Proyek Selesai</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ $completedProjects ?? 0 }}</p>
-                        <p class="text-xs text-green-600 mt-1 font-medium">
-                            {{ $totalProjects > 0 ? round(($completedProjects ?? 0) / $totalProjects * 100, 1) : 0 }}% completion
-                        </p>
+            <div class="bg-white rounded-xl p-4 sm:p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs sm:text-sm text-gray-500 mb-1">Total Tasks</p>
+                        <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $totalTasks ?? 0 }}</p>
                     </div>
-                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-2">Total Task</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ $totalTasks ?? 0 }}</p>
-                        <p class="text-xs text-orange-600 mt-1 font-medium">{{ $completedTasks ?? 0 }} selesai</p>
-                    </div>
-                    <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                         </svg>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-2">Tim Aktif</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ $activeUsers ?? 0 }}</p>
-                        <p class="text-xs text-purple-600 mt-1 font-medium">Active members</p>
+            <div class="bg-white rounded-xl p-4 sm:p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs sm:text-sm text-gray-500 mb-1">In Progress</p>
+                        <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ ($totalProjects ?? 0) - ($completedProjects ?? 0) }}</p>
                     </div>
-                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-yellow-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl p-4 sm:p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs sm:text-sm text-gray-500 mb-1">Completed</p>
+                        <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $completedProjects ?? 0 }}</p>
+                    </div>
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
                     </div>
                 </div>
@@ -179,56 +175,56 @@
             <div class="mb-8">
                 <!-- Header -->
                 <div class="text-center mb-6 pb-4 border-b-2 border-gray-800">
-                    <h1 class="text-2xl font-bold mb-2">LAPORAN MANAJEMEN PROYEK</h1>
+                    <h1 class="text-2xl font-bold mb-2">PROJECT MANAGEMENT REPORT</h1>
                     <p class="text-lg font-semibold">
-                        Periode: {{ $dateRange['start'] ?? '' }} s/d {{ $dateRange['end'] ?? '' }}
+                        Period: {{ $dateRange['start'] ?? '' }} to {{ $dateRange['end'] ?? '' }}
                     </p>
                     <p class="text-sm text-gray-600 mt-1">
-                        Dicetak: {{ now()->format('d F Y, H:i') }} WIB
+                        Printed: {{ now()->format('d F Y, H:i') }} WIB
                     </p>
                 </div>
 
                 <!-- Executive Summary -->
                 <div class="mb-8">
-                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">RINGKASAN EKSEKUTIF</h3>
+                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">EXECUTIVE SUMMARY</h3>
                     <table class="w-full border-collapse border border-gray-400 mb-6">
                         <thead>
                             <tr class="bg-gray-100">
-                                <th class="border border-gray-400 px-4 py-2 text-left font-bold">Metrik</th>
-                                <th class="border border-gray-400 px-4 py-2 text-center font-bold">Jumlah</th>
-                                <th class="border border-gray-400 px-4 py-2 text-left font-bold">Keterangan</th>
+                                <th class="border border-gray-400 px-4 py-2 text-left font-bold">Metric</th>
+                                <th class="border border-gray-400 px-4 py-2 text-center font-bold">Total</th>
+                                <th class="border border-gray-400 px-4 py-2 text-left font-bold">Description</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="border border-gray-400 px-4 py-2 font-medium">Total Proyek</td>
+                                <td class="border border-gray-400 px-4 py-2 font-medium">Total Projects</td>
                                 <td class="border border-gray-400 px-4 py-2 text-center font-bold">{{ $totalProjects ?? 0 }}</td>
-                                <td class="border border-gray-400 px-4 py-2">Dalam periode laporan</td>
+                                <td class="border border-gray-400 px-4 py-2">Within report period</td>
                             </tr>
                             <tr>
-                                <td class="border border-gray-400 px-4 py-2 font-medium">Proyek Selesai</td>
+                                <td class="border border-gray-400 px-4 py-2 font-medium">Completed Projects</td>
                                 <td class="border border-gray-400 px-4 py-2 text-center font-bold text-green-700">{{ $completedProjects ?? 0 }}</td>
-                                <td class="border border-gray-400 px-4 py-2">{{ $totalProjects > 0 ? round(($completedProjects ?? 0) / $totalProjects * 100, 1) : 0 }}% tingkat penyelesaian</td>
+                                <td class="border border-gray-400 px-4 py-2">{{ $totalProjects > 0 ? round(($completedProjects ?? 0) / $totalProjects * 100, 1) : 0 }}% completion rate</td>
                             </tr>
                             <tr>
-                                <td class="border border-gray-400 px-4 py-2 font-medium">Total Task</td>
+                                <td class="border border-gray-400 px-4 py-2 font-medium">Total Tasks</td>
                                 <td class="border border-gray-400 px-4 py-2 text-center font-bold">{{ $totalTasks ?? 0 }}</td>
-                                <td class="border border-gray-400 px-4 py-2">{{ $completedTasks ?? 0 }} task selesai ({{ $overallCompletionRate ?? 0 }}%)</td>
+                                <td class="border border-gray-400 px-4 py-2">{{ $completedTasks ?? 0 }} tasks completed ({{ $overallCompletionRate ?? 0 }}%)</td>
                             </tr>
                             <tr>
-                                <td class="border border-gray-400 px-4 py-2 font-medium">Task Overdue</td>
+                                <td class="border border-gray-400 px-4 py-2 font-medium">Overdue Tasks</td>
                                 <td class="border border-gray-400 px-4 py-2 text-center font-bold text-red-700">{{ $overdueTasks ?? 0 }}</td>
-                                <td class="border border-gray-400 px-4 py-2">Task melewati deadline</td>
+                                <td class="border border-gray-400 px-4 py-2">Tasks past deadline</td>
                             </tr>
                             <tr>
-                                <td class="border border-gray-400 px-4 py-2 font-medium">Rata-rata Penyelesaian</td>
+                                <td class="border border-gray-400 px-4 py-2 font-medium">Average Completion</td>
                                 <td class="border border-gray-400 px-4 py-2 text-center font-bold">{{ $avgCompletionDays ?? 0 }}</td>
-                                <td class="border border-gray-400 px-4 py-2">Hari per task</td>
+                                <td class="border border-gray-400 px-4 py-2">Days per task</td>
                             </tr>
                             <tr>
-                                <td class="border border-gray-400 px-4 py-2 font-medium">Tim Aktif</td>
+                                <td class="border border-gray-400 px-4 py-2 font-medium">Active Team</td>
                                 <td class="border border-gray-400 px-4 py-2 text-center font-bold">{{ $activeUsers ?? 0 }}</td>
-                                <td class="border border-gray-400 px-4 py-2">Anggota tim yang berkontribusi</td>
+                                <td class="border border-gray-400 px-4 py-2">Contributing team members</td>
                             </tr>
                         </tbody>
                     </table>
@@ -236,13 +232,13 @@
 
                 <!-- Task Status Breakdown -->
                 <div class="mb-8">
-                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">BREAKDOWN STATUS TASK</h3>
+                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">TASK STATUS BREAKDOWN</h3>
                     <div class="grid grid-cols-2 gap-4">
                         <table class="w-full border-collapse border border-gray-400">
                             <thead>
                                 <tr class="bg-gray-100">
                                     <th class="border border-gray-400 px-4 py-2 text-left font-bold">Status</th>
-                                    <th class="border border-gray-400 px-4 py-2 text-center font-bold">Jumlah</th>
+                                    <th class="border border-gray-400 px-4 py-2 text-center font-bold">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -268,8 +264,8 @@
                         <table class="w-full border-collapse border border-gray-400">
                             <thead>
                                 <tr class="bg-gray-100">
-                                    <th class="border border-gray-400 px-4 py-2 text-left font-bold">Prioritas</th>
-                                    <th class="border border-gray-400 px-4 py-2 text-center font-bold">Jumlah</th>
+                                    <th class="border border-gray-400 px-4 py-2 text-left font-bold">Priority</th>
+                                    <th class="border border-gray-400 px-4 py-2 text-center font-bold">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -296,13 +292,13 @@
 
                 <!-- Project Status Breakdown -->
                 <div class="mb-8">
-                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">BREAKDOWN STATUS PROYEK</h3>
+                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">PROJECT STATUS BREAKDOWN</h3>
                     <table class="w-full border-collapse border border-gray-400">
                         <thead>
                             <tr class="bg-gray-100">
-                                <th class="border border-gray-400 px-4 py-2 text-left font-bold">Status Proyek</th>
-                                <th class="border border-gray-400 px-4 py-2 text-center font-bold">Jumlah</th>
-                                <th class="border border-gray-400 px-4 py-2 text-center font-bold">Persentase</th>
+                                <th class="border border-gray-400 px-4 py-2 text-left font-bold">Project Status</th>
+                                <th class="border border-gray-400 px-4 py-2 text-center font-bold">Total</th>
+                                <th class="border border-gray-400 px-4 py-2 text-center font-bold">Percentage</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -333,15 +329,15 @@
 
                 <!-- Project Details Table -->
                 <div class="mb-8" style="page-break-before: always;">
-                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">RINGKASAN PROYEK</h3>
+                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">PROJECT SUMMARY</h3>
                     <table class="w-full border-collapse border border-gray-400">
                         <thead>
                             <tr class="bg-gray-100">
                                 <th class="border border-gray-400 px-3 py-2 text-left font-bold">No</th>
-                                <th class="border border-gray-400 px-3 py-2 text-left font-bold">Nama Proyek</th>
+                                <th class="border border-gray-400 px-3 py-2 text-left font-bold">Project Name</th>
                                 <th class="border border-gray-400 px-3 py-2 text-center font-bold">Status</th>
                                 <th class="border border-gray-400 px-3 py-2 text-center font-bold">Progress</th>
-                                <th class="border border-gray-400 px-3 py-2 text-left font-bold">Deskripsi</th>
+                                <th class="border border-gray-400 px-3 py-2 text-left font-bold">Description</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -350,8 +346,8 @@
                                     <td class="border border-gray-400 px-3 py-2 text-center">{{ $index + 1 }}</td>
                                     <td class="border border-gray-400 px-3 py-2 font-medium">{{ $project->project_name }}</td>
                                     <td class="border border-gray-400 px-3 py-2 text-center">
-                                        {{ $project->status == 'completed' ? 'Selesai' :
-                                           ($project->status == 'in_progress' ? 'Progress' : 'Planning') }}
+                                        {{ $project->status == 'completed' ? 'Completed' :
+                                           ($project->status == 'in_progress' ? 'In Progress' : 'Planning') }}
                                     </td>
                                     <td class="border border-gray-400 px-3 py-2 text-center font-bold">{{ $project->progress ?? 0 }}%</td>
                                     <td class="border border-gray-400 px-3 py-2 text-sm">{{ Str::limit($project->description, 100) }}</td>
@@ -359,7 +355,7 @@
                             @empty
                                 <tr>
                                     <td colspan="5" class="border border-gray-400 px-4 py-8 text-center text-gray-500">
-                                        Tidak ada data proyek dalam periode ini
+                                        No project data in this period
                                     </td>
                                 </tr>
                             @endforelse
@@ -369,7 +365,7 @@
 
                 <!-- Project Management Report -->
                 <div class="mb-8">
-                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">DETAIL MANAJEMEN PROYEK</h3>
+                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">PROJECT MANAGEMENT DETAILS</h3>
                     @forelse($reportProjects ?? [] as $index => $project)
                         <div class="mb-6 border border-gray-400">
                             <!-- Project Header -->
@@ -377,7 +373,7 @@
                                 <div class="flex justify-between items-center">
                                     <h4 class="text-base font-bold">{{ $index + 1 }}. {{ $project->project_name }}</h4>
                                     <span class="px-3 py-1 bg-white border border-gray-400 text-sm font-semibold">
-                                        {{ $project->status == 'completed' ? 'SELESAI' : ($project->status == 'in_progress' ? 'BERJALAN' : 'PERENCANAAN') }}
+                                        {{ $project->status == 'completed' ? 'COMPLETED' : ($project->status == 'in_progress' ? 'ONGOING' : 'PLANNING') }}
                                     </span>
                                 </div>
                             </div>
@@ -386,23 +382,23 @@
                             <div class="p-4">
                                 <table class="w-full border-collapse mb-3">
                                     <tr>
-                                        <td class="py-1 text-sm font-semibold" style="width: 150px;">Leader Proyek:</td>
+                                        <td class="py-1 text-sm font-semibold" style="width: 150px;">Project Leader:</td>
                                         <td class="py-1 text-sm">{{ $project->user->name ?? 'N/A' }} ({{ $project->user->email ?? 'N/A' }})</td>
                                     </tr>
                                     <tr>
-                                        <td class="py-1 text-sm font-semibold">Tanggal Mulai:</td>
-                                        <td class="py-1 text-sm">{{ $project->created_at ? \Carbon\Carbon::parse($project->created_at)->format('d F Y') : 'Belum ditentukan' }}</td>
+                                        <td class="py-1 text-sm font-semibold">Start Date:</td>
+                                        <td class="py-1 text-sm">{{ $project->created_at ? \Carbon\Carbon::parse($project->created_at)->format('d F Y') : 'Not set' }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="py-1 text-sm font-semibold">Target Selesai:</td>
-                                        <td class="py-1 text-sm">{{ $project->deadline ? \Carbon\Carbon::parse($project->deadline)->format('d F Y') : 'Belum ditentukan' }}</td>
+                                        <td class="py-1 text-sm font-semibold">Target Completion:</td>
+                                        <td class="py-1 text-sm">{{ $project->deadline ? \Carbon\Carbon::parse($project->deadline)->format('d F Y') : 'Not set' }}</td>
                                     </tr>
                                     <tr>
                                         <td class="py-1 text-sm font-semibold">Progress:</td>
                                         <td class="py-1 text-sm font-bold">{{ $project->progress ?? 0 }}%</td>
                                     </tr>
                                     <tr>
-                                        <td class="py-1 text-sm font-semibold">Deskripsi:</td>
+                                        <td class="py-1 text-sm font-semibold">Description:</td>
                                         <td class="py-1 text-sm">{{ $project->description ?? '-' }}</td>
                                     </tr>
                                 </table>
@@ -445,16 +441,16 @@
 
                                 <!-- Team Performance Table -->
                                 <div class="mt-3">
-                                    <h5 class="text-sm font-bold mb-2 bg-gray-50 px-2 py-1 border-t border-b border-gray-300">TIM PROYEK ({{ $projectMembers->count() }} Orang)</h5>
+                                    <h5 class="text-sm font-bold mb-2 bg-gray-50 px-2 py-1 border-t border-b border-gray-300">PROJECT TEAM ({{ $projectMembers->count() }} Members)</h5>
                                     <table class="w-full border-collapse border border-gray-300 text-sm">
                                         <thead>
                                             <tr class="bg-gray-50">
                                                 <th class="border border-gray-300 px-2 py-1 text-left">No</th>
-                                                <th class="border border-gray-300 px-2 py-1 text-left">Nama</th>
-                                                <th class="border border-gray-300 px-2 py-1 text-center">Total Task</th>
-                                                <th class="border border-gray-300 px-2 py-1 text-center">Selesai</th>
-                                                <th class="border border-gray-300 px-2 py-1 text-center">Progress</th>
-                                                <th class="border border-gray-300 px-2 py-1 text-center">Waktu Kerja</th>
+                                                <th class="border border-gray-300 px-2 py-1 text-left">Name</th>
+                                                <th class="border border-gray-300 px-2 py-1 text-center">Total Tasks</th>
+                                                <th class="border border-gray-300 px-2 py-1 text-center">Completed</th>
+                                                <th class="border border-gray-300 px-2 py-1 text-center">In Progress</th>
+                                                <th class="border border-gray-300 px-2 py-1 text-center">Work Time</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -496,7 +492,7 @@
                                             @empty
                                                 <tr>
                                                     <td colspan="6" class="border border-gray-300 px-2 py-2 text-center text-gray-500">
-                                                        Belum ada anggota tim
+                                                        No team members yet
                                                     </td>
                                                 </tr>
                                             @endforelse
@@ -507,15 +503,15 @@
                                 <!-- Project Summary -->
                                 <div class="mt-3 grid grid-cols-3 gap-2 text-sm">
                                     <div class="border border-gray-300 px-3 py-2">
-                                        <div class="font-semibold">Total Task:</div>
+                                        <div class="font-semibold">Total Tasks:</div>
                                         <div class="text-lg font-bold">{{ $projectTasks->count() }}</div>
                                     </div>
                                     <div class="border border-gray-300 px-3 py-2">
-                                        <div class="font-semibold">Task Selesai:</div>
+                                        <div class="font-semibold">Tasks Completed:</div>
                                         <div class="text-lg font-bold text-green-700">{{ $projectTasks->where('status', 'done')->count() }}</div>
                                     </div>
                                     <div class="border border-gray-300 px-3 py-2">
-                                        <div class="font-semibold">Total Waktu:</div>
+                                        <div class="font-semibold">Total Time:</div>
                                         <div class="text-lg font-bold">{{ $totalHours }}h {{ $totalMinutes }}m</div>
                                     </div>
                                 </div>
@@ -523,7 +519,7 @@
                         </div>
                     @empty
                         <div class="border border-gray-400 px-4 py-8 text-center text-gray-500">
-                            Tidak ada data proyek dalam periode ini
+                            No project data in this period
                         </div>
                     @endforelse
                 </div>
@@ -531,36 +527,36 @@
                 <!-- Footer -->
                 <div class="mt-8 pt-4 border-t-2 border-gray-300 text-sm text-gray-600">
                     <p class="text-center">
-                        <strong>Laporan ini digenerate secara otomatis oleh Sistem Manajemen Proyek</strong><br>
-                        Tanggal cetak: {{ now()->format('d F Y, H:i:s') }} WIB
+                        <strong>This report is automatically generated by the Project Management System</strong><br>
+                        Print date: {{ now()->format('d F Y, H:i:s') }} WIB
                     </p>
                 </div>
             </div>
         </div>
 
         <!-- Detailed Reports -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <!-- Project Summary -->
-            <div class="print-section bg-white rounded-xl p-6 border border-gray-200 shadow-sm" id="projectSummary">
+            <div class="print-section bg-white rounded-xl p-4 sm:p-6 border border-gray-200 shadow-sm" id="projectSummary">
                 <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900">Ringkasan Proyek</h3>
-                    <span class="text-sm text-gray-500">{{ count($reportProjects ?? []) }} proyek</span>
+                    <h3 class="text-lg font-semibold text-gray-900">Project Summary</h3>
+                    <span class="text-sm text-gray-500">{{ count($reportProjects ?? []) }} projects</span>
                 </div>
 
                 <div class="space-y-4">
                     @forelse($reportProjects ?? [] as $project)
-                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 rounded-full mr-3
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 space-y-2 sm:space-y-0">
+                            <div class="flex items-start w-full sm:w-auto">
+                                <div class="w-3 h-3 rounded-full mr-3 mt-1 flex-shrink-0
                                     {{ $project->status == 'completed' ? 'bg-green-500' :
                                        ($project->status == 'in_progress' ? 'bg-yellow-500' : 'bg-green-500') }}">
                                 </div>
-                                <div>
-                                    <p class="font-medium text-gray-900">{{ $project->project_name }}</p>
-                                    <p class="text-sm text-gray-500">{{ Str::limit($project->description, 50) }}</p>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-medium text-gray-900 text-sm sm:text-base break-words">{{ $project->project_name }}</p>
+                                    <p class="text-xs sm:text-sm text-gray-500 break-words">{{ Str::limit($project->description, 50) }}</p>
                                 </div>
                             </div>
-                            <div class="text-right">
+                            <div class="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-end pl-6 sm:pl-0">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mb-1
                                     {{ $project->status == 'completed' ? 'bg-green-100 text-green-800' :
                                        ($project->status == 'in_progress' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800') }}">
@@ -574,34 +570,34 @@
                             <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
-                            <p>Tidak ada data proyek dalam periode ini</p>
+                            <p>No project data in this period</p>
                         </div>
                     @endforelse
                 </div>
             </div>
 
             <!-- Team Performance -->
-            <div class="no-print bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+            <div class="no-print bg-white rounded-xl p-4 sm:p-6 border border-gray-200 shadow-sm">
                 <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900">Performa Tim</h3>
+                    <h3 class="text-lg font-semibold text-gray-900">Team Performance</h3>
                     <span class="text-sm text-gray-500">Top performers</span>
                 </div>
 
                 <div class="space-y-4">
                     @forelse($topPerformers ?? [] as $user)
-                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-3">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 space-y-2 sm:space-y-0">
+                            <div class="flex items-center w-full sm:w-auto">
+                                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                                     <span class="text-white font-medium text-sm">
                                         {{ strtoupper(substr($user->name, 0, 2)) }}
                                     </span>
                                 </div>
-                                <div>
-                                    <p class="font-medium text-gray-900">{{ $user->name }}</p>
-                                    <p class="text-sm text-gray-500">{{ ucfirst($user->role) }}</p>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-medium text-gray-900 text-sm sm:text-base break-words">{{ $user->name }}</p>
+                                    <p class="text-xs sm:text-sm text-gray-500">{{ ucfirst($user->role) }}</p>
                                 </div>
                             </div>
-                            <div class="text-right">
+                            <div class="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-end pl-13 sm:pl-0">
                                 <p class="font-medium text-gray-900">{{ $user->task_count ?? 0 }} tasks</p>
                                 <p class="text-sm font-medium
                                     {{ ($user->completion_rate ?? 0) >= 80 ? 'text-green-600' :
@@ -615,7 +611,7 @@
                             <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                             </svg>
-                            <p>Tidak ada data performa dalam periode ini</p>
+                            <p>No performance data in this period</p>
                         </div>
                     @endforelse
                 </div>
@@ -624,10 +620,10 @@
 
         <!-- Detailed Task Table -->
         <div class="no-print bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200">
+            <div class="px-4 sm:px-6 py-4 border-b border-gray-200">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-gray-900">Detail Task</h3>
-                    <span class="text-sm text-gray-500">{{ count($reportTasks ?? []) }} tasks dalam periode</span>
+                    <h3 class="text-lg font-semibold text-gray-900">Task Details</h3>
+                    <span class="text-sm text-gray-500">{{ count($reportTasks ?? []) }} tasks in period</span>
                 </div>
             </div>
 
@@ -685,7 +681,7 @@
                                     <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                     </svg>
-                                    <p class="text-gray-500">Tidak ada data task dalam periode ini</p>
+                                    <p class="text-gray-500">No task data in this period</p>
                                 </td>
                             </tr>
                         @endforelse
@@ -900,6 +896,16 @@
             /* Ensure proper layout for print */
             .grid {
                 display: grid !important;
+            }
+
+            .grid-cols-1 {
+                grid-template-columns: repeat(1, 1fr) !important;
+            }
+
+            .grid-cols-4,
+            #keyMetrics {
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 8px !important;
             }
 
             .bg-white {

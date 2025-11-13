@@ -81,18 +81,46 @@
                             <div class="p-6">
                                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Progress Overview</h3>
 
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                                    <div class="text-center p-4 bg-green-50 rounded-lg">
-                                        <div class="text-2xl font-bold text-green-600">{{ $totalTasks }}</div>
-                                        <div class="text-sm text-gray-600">Total Tasks</div>
+                                <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
+                                    <div class="bg-white rounded-xl p-4 sm:p-5 border border-gray-200 shadow-sm">
+                                        <div class="flex items-start justify-between">
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-xs sm:text-sm text-gray-500 mb-1">Total Tasks</p>
+                                                <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $totalTasks }}</p>
+                                            </div>
+                                            <div class="w-12 h-12 sm:w-14 sm:h-14 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <svg class="w-6 h-6 sm:w-7 sm:h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                                </svg>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="text-center p-4 bg-green-50 rounded-lg">
-                                        <div class="text-2xl font-bold text-green-600">{{ $completedTasks }}</div>
-                                        <div class="text-sm text-gray-600">Completed</div>
+                                    <div class="bg-white rounded-xl p-4 sm:p-5 border border-gray-200 shadow-sm">
+                                        <div class="flex items-start justify-between">
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-xs sm:text-sm text-gray-500 mb-1">Completed</p>
+                                                <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $completedTasks }}</p>
+                                            </div>
+                                            <div class="w-12 h-12 sm:w-14 sm:h-14 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <svg class="w-6 h-6 sm:w-7 sm:h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                                </svg>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="text-center p-4 bg-yellow-50 rounded-lg">
-                                        <div class="text-2xl font-bold text-yellow-600">{{ $inProgressTasks }}</div>
-                                        <div class="text-sm text-gray-600">In Progress</div>
+                                </div>
+
+                                <div class="bg-white rounded-xl p-4 sm:p-5 border border-gray-200 shadow-sm mb-4">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs sm:text-sm text-gray-500 mb-1">In Progress</p>
+                                            <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $inProgressTasks }}</p>
+                                        </div>
+                                        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-yellow-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -311,7 +339,7 @@
     </div>
 
     <!-- Add Member Modal -->
-    <div id="addMemberModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <div id="addMemberModal" class="fixed inset-0 bg-black/50 hidden z-50">
         <div class="flex items-center justify-center min-h-screen px-4">
             <div class="bg-white rounded-lg shadow-lg max-w-md w-full">
                 <div class="px-6 py-4 border-b border-gray-200">
@@ -337,7 +365,7 @@
                                        id="userSearch"
                                        placeholder="Type to search users..."
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <div id="userSearchResults" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto hidden"></div>
+                                <div id="userSearchResults" class="absolute z-50 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1 overflow-y-scroll hidden" style="height: 170px;"></div>
                             </div>
                             <input type="hidden" id="selectedUserId" name="user_id">
                             <div id="selectedUserDisplay" class="mt-2 hidden">

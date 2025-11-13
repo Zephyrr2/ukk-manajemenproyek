@@ -149,26 +149,26 @@
         <!-- User Statistics -->
         @if($userStats->count() > 0)
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Time by Team Member</h3>
+            <div class="p-4 sm:p-6">
+                <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-4">Time by Team Member</h3>
 
-                <div class="space-y-4">
+                <div class="space-y-3">
                     @foreach($userStats->sortByDesc('total_hours') as $stats)
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div class="flex items-center space-x-3">
-                            <img class="w-10 h-10 rounded-full"
+                    <div class="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center space-x-3 flex-1 min-w-0">
+                            <img class="w-10 h-10 rounded-full flex-shrink-0"
                                  src="https://ui-avatars.com/api/?name={{ urlencode($stats['user']->name) }}&background=random"
                                  alt="{{ $stats['user']->name }}">
-                            <div>
-                                <h4 class="font-medium text-gray-900">{{ $stats['user']->name }}</h4>
-                                <p class="text-sm text-gray-500">
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-medium text-sm sm:text-base text-gray-900 break-words">{{ $stats['user']->name }}</h4>
+                                <p class="text-xs sm:text-sm text-gray-500">
                                     {{ $stats['session_count'] }} sessions • {{ $stats['projects_count'] }} projects
                                 </p>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <p class="font-semibold text-gray-900">{{ $stats['total_hours'] }}h</p>
-                            <p class="text-sm text-gray-500">{{ $stats['total_minutes'] }} min</p>
+                        <div class="text-right flex-shrink-0 ml-3">
+                            <p class="font-semibold text-sm sm:text-base text-gray-900">{{ $stats['total_hours'] }}h</p>
+                            <p class="text-xs sm:text-sm text-gray-500">{{ $stats['total_minutes'] }} min</p>
                         </div>
                     </div>
                     @endforeach
@@ -180,29 +180,29 @@
         <!-- Project Statistics -->
         @if($projectStats->count() > 0)
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Time by Project</h3>
+            <div class="p-4 sm:p-6">
+                <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-4">Time by Project</h3>
 
-                <div class="space-y-4">
+                <div class="space-y-3">
                     @foreach($projectStats->sortByDesc('total_hours') as $stats)
                     @if($stats['project'])
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <div class="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center space-x-3 flex-1 min-w-0">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
                                 <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012 2v2M7 7h10"/>
                                 </svg>
                             </div>
-                            <div>
-                                <h4 class="font-medium text-gray-900">{{ $stats['project']->project_name }}</h4>
-                                <p class="text-sm text-gray-500">
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-medium text-sm sm:text-base text-gray-900 break-words">{{ $stats['project']->project_name }}</h4>
+                                <p class="text-xs sm:text-sm text-gray-500">
                                     {{ $stats['session_count'] }} sessions • {{ $stats['users_count'] }} members
                                 </p>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <p class="font-semibold text-gray-900">{{ $stats['total_hours'] }}h</p>
-                            <p class="text-sm text-gray-500">{{ $stats['total_minutes'] }} min</p>
+                        <div class="text-right flex-shrink-0 ml-3">
+                            <p class="font-semibold text-sm sm:text-base text-gray-900">{{ $stats['total_hours'] }}h</p>
+                            <p class="text-xs sm:text-sm text-gray-500">{{ $stats['total_minutes'] }} min</p>
                         </div>
                     </div>
                     @endif
@@ -215,14 +215,14 @@
 
     <!-- Time Logs List -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-            <div class="flex items-center justify-between">
+        <div class="px-4 py-4 sm:px-6 sm:py-5 border-b border-gray-200">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <div>
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">Team Time Logs</h3>
-                    <p class="mt-1 max-w-2xl text-sm text-gray-500">Detailed work time entries from all team members</p>
+                    <h3 class="text-base sm:text-lg leading-6 font-medium text-gray-900">Team Time Logs</h3>
+                    <p class="mt-1 text-xs sm:text-sm text-gray-500">Detailed work time entries from all team members</p>
                 </div>
                 @if($timeLogs->count() > 0)
-                <div class="text-sm text-gray-500">
+                <div class="text-xs sm:text-sm text-gray-500">
                     Showing {{ $timeLogs->count() }} entries
                 </div>
                 @endif
@@ -232,68 +232,77 @@
         @if($timeLogs->count() > 0)
             <div class="divide-y divide-gray-200">
                 @foreach($timeLogs as $log)
-                    <div class="px-4 py-4 sm:px-6">
-                        <div class="flex items-center justify-between">
+                    <div class="px-3 py-3 sm:px-6 sm:py-4">
+                        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                            <!-- Left side - User info and details -->
                             <div class="flex-1 min-w-0">
-                                <div class="flex items-center space-x-3">
-                                    <img class="w-8 h-8 rounded-full flex-shrink-0"
+                                <div class="flex items-start space-x-3">
+                                    <!-- Avatar - smaller on mobile -->
+                                    <img class="w-10 h-10 rounded-full flex-shrink-0"
                                          src="https://ui-avatars.com/api/?name={{ urlencode($log->user->name) }}&background=random"
                                          alt="{{ $log->user->name }}">
 
                                     <div class="flex-1 min-w-0">
-                                        <div class="flex items-center space-x-2 mb-1">
-                                            <span class="text-sm font-medium text-gray-900">{{ $log->user->name }}</span>
+                                        <!-- User name -->
+                                        <div class="mb-1">
+                                            <span class="text-sm sm:text-base font-medium text-gray-900 break-words">{{ $log->user->name }}</span>
+                                        </div>
 
-                                            @if($log->card)
-                                                <span class="text-gray-400">•</span>
-                                                <h4 class="text-sm text-gray-700 truncate">
+                                        <!-- Task info -->
+                                        @if($log->card)
+                                            <div class="mb-2">
+                                                <h4 class="text-xs sm:text-sm text-gray-700 break-words mb-1">
                                                     {{ $log->card->card_title }}
                                                 </h4>
                                                 @if($log->card->board && $log->card->board->project)
-                                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                                         {{ $log->card->board->project->project_name }}
                                                     </span>
                                                 @endif
-                                            @endif
-                                        </div>
+                                            </div>
+                                        @endif
 
+                                        <!-- Subtask info -->
                                         @if($log->subtask)
-                                            <div class="flex items-center space-x-2 mb-1">
-                                                <div class="w-4 h-4 bg-blue-100 rounded-full flex items-center justify-center">
+                                            <div class="flex items-start space-x-2 mb-2">
+                                                <div class="w-4 h-4 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                                                     <svg class="w-2 h-2 text-blue-600" fill="currentColor" viewBox="0 0 8 8">
                                                         <circle cx="4" cy="4" r="3"/>
                                                     </svg>
                                                 </div>
-                                                <p class="text-sm text-blue-600">
+                                                <p class="text-xs sm:text-sm text-blue-600 break-words">
                                                     {{ $log->subtask->subtask_title }}
                                                 </p>
                                             </div>
                                         @endif
 
+                                        <!-- Description -->
                                         @if($log->description)
-                                            <p class="text-sm text-gray-600 mb-2">{{ $log->description }}</p>
+                                            <p class="text-xs sm:text-sm text-gray-600 mb-2 break-words">{{ $log->description }}</p>
                                         @endif
 
-                                        <div class="flex items-center text-xs text-gray-500 space-x-4">
+                                        <!-- Time info - stack on mobile -->
+                                        <div class="flex flex-col sm:flex-row sm:items-center text-xs text-gray-500 gap-1 sm:gap-4">
                                             <span class="flex items-center">
-                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                 </svg>
                                                 {{ $log->start_time->format('M d, Y H:i') }}
                                             </span>
                                             @if($log->end_time)
-                                                <span>to {{ $log->end_time->format('H:i') }}</span>
+                                                <span class="pl-5 sm:pl-0">to {{ $log->end_time->format('H:i') }}</span>
                                             @endif
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="ml-4 flex-shrink-0 text-right">
-                                <div class="text-lg font-semibold text-green-600">
+                            <!-- Right side - Duration - align differently on mobile -->
+                            <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2 pl-13 sm:pl-0">
+                                <div class="text-base sm:text-lg font-semibold text-green-600">
                                     {{ $log->formatted_duration }}
                                 </div>
-                                <div class="text-sm text-gray-500">
+                                <div class="text-xs sm:text-sm text-gray-500">
                                     {{ $log->duration_hours }}h
                                 </div>
                             </div>
