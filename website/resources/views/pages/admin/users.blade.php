@@ -68,8 +68,7 @@
                     <!-- Role Filter -->
                     <select name="role"
                             id="roleFilter"
-                            class="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            onchange="document.getElementById('filterForm').submit()">
+                            class="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="all" {{ request('role') == 'all' || !request('role') ? 'selected' : '' }}>Semua Role</option>
                         <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                         <option value="leader" {{ request('role') == 'leader' ? 'selected' : '' }}>Leader</option>
@@ -79,8 +78,7 @@
                     <!-- Status Filter -->
                     <select name="status"
                             id="statusFilter"
-                            class="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            onchange="document.getElementById('filterForm').submit()">
+                            class="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="all" {{ request('status') == 'all' || !request('status') ? 'selected' : '' }}>Semua Status</option>
                         <option value="free" {{ request('status') == 'free' ? 'selected' : '' }}>Free</option>
                         <option value="working" {{ request('status') == 'working' ? 'selected' : '' }}>Working</option>
@@ -315,26 +313,31 @@
 
     @push('scripts')
     <script>
-        // Debounce function for search
-        let searchTimeout;
         const searchInput = document.getElementById('searchInput');
+        const roleFilter = document.getElementById('roleFilter');
+        const statusFilter = document.getElementById('statusFilter');
         const filterForm = document.getElementById('filterForm');
 
+        // Submit search only on Enter key
         if (searchInput) {
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(function() {
-                    filterForm.submit();
-                }, 500); // Wait 500ms after user stops typing
-            });
-
-            // Submit on Enter key
             searchInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    clearTimeout(searchTimeout);
                     filterForm.submit();
                 }
+            });
+        }
+
+        // Submit form when role or status filter changes
+        if (roleFilter) {
+            roleFilter.addEventListener('change', function() {
+                filterForm.submit();
+            });
+        }
+
+        if (statusFilter) {
+            statusFilter.addEventListener('change', function() {
+                filterForm.submit();
             });
         }
     </script>

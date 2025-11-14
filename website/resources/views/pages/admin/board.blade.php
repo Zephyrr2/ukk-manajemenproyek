@@ -21,26 +21,26 @@
             @endif
 
             <!-- Header -->
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div class="flex items-center space-x-2 sm:space-x-4">
                     <a href="{{ route('admin.projects.show', $project->slug) }}"
                         class="text-gray-600 hover:text-gray-900 flex items-center space-x-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
-                        <span>Back to Project</span>
+                        <span class="hidden sm:inline">Back to Project</span>
                     </a>
-                    <div class="w-px h-6 bg-gray-300"></div>
+                    <div class="w-px h-6 bg-gray-300 hidden sm:block"></div>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900">{{ $project->project_name }}</h1>
-                        <p class="text-gray-500">Kanban Board</p>
+                        <h1 class="text-lg sm:text-2xl font-bold text-gray-900">{{ $project->project_name }}</h1>
+                        <p class="text-sm text-gray-500">Kanban Board</p>
                     </div>
                 </div>
 
                 <div class="flex items-center space-x-3">
-                    <div class="bg-gray-100 px-4 py-2 rounded-lg font-medium text-gray-600 flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-gray-100 px-3 sm:px-4 py-2 rounded-lg font-medium text-gray-600 flex items-center text-sm">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -52,15 +52,15 @@
             </div>
 
             <!-- Board Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="bg-white rounded-lg border border-gray-200 p-4">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div class="bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-600">To Do</p>
-                            <p class="text-2xl font-bold text-gray-600">{{ count($boardData['todo'] ?? []) }}</p>
+                            <p class="text-xs sm:text-sm font-medium text-gray-600">To Do</p>
+                            <p class="text-xl sm:text-2xl font-bold text-gray-600">{{ count($boardData['todo'] ?? []) }}</p>
                         </div>
-                        <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                             </svg>
@@ -68,14 +68,14 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg border border-gray-200 p-4">
+                <div class="bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-600">In Progress</p>
-                            <p class="text-2xl font-bold text-green-600">{{ count($boardData['in_progress']) }}</p>
+                            <p class="text-xs sm:text-sm font-medium text-gray-600">In Progress</p>
+                            <p class="text-xl sm:text-2xl font-bold text-blue-600">{{ count($boardData['in_progress']) }}</p>
                         </div>
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -83,14 +83,14 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg border border-gray-200 p-4">
+                <div class="bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-600">Review</p>
-                            <p class="text-2xl font-bold text-yellow-600">{{ count($boardData['review']) }}</p>
+                            <p class="text-xs sm:text-sm font-medium text-gray-600">Review</p>
+                            <p class="text-xl sm:text-2xl font-bold text-yellow-600">{{ count($boardData['review']) }}</p>
                         </div>
-                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -100,14 +100,14 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg border border-gray-200 p-4">
+                <div class="bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-600">Done</p>
-                            <p class="text-2xl font-bold text-green-600">{{ count($boardData['done']) }}</p>
+                            <p class="text-xs sm:text-sm font-medium text-gray-600">Done</p>
+                            <p class="text-xl sm:text-2xl font-bold text-green-600">{{ count($boardData['done']) }}</p>
                         </div>
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
@@ -117,11 +117,11 @@
 
             <!-- Kanban Board -->
             <div class="bg-white rounded-lg border border-gray-200 shadow-sm">
-                <div class="p-6 kanban-container" style="overflow-x: auto; overflow-y: hidden;">
-                    <div class="flex gap-6 pb-4" id="kanban-board" style="min-width: 1400px; width: max-content;">
+                <div class="p-4 sm:p-6">
+                    <div class="flex flex-col lg:flex-row gap-4 sm:gap-6" id="kanban-board">
 
                         <!-- To Do Column -->
-                        <div class="flex-shrink-0 w-80 bg-gray-50 rounded-lg p-4" data-status="todo">
+                        <div class="flex-shrink-0 w-full lg:w-80 bg-gray-50 rounded-lg p-4" data-status="todo">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="font-semibold text-gray-900 flex items-center">
                                     <div class="w-3 h-3 bg-gray-500 rounded-full mr-2"></div>
@@ -173,12 +173,12 @@
                         </div>
 
                         <!-- In Progress Column -->
-                        <div class="flex-shrink-0 w-80 bg-green-50 rounded-lg p-4" data-status="in_progress">
+                        <div class="flex-shrink-0 w-full lg:w-80 bg-blue-50 rounded-lg p-4" data-status="in_progress">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="font-semibold text-gray-900 flex items-center">
-                                    <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                                    <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
                                     In Progress
-                                    <span class="ml-2 bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">{{ count($boardData['in_progress']) }}</span>
+                                    <span class="ml-2 bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">{{ count($boardData['in_progress']) }}</span>
                                 </h3>
                             </div>
                             <div class="space-y-3" id="in_progress-cards">
@@ -216,7 +216,7 @@
                         </div>
 
                         <!-- Review Column -->
-                        <div class="flex-shrink-0 w-80 bg-yellow-50 rounded-lg p-4" data-status="review">
+                        <div class="flex-shrink-0 w-full lg:w-80 bg-yellow-50 rounded-lg p-4" data-status="review">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="font-semibold text-gray-900 flex items-center">
                                     <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
@@ -261,7 +261,7 @@
                         </div>
 
                         <!-- Done Column -->
-                        <div class="flex-shrink-0 w-80 bg-green-50 rounded-lg p-4" data-status="done">
+                        <div class="flex-shrink-0 w-full lg:w-80 bg-green-50 rounded-lg p-4" data-status="done">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="font-semibold text-gray-900 flex items-center">
                                     <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
@@ -426,7 +426,7 @@
 
     // Initialize drag and drop functionality
     document.addEventListener('DOMContentLoaded', function() {
-        // Add custom CSS for better horizontal scroll
+        // Add custom CSS for better horizontal scroll and mobile styles
         const style = document.createElement('style');
         style.textContent = `
             #kanban-board {
@@ -456,8 +456,73 @@
                 overflow-x: auto !important;
                 overflow-y: hidden;
             }
+
+            .line-clamp-2 {
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            @media (max-width: 1023px) {
+                .mobile-column {
+                    display: none;
+                }
+                .mobile-column.active {
+                    display: block;
+                    width: 100% !important;
+                }
+                #kanban-board {
+                    min-width: auto !important;
+                }
+            }
         `;
         document.head.appendChild(style);
+
+        // Mobile status selector functionality
+        const mobileSelector = document.getElementById('mobile-status-selector');
+        if (mobileSelector) {
+            // Show first column by default on mobile
+            if (window.innerWidth < 1024) {
+                const firstColumn = document.querySelector('.mobile-column[data-status="todo"]');
+                if (firstColumn) {
+                    firstColumn.classList.add('active');
+                }
+            }
+
+            mobileSelector.addEventListener('change', function() {
+                const selectedStatus = this.value;
+                const allColumns = document.querySelectorAll('.mobile-column');
+
+                allColumns.forEach(column => {
+                    column.classList.remove('active');
+                    if (column.dataset.status === selectedStatus) {
+                        column.classList.add('active');
+                    }
+                });
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 1024) {
+                    // Desktop view - show all columns
+                    const allColumns = document.querySelectorAll('.mobile-column');
+                    allColumns.forEach(column => {
+                        column.classList.remove('active');
+                    });
+                } else {
+                    // Mobile view - show selected column
+                    const selectedStatus = mobileSelector.value;
+                    const allColumns = document.querySelectorAll('.mobile-column');
+                    allColumns.forEach(column => {
+                        column.classList.remove('active');
+                        if (column.dataset.status === selectedStatus) {
+                            column.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }
 
         // Make all task cards draggable
         const taskCards = document.querySelectorAll('[data-task-id]');

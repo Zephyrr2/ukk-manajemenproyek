@@ -35,17 +35,6 @@
                         </h1>
                     </div>
 
-                    <!-- User Menu -->
-                    <div class="ml-4 flex items-center md:ml-6">
-                        <div class="relative ml-3">
-                            <div class="flex items-center">
-                                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                                    <span class="text-white font-semibold text-sm">A</span>
-                                </div>
-                                <span class="ml-2 text-sm font-medium text-gray-700 hidden sm:block">Admin</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </header>
 

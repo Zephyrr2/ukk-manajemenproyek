@@ -253,24 +253,15 @@
             }
         });
 
-        // Live search functionality
-        let searchTimeout;
+        // Search functionality - only submit on Enter key
         const searchInput = document.getElementById('searchInput');
         const searchForm = document.getElementById('searchForm');
 
         if (searchInput) {
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(function() {
-                    searchForm.submit();
-                }, 500); // Wait 500ms after user stops typing
-            });
-
-            // Submit on Enter key
+            // Submit on Enter key only
             searchInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    clearTimeout(searchTimeout);
                     searchForm.submit();
                 }
             });
