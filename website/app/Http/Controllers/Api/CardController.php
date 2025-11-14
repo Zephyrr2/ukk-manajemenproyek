@@ -114,6 +114,22 @@ class CardController extends Controller
 
             $task->update(['status' => $request->status]);
 
+            // Update assigned user status to 'free' when task is done
+            if ($request->status === 'done' && $oldStatus !== 'done') {
+                // Get all assigned users for this task
+                $assignedUserIds = $task->assignments()->pluck('user_id')->toArray();
+
+                // Update each assigned user's status to 'free'
+                if (!empty($assignedUserIds)) {
+                    \App\Models\User::whereIn('id', $assignedUserIds)->update(['status' => 'free']);
+
+                    \Illuminate\Support\Facades\Log::info('Updated user status to free when task completed', [
+                        'task_id' => $task->id,
+                        'user_ids' => $assignedUserIds
+                    ]);
+                }
+            }
+
             // Create response message
             $message = 'Task status updated successfully';
             if ($pendingSubtasks > 0) {

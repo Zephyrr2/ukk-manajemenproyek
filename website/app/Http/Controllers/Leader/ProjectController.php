@@ -473,6 +473,12 @@ class ProjectController extends Controller
             'estimated_hours' => $request->estimated_hours
         ]);
 
+        // Update assigned user status to 'working'
+        $assignedUser = \App\Models\User::find($request->user_id);
+        if ($assignedUser) {
+            $assignedUser->update(['status' => 'working']);
+        }
+
         // Handle form action
         $action = $request->input('action', 'create_and_view');
 

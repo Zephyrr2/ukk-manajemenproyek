@@ -94,19 +94,34 @@
     <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
         <div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
             <h3 class="text-lg leading-6 font-medium text-gray-900">Subtasks Management</h3>
-            <a href="{{ route('user.subtasks.create', $task->id) }}"
-               class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full sm:w-auto">
-                <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                </svg>
-                Add New Subtask
-            </a>
+            @if($task->status !== 'done')
+                <a href="{{ route('user.subtasks.create', $task->id) }}"
+                   class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full sm:w-auto">
+                    <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    Add New Subtask
+                </a>
+            @else
+                <span class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-gray-100 rounded-md">
+                    <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    Task Completed
+                </span>
+            @endif
         </div>
     </div>
     <div class="px-4 py-5 sm:p-6">
-        <p class="text-sm text-gray-600">
-            Click "Add New Subtask" to create a new subtask for this task. You can manage all subtasks from this page.
-        </p>
+        @if($task->status !== 'done')
+            <p class="text-sm text-gray-600">
+                Click "Add New Subtask" to create a new subtask for this task. You can manage all subtasks from this page.
+            </p>
+        @else
+            <p class="text-sm text-yellow-600">
+                ⚠️ This task is marked as completed. You cannot add new subtasks to a completed task.
+            </p>
+        @endif
     </div>
 </div>
 

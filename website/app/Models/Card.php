@@ -55,6 +55,11 @@ class Card extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function timeLogs(): HasMany
+    {
+        return $this->hasMany(Time_Log::class);
+    }
+
     // In website/app/Models/Card.php
     public function assignedUsers()
     {

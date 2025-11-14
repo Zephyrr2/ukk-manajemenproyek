@@ -353,7 +353,13 @@
             <div class="space-y-3 sm:space-y-4">
                 <div class="flex items-center justify-between py-2 sm:py-3 border-b border-gray-100">
                     <div class="text-sm sm:text-base text-gray-600">Work Time</div>
-                    <div class="font-semibold text-sm sm:text-base text-gray-900">{{ number_format($todayWorkTime, 1) }} hours</div>
+                    <div class="font-semibold text-sm sm:text-base text-gray-900">
+                        @if($todayWorkTime >= 1)
+                            {{ number_format($todayWorkTime, 1) }}h
+                        @else
+                            {{ round($todayWorkTime * 60) }}m
+                        @endif
+                    </div>
                 </div>
                 <div class="flex items-center justify-between py-2 sm:py-3 border-b border-gray-100">
                     <div class="text-sm sm:text-base text-gray-600">Active Tasks</div>
@@ -394,11 +400,26 @@
             <div class="space-y-3 sm:space-y-4">
                 <div class="flex items-center justify-between py-2 sm:py-3 border-b border-gray-100">
                     <div class="text-sm sm:text-base text-gray-600">Total Hours</div>
-                    <div class="font-semibold text-sm sm:text-base text-gray-900">{{ number_format($weekWorkTime, 1) }} hours</div>
+                    <div class="font-semibold text-sm sm:text-base text-gray-900">
+                        @if($weekWorkTime >= 1)
+                            {{ number_format($weekWorkTime, 1) }}h
+                        @else
+                            {{ round($weekWorkTime * 60) }}m
+                        @endif
+                    </div>
                 </div>
                 <div class="flex items-center justify-between py-2 sm:py-3 border-b border-gray-100">
                     <div class="text-sm sm:text-base text-gray-600">Average/day</div>
-                    <div class="font-semibold text-sm sm:text-base text-gray-900">{{ number_format($weekWorkTime / max(1, now()->dayOfWeek), 1) }} hours</div>
+                    <div class="font-semibold text-sm sm:text-base text-gray-900">
+                        @php
+                            $avgPerDay = $weekWorkTime / max(1, now()->dayOfWeek);
+                        @endphp
+                        @if($avgPerDay >= 1)
+                            {{ number_format($avgPerDay, 1) }}h
+                        @else
+                            {{ round($avgPerDay * 60) }}m
+                        @endif
+                    </div>
                 </div>
                 <div class="flex items-center justify-between py-2 sm:py-3 border-b border-gray-100">
                     <div class="text-sm sm:text-base text-gray-600">Completed Tasks</div>

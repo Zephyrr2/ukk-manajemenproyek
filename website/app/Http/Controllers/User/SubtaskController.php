@@ -102,6 +102,11 @@ class SubtaskController extends Controller
             return redirect()->route('user.tasks')->with('error', 'Task tidak ditemukan atau Anda tidak memiliki akses.');
         }
 
+        // Check if task is already completed
+        if ($task->status === 'done') {
+            return redirect()->route('user.subtasks', $taskId)->with('error', 'Cannot add subtask to a completed task.');
+        }
+
         // Check if user is assigned to this task or is the task creator
         $hasAccess = $task->user_id == $user->id ||
                     $task->assignments->where('user_id', $user->id)->isNotEmpty();
@@ -141,6 +146,11 @@ class SubtaskController extends Controller
 
         if (!$task) {
             return redirect()->back()->with('error', 'Task tidak ditemukan atau Anda tidak memiliki akses.');
+        }
+
+        // Check if task is already completed
+        if ($task->status === 'done') {
+            return redirect()->route('user.subtasks', $taskId)->with('error', 'Cannot add subtask to a completed task.');
         }
 
         // Check access
@@ -502,9 +512,9 @@ class SubtaskController extends Controller
             ]);
         }
 
-        // Calculate total actual hours from all completed time logs (excluding paused sessions)
+        // Calculate total actual hours from all work sessions (completed and paused)
         $totalMinutes = Time_Log::where('subtask_id', $subtaskId)
-            ->where('status', 'completed')
+            ->whereIn('status', ['completed', 'paused'])
             ->whereNotNull('duration_minutes')
             ->where('duration_minutes', '>', 0)  // Only count entries with actual duration
             ->sum('duration_minutes');

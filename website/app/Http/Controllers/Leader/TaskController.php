@@ -133,6 +133,12 @@ class TaskController extends Controller
             'actual_hours' => $actualHours
         ]);
 
+        // Update assigned user status to 'free' when task is done
+        $assignedUserIds = $task->assignments()->pluck('user_id')->toArray();
+        if (!empty($assignedUserIds)) {
+            \App\Models\User::whereIn('id', $assignedUserIds)->update(['status' => 'free']);
+        }
+
         // Create assignment history record for approval
         Card_Assigment::create([
             'card_id' => $task->id,
