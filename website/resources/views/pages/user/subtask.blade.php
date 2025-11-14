@@ -186,7 +186,18 @@
                                 $activeSubtaskLog = \App\Models\Time_Log::where('user_id', $user->id)
                                     ->where('subtask_id', $subtask->id)
                                     ->whereNull('end_time')
+                                    ->where('status', 'active')
                                     ->first();
+
+                                // Check if subtask is paused (has paused time log, no active log)
+                                $pausedSubtaskLog = \App\Models\Time_Log::where('user_id', $user->id)
+                                    ->where('subtask_id', $subtask->id)
+                                    ->where('status', 'paused')
+                                    ->whereNotNull('end_time')
+                                    ->orderBy('end_time', 'desc')
+                                    ->first();
+
+                                $isPaused = $pausedSubtaskLog && !$activeSubtaskLog;
                             @endphp
 
                             @if($subtask->status === 'todo')
@@ -203,8 +214,21 @@
                                     </button>
                                 </form>
                             @elseif($subtask->status === 'in_progress')
-                                <!-- Pause Button -->
-                                @if($activeSubtaskLog)
+                                @if($isPaused)
+                                    <!-- Resume Button (when paused) -->
+                                    <form action="{{ route('user.subtasks.resume', [$task->id, $subtask->id]) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit"
+                                            class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                            onclick="return confirm('Resume working on this subtask?')">
+                                            <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+                                            </svg>
+                                        Resume
+                                    </button>
+                                </form>
+                                @elseif($activeSubtaskLog)
+                                    <!-- Pause Button (when active) -->
                                     <form action="{{ route('user.subtasks.pause', [$task->id, $subtask->id]) }}" method="POST" class="inline">
                                         @csrf
                                         <button type="submit"

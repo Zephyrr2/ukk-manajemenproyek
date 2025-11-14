@@ -81,7 +81,13 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 truncate">Total Hours</dt>
-                            <dd class="text-lg font-medium text-gray-900">{{ $totalHours }}h</dd>
+                            <dd class="text-lg font-medium text-gray-900">
+                                @if($totalHours >= 1)
+                                    {{ $totalHours }}h
+                                @else
+                                    {{ $totalMinutes }}m
+                                @endif
+                            </dd>
                         </dl>
                     </div>
                 </div>
@@ -98,8 +104,14 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Total Sessions</dt>
-                            <dd class="text-lg font-medium text-gray-900">{{ $timeLogs->count() }}</dd>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Total Hours</dt>
+                            <dd class="text-lg font-medium text-gray-900">
+                                @if($totalHours >= 1)
+                                    {{ $totalHours }}h
+                                @else
+                                    {{ $totalMinutes }}m
+                                @endif
+                            </dd>
                         </dl>
                     </div>
                 </div>
@@ -167,8 +179,14 @@
                             </div>
                         </div>
                         <div class="text-right flex-shrink-0 ml-3">
-                            <p class="font-semibold text-sm sm:text-base text-gray-900">{{ $stats['total_hours'] }}h</p>
-                            <p class="text-xs sm:text-sm text-gray-500">{{ $stats['total_minutes'] }} min</p>
+                            <p class="font-semibold text-sm sm:text-base text-gray-900">
+                                @if($stats['total_hours'] >= 1)
+                                    {{ $stats['total_hours'] }}h
+                                @else
+                                    {{ $stats['total_minutes'] }}m
+                                @endif
+                            </p>
+                            <p class="text-xs sm:text-sm text-gray-500">{{ $stats['session_count'] }} sessions</p>
                         </div>
                     </div>
                     @endforeach
@@ -201,8 +219,14 @@
                             </div>
                         </div>
                         <div class="text-right flex-shrink-0 ml-3">
-                            <p class="font-semibold text-sm sm:text-base text-gray-900">{{ $stats['total_hours'] }}h</p>
-                            <p class="text-xs sm:text-sm text-gray-500">{{ $stats['total_minutes'] }} min</p>
+                            <p class="font-semibold text-sm sm:text-base text-gray-900">
+                                @if($stats['total_hours'] >= 1)
+                                    {{ $stats['total_hours'] }}h
+                                @else
+                                    {{ $stats['total_minutes'] }}m
+                                @endif
+                            </p>
+                            <p class="text-xs sm:text-sm text-gray-500">{{ $stats['session_count'] }} sessions</p>
                         </div>
                     </div>
                     @endif

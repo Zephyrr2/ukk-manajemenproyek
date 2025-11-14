@@ -36,6 +36,11 @@ class TimeTrackingController extends Controller
         $timeLogs = Time_Log::where('user_id', $user->id)
             ->whereBetween('start_time', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
             ->whereNotNull('subtask_id')  // Only subtask logs
+            ->where(function($query) {
+                $query->where('duration_minutes', '>', 0)  // Has actual duration
+                      ->orWhereNull('end_time')  // Or still active
+                      ->orWhere('status', 'paused');  // Or paused entries
+            })
             ->with(['card.board.project', 'subtask'])
             ->orderBy('start_time', 'desc')
             ->get();

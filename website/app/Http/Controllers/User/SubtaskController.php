@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Card;
 use App\Models\Subtask;
+use App\Models\Time_Log;
 
 class SubtaskController extends Controller
 {
@@ -253,7 +254,7 @@ class SubtaskController extends Controller
             'estimated_hours' => $request->estimated_hours,
         ]);
 
-        return redirect()->back()->with('success', 'Subtask berhasil diupdate!');
+        return redirect()->route('user.subtasks', $taskId)->with('success', 'Subtask berhasil diupdate!');
     }
 
     /**
@@ -377,29 +378,82 @@ class SubtaskController extends Controller
     {
         $user = Auth::user();
 
-        // Find active time log for this subtask
-        $timeLog = \App\Models\Time_Log::where('user_id', $user->id)
+        // Fetch subtask with card relationship
+        $subtask = Subtask::with('card')->findOrFail($subtaskId);
+        $cardTitle = $subtask->card->card_title;
+        $subtaskTitle = $subtask->subtask_title;
+
+        // Find the active time log for this subtask
+        $timeLog = Time_Log::where('user_id', $user->id)
             ->where('subtask_id', $subtaskId)
             ->whereNull('end_time')
+            ->where('status', 'active')
             ->first();
 
         if (!$timeLog) {
-            return redirect()->back()->with('error', 'Tidak ada sesi aktif untuk subtask ini.');
+            return redirect()->back()->with('error', 'No active work session found.');
         }
 
-        // Calculate duration in minutes
+        // Record the pause time
+        $pauseTime = now();
         $startTime = \Carbon\Carbon::parse($timeLog->start_time);
-        $endTime = now();
-        $durationMinutes = $startTime->diffInMinutes($endTime);
+        $durationMinutes = $startTime->diffInMinutes($pauseTime);
 
-        // Update time log
+        // Update the current time log to mark completion of work session before pause
         $timeLog->update([
-            'end_time' => $endTime,
+            'end_time' => $pauseTime,
             'duration_minutes' => $durationMinutes,
-            'status' => 'paused'
+            'status' => 'paused',  // Changed to 'paused' to indicate it's paused, not fully completed
+            'description' => "Work session paused - Subtask '{$subtaskTitle}' from Card '{$cardTitle}' - {$durationMinutes} minutes"
         ]);
 
-        return redirect()->back()->with('success', 'Subtask di-pause. Waktu: ' . $durationMinutes . ' menit.');
+        // Keep subtask status as 'in_progress', we'll check paused state from time_logs
+        // $subtask->update(['status' => 'paused']); // Don't update subtask status
+
+        return redirect()->back()->with('success', 'Subtask paused. Duration: ' . $durationMinutes . ' minutes.');
+    }
+
+    /**
+     * Resume working on a subtask
+     */
+    public function resume($taskId, $subtaskId)
+    {
+        $user = Auth::user();
+
+        // Fetch subtask with card relationship
+        $subtask = Subtask::with('card')->findOrFail($subtaskId);
+        $cardTitle = $subtask->card->card_title;
+        $subtaskTitle = $subtask->subtask_title;
+
+        // Find the most recent paused time log for this subtask (has end_time and status = paused)
+        $pausedLog = Time_Log::where('user_id', $user->id)
+            ->where('subtask_id', $subtaskId)
+            ->where('status', 'paused')
+            ->whereNotNull('end_time')
+            ->orderBy('end_time', 'desc')
+            ->first();
+
+        if (!$pausedLog) {
+            return redirect()->back()->with('error', 'No paused work session found.');
+        }
+
+        $resumeTime = now();
+
+        // Create a new active work session
+        Time_Log::create([
+            'user_id' => $user->id,
+            'card_id' => $taskId,
+            'subtask_id' => $subtaskId,
+            'start_time' => $resumeTime,
+            'end_time' => null,
+            'duration_minutes' => 0,
+            'status' => 'active',
+            'description' => "Resumed work on Subtask '{$subtaskTitle}' from Card '{$cardTitle}' at " . $resumeTime->format('H:i:s d/m/Y')
+        ]);
+
+        // Subtask status remains 'in_progress', no need to update
+
+        return redirect()->back()->with('success', 'Subtask resumed! Time tracking restarted.');
     }
 
     /**
@@ -409,8 +463,8 @@ class SubtaskController extends Controller
     {
         $user = Auth::user();
 
-        // Find subtask and verify access
-        $subtask = Subtask::whereHas('card.board.project', function ($query) use ($user) {
+        // Find subtask and verify access (with card relationship)
+        $subtask = Subtask::with('card')->whereHas('card.board.project', function ($query) use ($user) {
             $query->where(function ($subQuery) use ($user) {
                 $subQuery->whereHas('projectMembers', function ($memberQuery) use ($user) {
                     $memberQuery->where('user_id', $user->id);
@@ -422,30 +476,37 @@ class SubtaskController extends Controller
         ->first();
 
         if (!$subtask) {
-            return redirect()->back()->with('error', 'Subtask tidak ditemukan atau Anda tidak memiliki akses.');
+            return redirect()->back()->with('error', 'Subtask not found or you do not have access.');
         }
 
-        // Close any active time log
-        $activeLog = \App\Models\Time_Log::where('user_id', $user->id)
+        $cardTitle = $subtask->card->card_title;
+        $subtaskTitle = $subtask->subtask_title;
+        $completionTime = now();
+
+        // If there's an active time log, close it
+        $activeLog = Time_Log::where('user_id', $user->id)
             ->where('subtask_id', $subtaskId)
             ->whereNull('end_time')
+            ->where('status', 'active')
             ->first();
 
         if ($activeLog) {
             $startTime = \Carbon\Carbon::parse($activeLog->start_time);
-            $endTime = now();
-            $durationMinutes = $startTime->diffInMinutes($endTime);
+            $durationMinutes = $startTime->diffInMinutes($completionTime);
 
             $activeLog->update([
-                'end_time' => $endTime,
+                'end_time' => $completionTime,
                 'duration_minutes' => $durationMinutes,
-                'status' => 'completed'
+                'status' => 'completed',
+                'description' => "Final work session - Subtask '{$subtaskTitle}' from Card '{$cardTitle}' - {$durationMinutes} minutes"
             ]);
         }
 
-        // Calculate total actual hours from all time logs for this subtask
-        $totalMinutes = \App\Models\Time_Log::where('subtask_id', $subtaskId)
+        // Calculate total actual hours from all completed time logs (excluding paused sessions)
+        $totalMinutes = Time_Log::where('subtask_id', $subtaskId)
+            ->where('status', 'completed')
             ->whereNotNull('duration_minutes')
+            ->where('duration_minutes', '>', 0)  // Only count entries with actual duration
             ->sum('duration_minutes');
 
         $actualHours = round($totalMinutes / 60, 2);
@@ -456,11 +517,19 @@ class SubtaskController extends Controller
             'actual_hours' => $actualHours
         ]);
 
-        // Mark all time logs as completed
-        \App\Models\Time_Log::where('subtask_id', $subtaskId)
-            ->update(['status' => 'completed']);
+        // Always create a completion summary entry to show in time log
+        Time_Log::create([
+            'user_id' => $user->id,
+            'card_id' => $taskId,
+            'subtask_id' => $subtaskId,
+            'start_time' => $completionTime,
+            'end_time' => $completionTime,
+            'duration_minutes' => $totalMinutes,  // Show total time
+            'status' => 'completed',
+            'description' => "✓ Completed Subtask '{$subtaskTitle}' from Card '{$cardTitle}'. Total work time: {$actualHours} hours ({$totalMinutes} minutes)"
+        ]);
 
-        return redirect()->back()->with('success', 'Subtask selesai! Total waktu: ' . $actualHours . ' jam.');
+        return redirect()->back()->with('success', 'Subtask completed! Total work time: ' . $actualHours . ' hours (' . $totalMinutes . ' minutes).');
     }
 
     /**

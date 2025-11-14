@@ -160,23 +160,7 @@
                         ▶️ Resume Work
                     </button>
                 </form>
-
-                <!-- Stop Work Form (can stop even when paused) -->
-                <form action="{{ route('user.time-tracking.stop') }}" method="POST" class="w-full sm:w-auto">
-                    @csrf
-                    <button type="submit" class="w-full sm:w-auto bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors duration-200" onclick="return confirm('Stop working and save time?')">
-                        ⏹️ Stop Work
-                    </button>
-                </form>
                 @elseif($activeSession && $activeSession->card_id == $currentTask->id)
-                <!-- Stop Work Form -->
-                <form action="{{ route('user.time-tracking.stop') }}" method="POST" class="w-full sm:w-auto">
-                    @csrf
-                    <button type="submit" class="w-full sm:w-auto bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors duration-200" onclick="return confirm('Stop working and save time?')">
-                        ⏹️ Stop Work
-                    </button>
-                </form>
-
                 <!-- Pause Work Form -->
                 <form action="{{ route('user.time-tracking.pause') }}" method="POST" class="w-full sm:w-auto">
                     @csrf

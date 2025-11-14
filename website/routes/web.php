@@ -142,6 +142,7 @@ Route::middleware('auth')->group(function () {
         // Subtask Time Tracking
         Route::post('/tasks/{taskId}/subtasks/{subtaskId}/start', [SubtaskController::class, 'start'])->name('subtasks.start');
         Route::post('/tasks/{taskId}/subtasks/{subtaskId}/pause', [SubtaskController::class, 'pause'])->name('subtasks.pause');
+        Route::post('/tasks/{taskId}/subtasks/{subtaskId}/resume', [SubtaskController::class, 'resume'])->name('subtasks.resume');
         Route::post('/tasks/{taskId}/subtasks/{subtaskId}/complete', [SubtaskController::class, 'complete'])->name('subtasks.complete');
 
         // Comments

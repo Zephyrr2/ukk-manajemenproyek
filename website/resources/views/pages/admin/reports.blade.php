@@ -290,45 +290,8 @@
                     </div>
                 </div>
 
-                <!-- Project Status Breakdown -->
-                <div class="mb-8">
-                    <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">PROJECT STATUS BREAKDOWN</h3>
-                    <table class="w-full border-collapse border border-gray-400">
-                        <thead>
-                            <tr class="bg-gray-100">
-                                <th class="border border-gray-400 px-4 py-2 text-left font-bold">Project Status</th>
-                                <th class="border border-gray-400 px-4 py-2 text-center font-bold">Total</th>
-                                <th class="border border-gray-400 px-4 py-2 text-center font-bold">Percentage</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="border border-gray-400 px-4 py-2">Planning</td>
-                                <td class="border border-gray-400 px-4 py-2 text-center font-bold">{{ $projectsByStatus['planning'] ?? 0 }}</td>
-                                <td class="border border-gray-400 px-4 py-2 text-center">
-                                    {{ $totalProjects > 0 ? round((($projectsByStatus['planning'] ?? 0) / $totalProjects) * 100, 1) : 0 }}%
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="border border-gray-400 px-4 py-2">In Progress</td>
-                                <td class="border border-gray-400 px-4 py-2 text-center font-bold">{{ $projectsByStatus['in_progress'] ?? 0 }}</td>
-                                <td class="border border-gray-400 px-4 py-2 text-center">
-                                    {{ $totalProjects > 0 ? round((($projectsByStatus['in_progress'] ?? 0) / $totalProjects) * 100, 1) : 0 }}%
-                                </td>
-                            </tr>
-                            <tr class="bg-green-50">
-                                <td class="border border-gray-400 px-4 py-2 font-bold">Completed</td>
-                                <td class="border border-gray-400 px-4 py-2 text-center font-bold text-green-700">{{ $projectsByStatus['completed'] ?? 0 }}</td>
-                                <td class="border border-gray-400 px-4 py-2 text-center font-bold text-green-700">
-                                    {{ $totalProjects > 0 ? round((($projectsByStatus['completed'] ?? 0) / $totalProjects) * 100, 1) : 0 }}%
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
                 <!-- Project Details Table -->
-                <div class="mb-8" style="page-break-before: always;">
+                <div class="mb-8">
                     <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">PROJECT SUMMARY</h3>
                     <table class="w-full border-collapse border border-gray-400">
                         <thead>
@@ -364,7 +327,7 @@
                 </div>
 
                 <!-- Project Management Report -->
-                <div class="mb-8">
+                <div class="mb-8" style="page-break-before: always;">
                     <h3 class="text-lg font-bold mb-4 bg-gray-200 px-3 py-2">PROJECT MANAGEMENT DETAILS</h3>
                     @forelse($reportProjects ?? [] as $index => $project)
                         <div class="mb-6 border border-gray-400">
