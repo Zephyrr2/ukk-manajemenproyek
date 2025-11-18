@@ -149,6 +149,27 @@ class TaskController extends Controller
             'completed_at' => now(),
         ]);
 
+        // Create notification for task assignee
+        $taskAssignee = $task->user_id ? \App\Models\User::find($task->user_id) : null;
+        if (!$taskAssignee && $task->assignments->isNotEmpty()) {
+            $taskAssignee = $task->assignments->first()->user;
+        }
+        if ($taskAssignee) {
+            \App\Models\Notification::create([
+                'user_id' => $taskAssignee->id,
+                'type' => 'task_approved',
+                'title' => 'Task Approved',
+                'message' => 'Your task "' . $task->card_title . '" has been approved by ' . $user->name . '.',
+                'card_id' => $task->id,
+                'data' => [
+                    'task_id' => $task->id,
+                    'task_title' => $task->card_title,
+                    'approved_by' => $user->name,
+                    'project_slug' => $task->board->project->slug,
+                ],
+            ]);
+        }
+
         // Create success message with subtask info
         $message = 'Task "' . $task->card_title . '" berhasil diapprove!';
         if ($pendingSubtasks > 0) {
@@ -257,6 +278,26 @@ class TaskController extends Controller
             'started_at' => $task->started_at,
             'completed_at' => now(),
         ]);
+
+        // Create notification for task assignee
+        if ($taskAssignee) {
+            $assigneeUser = \App\Models\User::find($taskAssignee);
+            if ($assigneeUser) {
+                \App\Models\Notification::create([
+                    'user_id' => $assigneeUser->id,
+                    'type' => 'task_rejected',
+                    'title' => 'Task Rejected',
+                    'message' => 'Your task "' . $task->card_title . '" has been rejected by ' . $user->name . '. Please review and resubmit.',
+                    'card_id' => $task->id,
+                    'data' => [
+                        'task_id' => $task->id,
+                        'task_title' => $task->card_title,
+                        'rejected_by' => $user->name,
+                        'project_slug' => $task->board->project->slug,
+                    ],
+                ]);
+            }
+        }
 
         return redirect()->back()->with('success', 'Task "' . $task->card_title . '" direject dan dikembalikan ke status in progress. Timer otomatis dimulai untuk user.');
     }

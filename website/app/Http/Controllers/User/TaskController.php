@@ -249,6 +249,24 @@ class TaskController extends Controller
             'actual_hours' => $request->input('actual_hours', $task->actual_hours),
         ]);
 
+        // Create notification for project leader
+        $projectLeader = $task->board->project->user;
+        if ($projectLeader) {
+            \App\Models\Notification::create([
+                'user_id' => $projectLeader->id,
+                'type' => 'task_submitted',
+                'title' => 'Task Submitted for Review',
+                'message' => $user->name . ' has submitted task "' . $task->card_title . '" for review.',
+                'card_id' => $task->id,
+                'data' => [
+                    'task_id' => $task->id,
+                    'task_title' => $task->card_title,
+                    'submitted_by' => $user->name,
+                    'project_slug' => $task->board->project->slug,
+                ],
+            ]);
+        }
+
         // Update user status to free (task completed, waiting for review)
         User::where('id', $user->id)->update(['status' => 'free']);
 

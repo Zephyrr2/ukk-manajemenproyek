@@ -175,12 +175,23 @@
                                 <div class="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-2 text-xs text-gray-500">
                                     <span class="font-medium break-words">{{ $task->board->project->project_name ?? 'N/A' }}</span>
                                     @if ($task->due_date)
-                                        <span class="flex items-center">
+                                        @php
+                                            $isOverdue = \Carbon\Carbon::parse($task->due_date)->isPast() && $task->status != 'done';
+                                        @endphp
+                                        <span class="flex items-center {{ $isOverdue ? 'text-red-600 font-semibold' : '' }}">
                                             <svg class="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                             </svg>
                                             Due: {{ \Carbon\Carbon::parse($task->due_date)->format('M d, Y') }}
+                                            @if($isOverdue)
+                                                <span class="ml-1 text-xs">(OVERDUE)</span>
+                                            @endif
                                         </span>
+                                        @if ($task->extension_status === 'pending')
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                Extension Pending
+                                            </span>
+                                        @endif
                                     @endif
                                     @if ($task->estimated_hours)
                                         <span class="flex items-center">
@@ -264,6 +275,15 @@
                                     <a href="{{ route('user.subtasks', $task->id) }}" class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                         📋 Subtasks
                                     </a>
+
+                                    @php
+                                        $isOverdue = $task->due_date && \Carbon\Carbon::parse($task->due_date)->isPast() && $task->status != 'done';
+                                    @endphp
+                                    @if($isOverdue && $task->extension_status !== 'pending' && $task->status === 'in_progress')
+                                        <button onclick="openExtensionModal({{ $task->id }}, '{{ $task->card_title }}', '{{ $task->due_date }}')" class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-1.5 border border-orange-300 text-xs font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                                            ⏰ Request Extension
+                                        </button>
+                                    @endif
 
                                     <button onclick="openCommentModal('task', {{ $task->id }}, {{ $task->id }})" class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                         💬 Comment
@@ -480,6 +500,67 @@
             if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
             return `${Math.floor(diffInSeconds / 86400)} days ago`;
         }
+
+        // Extension Request Modal
+        function openExtensionModal(taskId, taskTitle, currentDeadline) {
+            const modal = document.getElementById('extensionModal');
+            document.getElementById('extensionTaskTitle').textContent = taskTitle;
+            document.getElementById('extensionCurrentDeadline').textContent = currentDeadline;
+            document.getElementById('extensionForm').action = `/user/tasks/${taskId}/request-extension`;
+
+            // Set min date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('new_deadline').min = tomorrow.toISOString().split('T')[0];
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeExtensionModal() {
+            document.getElementById('extensionModal').classList.add('hidden');
+        }
     </script>
+
+    <!-- Extension Request Modal -->
+    <div id="extensionModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-md shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Request Deadline Extension</h3>
+
+                <div class="mb-4 p-3 bg-gray-50 rounded-lg">
+                    <p class="text-sm text-gray-600 mb-1"><span class="font-medium">Task:</span> <span id="extensionTaskTitle"></span></p>
+                    <p class="text-sm text-gray-600"><span class="font-medium">Current Deadline:</span> <span id="extensionCurrentDeadline"></span></p>
+                </div>
+
+                <form id="extensionForm" method="POST">
+                    @csrf
+                    <div class="mb-4">
+                        <label for="new_deadline" class="block text-sm font-medium text-gray-700 mb-2">New Deadline</label>
+                        <input type="date" name="new_deadline" id="new_deadline" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="reason" class="block text-sm font-medium text-gray-700 mb-2">Reason for Extension</label>
+                        <textarea name="reason" id="reason" rows="4" required maxlength="500"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Explain why you need more time..."></textarea>
+                        <p class="text-xs text-gray-500 mt-1">Maximum 500 characters</p>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button type="button" onclick="closeExtensionModal()"
+                            class="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="flex-1 px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700">
+                            Submit Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 @endsection

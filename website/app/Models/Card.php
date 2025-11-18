@@ -20,11 +20,15 @@ class Card extends Model
         'priority',
         'estimated_hours',
         'actual_hours',
-        'started_at'
+        'started_at',
+        'extension_requested_date',
+        'extension_reason',
+        'extension_status'
     ];
 
     protected $casts = [
         'due_date' => 'date',
+        'extension_requested_date' => 'date',
         'started_at' => 'datetime',
         'estimated_hours' => 'decimal:2',
         'actual_hours' => 'decimal:2'

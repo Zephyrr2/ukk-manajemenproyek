@@ -39,6 +39,17 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
+    // Notification Routes (accessible by all authenticated users)
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\NotificationController::class, 'index'])->name('index');
+        Route::get('/unread-count', [\App\Http\Controllers\NotificationController::class, 'getUnreadCount'])->name('unread-count');
+        Route::get('/recent', [\App\Http\Controllers\NotificationController::class, 'getRecent'])->name('recent');
+        Route::post('/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('read');
+        Route::post('/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('mark-all-read');
+        Route::delete('/{id}', [\App\Http\Controllers\NotificationController::class, 'destroy'])->name('destroy');
+        Route::post('/clear-read', [\App\Http\Controllers\NotificationController::class, 'clearRead'])->name('clear-read');
+    });
+
     // Admin Management Routes
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         Route::get('/dashboard', [MainController::class, 'dashboard'])->name('dashboard');
@@ -160,5 +171,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/time-tracking/pause', [UserTimeTrackingController::class, 'pauseWork'])->name('time-tracking.pause');
         Route::post('/time-tracking/resume', [UserTimeTrackingController::class, 'resumeWork'])->name('time-tracking.resume');
         Route::get('/time-tracking/active', [UserTimeTrackingController::class, 'getActiveSession'])->name('time-tracking.active');
+
+        // Deadline Extension
+        Route::post('/tasks/{id}/request-extension', [\App\Http\Controllers\User\DeadlineExtensionController::class, 'requestExtension'])->name('tasks.request-extension');
+    });
+
+    // Leader Extension Approval Routes
+    Route::prefix('leader')->name('leader.')->middleware('role:leader,admin')->group(function () {
+        Route::post('/tasks/{id}/approve-extension', [\App\Http\Controllers\User\DeadlineExtensionController::class, 'approveExtension'])->name('tasks.approve-extension');
+        Route::post('/tasks/{id}/reject-extension', [\App\Http\Controllers\User\DeadlineExtensionController::class, 'rejectExtension'])->name('tasks.reject-extension');
     });
 });

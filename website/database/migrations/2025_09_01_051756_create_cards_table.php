@@ -25,6 +25,9 @@ return new class extends Migration
             $table->dateTime('started_at')->nullable();
             $table->decimal('estimated_hours', 5, 2)->nullable();
             $table->decimal('actual_hours', 5, 2)->nullable();
+            $table->date('extension_requested_date')->nullable();
+            $table->text('extension_reason')->nullable();
+            $table->enum('extension_status', ['pending', 'approved', 'rejected'])->nullable();
             $table->timestamps();
         });
     }

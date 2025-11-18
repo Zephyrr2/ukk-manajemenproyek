@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentasi - Sistem Manajemen Proyek & Time Tracking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 60px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.8em;
+            margin: 25px 0 15px 0;
+        }
+
+        p, li {
+            font-size: 1.3em;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding-left: 40px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        ul li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+
+        .author {
+            text-align: center;
+            color: #999;
+            font-size: 1.2em;
+            margin-top: 40px;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            background: #667eea;
+            color: white;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            color: #667eea;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .feature-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .feature-box h3 {
+            color: white;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .feature-box p {
+            color: rgba(255,255,255,0.95);
+            font-size: 1.1em;
+        }
+
+        .role-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 1.1em;
+        }
+
+        .advantage-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .advantage-item strong {
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .demo-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .demo-section h4 {
+            color: #764ba2;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+
+        .demo-step {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .demo-step strong {
+            color: #667eea;
+        }
+
+        .center-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .tech-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #ffd89b 0%, #19547b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        .scroll-content {
+            max-height: calc(85vh - 120px);
+            overflow-y: auto;
+            padding-right: 20px;
+        }
+
+        .scroll-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scroll-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .scroll-content::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .scroll-content::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Slide 1: Cover -->
+        <div class="slide active">
+            <div class="center-content">
+                <h1>📊 Sistem Manajemen Proyek</h1>
+                <h1>& Time Tracking</h1>
+                <p class="subtitle">Solusi Lengkap untuk Manajemen Proyek Modern</p>
+                <div class="tech-stack">
+                    <div class="tech-badge">Laravel 12</div>
+                    <div class="tech-badge">PHP 8.3</div>
+                    <div class="tech-badge">MySQL</div>
+                    <div class="tech-badge">Tailwind CSS</div>
+                </div>
+                <p class="author">UKK Manajemen Proyek - 2025</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Pelatihan/Kursus -->
+        <div class="slide">
+            <h2>🎓 Pelatihan & Kursus yang Diterapkan</h2>
+            <div class="scroll-content">
+                <div class="feature-box">
+                    <h3>1. Web Development</h3>
+                    <p>Backend development dengan Laravel Framework, MVC Pattern, RESTful API</p>
+                </div>
+                <div class="feature-box">
+                    <h3>2. Database Management</h3>
+                    <p>Database design, relational database, migration, seeding, eloquent ORM</p>
+                </div>
+                <div class="feature-box">
+                    <h3>3. Project Management</h3>
+                    <p>Agile methodology, Kanban board, task tracking, sprint planning</p>
+                </div>
+                <div class="feature-box">
+                    <h3>4. UI/UX Design</h3>
+                    <p>Responsive design, user interface, user experience, Tailwind CSS framework</p>
+                </div>
+                <div class="feature-box">
+                    <h3>5. Software Engineering</h3>
+                    <p>SOLID principles, clean code, design patterns, version control (Git)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Tentang Sistem -->
+        <div class="slide">
+            <h2>💼 Tentang Sistem</h2>
+            <div class="scroll-content">
+                <h3>Deskripsi</h3>
+                <p><strong class="highlight">Sistem Manajemen Proyek & Time Tracking</strong> adalah aplikasi web berbasis Laravel yang dirancang untuk membantu tim mengelola proyek, task, dan melacak waktu kerja secara efisien.</p>
+                
+                <h3>Tujuan</h3>
+                <ul>
+                    <li>Meningkatkan produktivitas tim dengan manajemen task yang terstruktur</li>
+                    <li>Melacak waktu kerja secara akurat dengan fitur time tracking otomatis</li>
+                    <li>Memudahkan kolaborasi antar anggota tim dalam satu proyek</li>
+                    <li>Menyediakan laporan dan analitik untuk evaluasi kinerja</li>
+                </ul>
+
+                <h3>Role Pengguna</h3>
+                <div style="text-align: center; margin-top: 20px;">
+                    <span class="role-badge">👑 Admin</span>
+                    <span class="role-badge">👔 Leader</span>
+                    <span class="role-badge">👤 User</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Fitur Admin -->
+        <div class="slide">
+            <h2>👑 Fitur Admin</h2>
+            <div class="scroll-content">
+                <ul>
+                    <li><strong>User Management:</strong> Mengelola semua user (create, read, update, delete)</li>
+                    <li><strong>Project Overview:</strong> Melihat semua proyek yang ada di sistem</li>
+                    <li><strong>Reports & Analytics:</strong> Laporan lengkap tentang produktivitas, time tracking, dan kinerja tim</li>
+                    <li><strong>Dashboard Admin:</strong> Overview statistik sistem secara keseluruhan</li>
+                    <li><strong>System Configuration:</strong> Pengaturan sistem dan konfigurasi aplikasi</li>
+                </ul>
+                
+                <div class="demo-section">
+                    <h4>📊 Fitur Laporan</h4>
+                    <p>Admin dapat melihat laporan produktivitas, time tracking per user, time tracking per project, dan statistik keseluruhan sistem.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Fitur Leader -->
+        <div class="slide">
+            <h2>👔 Fitur Leader (Project Manager)</h2>
+            <div class="scroll-content">
+                <ul>
+                    <li><strong>Project Management:</strong> Membuat, mengedit, dan menghapus proyek</li>
+                    <li><strong>Task Assignment:</strong> Membuat task dan assign ke team member</li>
+                    <li><strong>Kanban Board:</strong> Visualisasi task dengan drag & drop (To Do, In Progress, Review, Done)</li>
+                    <li><strong>Task Review:</strong> Mereview dan approve/reject task yang disubmit user</li>
+                    <li><strong>Team Management:</strong> Menambah/menghapus member dari proyek</li>
+                    <li><strong>Time Tracking Monitor:</strong> Melihat laporan waktu kerja team</li>
+                    <li><strong>Comment System:</strong> Memberikan feedback pada task dan subtask</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 6: Fitur User -->
+        <div class="slide">
+            <h2>👤 Fitur User (Team Member)</h2>
+            <div class="scroll-content">
+                <ul>
+                    <li><strong>Task Management:</strong> Melihat dan mengerjakan task yang di-assign</li>
+                    <li><strong>Subtask Creation:</strong> Membuat subtask untuk memecah task besar</li>
+                    <li><strong>Time Tracking:</strong> Start, pause, resume, dan complete dengan tracking waktu otomatis</li>
+                    <li><strong>Task Status Update:</strong> Mengubah status task (To Do → In Progress → Review → Done)</li>
+                    <li><strong>Comment & Collaboration:</strong> Berkomentar pada task dan subtask</li>
+                    <li><strong>Personal Dashboard:</strong> Melihat statistik pekerjaan pribadi</li>
+                    <li><strong>Time Tracking Report:</strong> Laporan waktu kerja personal dengan analitik</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 7: Fitur Time Tracking -->
+        <div class="slide">
+            <h2>⏱️ Fitur Time Tracking (Unggulan)</h2>
+            <div class="scroll-content">
+                <h3>Fitur Utama</h3>
+                <ul>
+                    <li><strong>Automatic Time Tracking:</strong> Otomatis mencatat waktu mulai dan selesai</li>
+                    <li><strong>Pause & Resume:</strong> Pause pekerjaan dan lanjutkan kapan saja</li>
+                    <li><strong>Multiple Sessions:</strong> Support multiple work sessions untuk satu task</li>
+                    <li><strong>Accurate Calculation:</strong> Perhitungan waktu akurat termasuk waktu pause</li>
+                    <li><strong>Time Log History:</strong> Riwayat lengkap semua aktivitas time tracking</li>
+                </ul>
+
+                <h3>Workflow Time Tracking</h3>
+                <div class="demo-section">
+                    <div class="demo-step">
+                        <strong>1. Start:</strong> User klik "Start" pada subtask → Time tracking dimulai, status: Active
+                    </div>
+                    <div class="demo-step">
+                        <strong>2. Pause:</strong> Klik "Pause" → Waktu tersimpan, status: Paused
+                    </div>
+                    <div class="demo-step">
+                        <strong>3. Resume:</strong> Klik "Resume" → Membuat session baru, status: Active
+                    </div>
+                    <div class="demo-step">
+                        <strong>4. Complete:</strong> Klik "Done" → Total waktu dihitung dari semua session (active + paused)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Kelebihan Sistem -->
+        <div class="slide">
+            <h2>⭐ Kelebihan Sistem</h2>
+            <div class="scroll-content">
+                <div class="advantage-item">
+                    <strong>1. Time Tracking Terintegrasi</strong>
+                    <p>Tidak seperti sistem lain, time tracking terintegrasi langsung dengan task management. User tidak perlu aplikasi terpisah untuk tracking waktu.</p>
+                </div>
+
+                <div class="advantage-item">
+                    <strong>2. Subtask dengan Time Tracking</strong>
+                    <p>Setiap subtask memiliki time tracking sendiri, memungkinkan tracking yang lebih detail dan akurat untuk task kompleks.</p>
+                </div>
+
+                <div class="advantage-item">
+                    <strong>3. Pause & Resume Feature</strong>
+                    <p>Fitur pause/resume yang smart - waktu pause tetap dihitung sebagai waktu kerja, mencegah kehilangan data produktivitas.</p>
+                </div>
+
+                <div class="advantage-item">
+                    <strong>4. Real-time User Status</strong>
+                    <p>Status user otomatis update (working/free/paused) berdasarkan aktivitas, memudahkan leader melihat availability team.</p>
+                </div>
+
+                <div class="advantage-item">
+                    <strong>5. Comprehensive Reports</strong>
+                    <p>Laporan lengkap dengan visualisasi: total hours, time by project, time by user, average per day, dan trend analysis.</p>
+                </div>
+
+                <div class="advantage-item">
+                    <strong>6. Responsive & Modern UI</strong>
+                    <p>Interface modern dengan Tailwind CSS, responsive di semua device, UX yang intuitif.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Demo CRUD - Create -->
+        <div class="slide">
+            <h2>🎬 Demo: Create (Membuat Task)</h2>
+            <div class="scroll-content">
+                <h3>Flow: Leader Membuat Task Baru</h3>
+                
+                <div class="demo-section">
+                    <h4>Step 1: Akses Halaman Project</h4>
+                    <div class="demo-step">Leader login → Pilih menu "Projects" → Klik proyek yang diinginkan</div>
+                </div>
+
+                <div class="demo-section">
+                    <h4>Step 2: Create Task</h4>
+                    <div class="demo-step">
+                        Klik tombol "Create Task" → Isi form:
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>📝 Task Title (wajib)</li>
+                            <li>📄 Description</li>
+                            <li>⚠️ Priority (Low/Medium/High)</li>
+                            <li>👤 Assign to User</li>
+                            <li>📅 Due Date</li>
+                            <li>⏱️ Estimated Hours</li>
+                            <li>📂 Board (To Do/In Progress/Review/Done)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="demo-section">
+                    <h4>Step 3: Hasil</h4>
+                    <div class="demo-step">
+                        ✅ Task berhasil dibuat dan muncul di Kanban Board<br>
+                        ✅ User yang di-assign mendapat notifikasi<br>
+                        ✅ Status user berubah menjadi "Working"
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Demo CRUD - Read -->
+        <div class="slide">
+            <h2>🎬 Demo: Read (Melihat Task)</h2>
+            <div class="scroll-content">
+                <h3>Flow: User Melihat Task yang Di-assign</h3>
+                
+                <div class="demo-section">
+                    <h4>Dashboard User</h4>
+                    <div class="demo-step">
+                        User login → Dashboard menampilkan:
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>📊 Total task yang di-assign</li>
+                            <li>⏱️ Work time today</li>
+                            <li>📈 Total hours this week</li>
+                            <li>📋 List of active tasks</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="demo-section">
+                    <h4>Task Detail</h4>
+                    <div class="demo-step">
+                        Klik task → Melihat detail lengkap:
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>📝 Task information (title, description, due date)</li>
+                            <li>📊 Status dan priority</li>
+                            <li>✅ List subtasks dengan progress</li>
+                            <li>💬 Comment history</li>
+                            <li>⏱️ Time tracking logs</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="demo-section">
+                    <h4>Filter & Search</h4>
+                    <div class="demo-step">
+                        ✅ Filter by project<br>
+                        ✅ Filter by status<br>
+                        ✅ Search by task name
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Demo CRUD - Update -->
+        <div class="slide">
+            <h2>🎬 Demo: Update (Mengerjakan Task)</h2>
+            <div class="scroll-content">
+                <h3>Flow: User Mengerjakan dan Update Task</h3>
+                
+                <div class="demo-section">
+                    <h4>Step 1: Buat Subtask (Opsional)</h4>
+                    <div class="demo-step">
+                        Klik "Subtasks" pada task → "Add New Subtask" → Isi form subtask → Save
+                    </div>
+                </div>
+
+                <div class="demo-section">
+                    <h4>Step 2: Start Time Tracking</h4>
+                    <div class="demo-step">
+                        Klik tombol "Start" pada subtask →<br>
+                        ✅ Time tracking dimulai otomatis<br>
+                        ✅ Status subtask: "In Progress"<br>
+                        ✅ User status: "Working"
+                    </div>
+                </div>
+
+                <div class="demo-section">
+                    <h4>Step 3: Pause (Jika Perlu)</h4>
+                    <div class="demo-step">
+                        Klik "Pause" → Waktu tersimpan, bisa lanjutkan nanti dengan "Resume"
+                    </div>
+                </div>
+
+                <div class="demo-section">
+                    <h4>Step 4: Complete Subtask</h4>
+                    <div class="demo-step">
+                        Klik "Done" →<br>
+                        ✅ Time tracking berhenti<br>
+                        ✅ Total waktu dihitung otomatis (termasuk waktu pause)<br>
+                        ✅ Status subtask: "Done"
+                    </div>
+                </div>
+
+                <div class="demo-section">
+                    <h4>Step 5: Update Task Status</h4>
+                    <div class="demo-step">
+                        Setelah semua subtask selesai → Drag task ke kolom "Review" di Kanban Board<br>
+                        atau<br>
+                        Klik "Submit Task" → Task masuk review leader
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Demo CRUD - Delete -->
+        <div class="slide">
+            <h2>🎬 Demo: Delete (Menghapus)</h2>
+            <div class="scroll-content">
+                <h3>Flow: Menghapus Task/Subtask</h3>
+                
+                <div class="demo-section">
+                    <h4>User: Delete Subtask</h4>
+                    <div class="demo-step">
+                        Buka halaman subtask → Klik icon "Delete" (🗑️) pada subtask → Konfirmasi → Subtask terhapus
+                    </div>
+                    <p style="color: #e74c3c; margin-top: 10px;">⚠️ User hanya bisa delete subtask yang mereka buat</p>
+                </div>
+
+                <div class="demo-section">
+                    <h4>Leader: Delete Task</h4>
+                    <div class="demo-step">
+                        Buka Kanban Board → Klik icon "Delete" pada task → Konfirmasi → Task dan semua subtasknya terhapus
+                    </div>
+                    <p style="color: #e74c3c; margin-top: 10px;">⚠️ Delete task akan menghapus semua data terkait (subtasks, comments, time logs)</p>
+                </div>
+
+                <div class="demo-section">
+                    <h4>Admin: Delete User/Project</h4>
+                    <div class="demo-step">
+                        Menu "Users" atau "Projects" → Klik "Delete" → Konfirmasi<br>
+                        ✅ Cascade delete: semua data terkait ikut terhapus
+                    </div>
+                </div>
+
+                <div class="demo-section">
+                    <h4>Soft Delete Features</h4>
+                    <div class="demo-step">
+                        ⚠️ <strong>Catatan Penting:</strong> Untuk keamanan data, beberapa operasi delete menggunakan soft delete atau memerlukan konfirmasi admin.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Demo Time Tracking -->
+        <div class="slide">
+            <h2>🎬 Demo: Time Tracking Workflow</h2>
+            <div class="scroll-content">
+                <h3>Skenario: User Mengerjakan Task dengan Interupsi</h3>
+                
+                <div class="demo-section">
+                    <h4>09:00 - Start Working</h4>
+                    <div class="demo-step">
+                        User klik "Start" pada subtask "Develop Login Feature"<br>
+                        ⏱️ Time tracking mulai: 09:00<br>
+                        📊 Status: Active
+                    </div>
+                </div>
+
+                <div class="demo-section">
+                    <h4>10:30 - Pause (Meeting)</h4>
+                    <div class="demo-step">
+                        User klik "Pause" karena ada meeting<br>
+                        ⏱️ Waktu tersimpan: 1.5 hours (09:00 - 10:30)<br>
+                        📊 Status: Paused
+                    </div>
+                </div>
+
+                <div class="demo-section">
+                    <h4>11:00 - Resume</h4>
+                    <div class="demo-step">
+                        Meeting selesai, user klik "Resume"<br>
+                        ⏱️ Session baru dimulai: 11:00<br>
+                        📊 Status: Active
+                    </div>
+                </div>
+
+                <div class="demo-section">
+                    <h4>13:00 - Complete</h4>
+                    <div class="demo-step">
+                        Pekerjaan selesai, user klik "Done"<br>
+                        ⏱️ Session 2: 2 hours (11:00 - 13:00)<br>
+                        ✅ <strong>Total Time: 3.5 hours</strong> (1.5h + 2h)<br>
+                        📊 Status: Completed
+                    </div>
+                </div>
+
+                <div class="demo-section">
+                    <h4>📈 Time Log</h4>
+                    <div class="demo-step">
+                        Sistem mencatat:<br>
+                        • Session 1: 09:00 - 10:30 (1.5h) - Paused<br>
+                        • Session 2: 11:00 - 13:00 (2h) - Completed<br>
+                        • <strong>Summary: 3.5h total</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Teknologi -->
+        <div class="slide">
+            <h2>🛠️ Teknologi yang Digunakan</h2>
+            <div class="scroll-content">
+                <div class="grid-2">
+                    <div>
+                        <h3>Backend</h3>
+                        <ul>
+                            <li>Laravel 12.26.4</li>
+                            <li>PHP 8.3.20</li>
+                            <li>MySQL Database</li>
+                            <li>Eloquent ORM</li>
+                            <li>Laravel Sanctum (API Auth)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Frontend</h3>
+                        <ul>
+                            <li>Blade Template Engine</li>
+                            <li>Tailwind CSS 3.x</li>
+                            <li>JavaScript (Vanilla)</li>
+                            <li>Alpine.js (untuk interaktivitas)</li>
+                            <li>Responsive Design</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Database Schema</h3>
+                <ul>
+                    <li>Users - Data pengguna dengan role</li>
+                    <li>Projects - Data proyek</li>
+                    <li>Project_Members - Relasi user & project</li>
+                    <li>Boards - Kolom Kanban (To Do, In Progress, Review, Done)</li>
+                    <li>Cards - Task/assignment</li>
+                    <li>Subtasks - Subtask dari task</li>
+                    <li>Time_Logs - Log waktu kerja dengan detail</li>
+                    <li>Comments - Komentar pada task & subtask</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 15: Kesimpulan -->
+        <div class="slide">
+            <h2>📝 Kesimpulan</h2>
+            <div class="scroll-content">
+                <h3>Sistem ini Cocok Untuk:</h3>
+                <ul>
+                    <li>Tim software development yang butuh tracking waktu detail</li>
+                    <li>Project manager yang ingin monitoring progress real-time</li>
+                    <li>Perusahaan yang butuh laporan produktivitas akurat</li>
+                    <li>Tim remote yang butuh kolaborasi terstruktur</li>
+                </ul>
+
+                <h3>Key Features Summary:</h3>
+                <div class="grid-2" style="margin-top: 20px;">
+                    <div class="feature-box">
+                        <h3>✅ Project Management</h3>
+                        <p>Kanban board, task assignment, subtask, status tracking</p>
+                    </div>
+                    <div class="feature-box">
+                        <h3>⏱️ Time Tracking</h3>
+                        <p>Automatic tracking, pause/resume, accurate calculation</p>
+                    </div>
+                    <div class="feature-box">
+                        <h3>💬 Collaboration</h3>
+                        <p>Comments, team members, notifications</p>
+                    </div>
+                    <div class="feature-box">
+                        <h3>📊 Reports</h3>
+                        <p>Analytics, productivity reports, time insights</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Implementasi Best Practices:</h3>
+                <ul>
+                    <li>✅ MVC Architecture Pattern</li>
+                    <li>✅ RESTful API Design</li>
+                    <li>✅ Database Normalization</li>
+                    <li>✅ Responsive & Modern UI</li>
+                    <li>✅ Security (Authentication & Authorization)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 16: Terima Kasih -->
+        <div class="slide">
+            <div class="center-content">
+                <h1>🙏 Terima Kasih</h1>
+                <p class="subtitle" style="font-size: 2em; margin-top: 40px;">Questions & Answers</p>
+                <div style="margin-top: 60px; text-align: center;">
+                    <p style="font-size: 1.5em; color: #666;">📧 Contact Information</p>
+                    <p style="font-size: 1.3em; color: #999; margin-top: 20px;">UKK Manajemen Proyek - 2025</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-number">
+        <span id="currentSlide">1</span> / <span id="totalSlides">16</span>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            
+            document.getElementById('currentSlide').textContent = currentSlide + 1;
+            
+            // Update button states
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
