@@ -126,10 +126,20 @@
                             <div class="mb-4">
                                 <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
                                     <span>Progress</span>
-                                    <span class="font-semibold">{{ $p->progress_percentage ?? 0 }}%</span>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-semibold">{{ $p->status === 'done' ? 100 : ($p->progress_percentage ?? 0) }}%</span>
+                                        @if($p->status === 'done')
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                                </svg>
+                                                Complete
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-green-600 h-2 rounded-full transition-all duration-300" style="width: {{ $p->progress_percentage ?? 0 }}%"></div>
+                                    <div class="h-2 rounded-full transition-all duration-300 {{ $p->status === 'done' ? 'bg-green-500' : 'bg-green-600' }}" style="width: {{ $p->status === 'done' ? 100 : ($p->progress_percentage ?? 0) }}%"></div>
                                 </div>
                             </div>
 

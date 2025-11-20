@@ -17,11 +17,15 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         // Get all tasks assigned to this user (both direct assignment and through card_assignments)
+        // Exclude tasks from projects with status 'done'
         $myTasks = Card::where(function ($query) use ($user) {
                 $query->where('user_id', $user->id) // Direct assignment
                       ->orWhereHas('assignments', function ($subQuery) use ($user) {
                           $subQuery->where('user_id', $user->id); // Assignment through card_assignments table
                       });
+            })
+            ->whereHas('board.project', function ($projectQuery) {
+                $projectQuery->where('status', '!=', 'done');
             })
             ->with(['board.project', 'user', 'subtasks'])
             ->orderBy('due_date', 'asc')
@@ -117,13 +121,14 @@ class DashboardController extends Controller
 
         $weekWorkTime = $thisWeekLogs->sum('duration_minutes') / 60; // Convert to hours
 
-        // Get projects
+        // Get projects - exclude done projects
         $projects = Project::where(function ($query) use ($user) {
             $query->where('user_id', $user->id)
                   ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
                       $subQuery->where('user_id', $user->id);
                   });
         })
+        ->where('status', '!=', 'done')
         ->with('boards.cards')
         ->get();
 

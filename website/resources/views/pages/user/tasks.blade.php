@@ -522,45 +522,57 @@
     </script>
 
     <!-- Extension Request Modal -->
-    <div id="extensionModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-        <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-md shadow-lg rounded-md bg-white">
-            <div class="mt-3">
-                <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Request Deadline Extension</h3>
-
-                <div class="mb-4 p-3 bg-gray-50 rounded-lg">
-                    <p class="text-sm text-gray-600 mb-1"><span class="font-medium">Task:</span> <span id="extensionTaskTitle"></span></p>
-                    <p class="text-sm text-gray-600"><span class="font-medium">Current Deadline:</span> <span id="extensionCurrentDeadline"></span></p>
+    <div id="extensionModal" class="fixed inset-0 bg-black/50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="bg-white rounded-lg shadow-lg max-w-md w-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-medium text-gray-900">Request Deadline Extension</h3>
+                        <button onclick="closeExtensionModal()" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
-                <form id="extensionForm" method="POST">
+                <form id="extensionForm" method="POST" class="px-6 py-4">
                     @csrf
-                    <div class="mb-4">
-                        <label for="new_deadline" class="block text-sm font-medium text-gray-700 mb-2">New Deadline</label>
-                        <input type="date" name="new_deadline" id="new_deadline" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <div class="space-y-4">
+                        <!-- Task Info -->
+                        <div class="p-3 bg-gray-50 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-1"><span class="font-medium">Task:</span> <span id="extensionTaskTitle"></span></p>
+                            <p class="text-sm text-gray-600"><span class="font-medium">Current Deadline:</span> <span id="extensionCurrentDeadline"></span></p>
+                        </div>
+
+                        <!-- New Deadline -->
+                        <div>
+                            <label for="new_deadline" class="block text-sm font-medium text-gray-700 mb-2">New Deadline</label>
+                            <input type="date" name="new_deadline" id="new_deadline" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <!-- Reason -->
+                        <div>
+                            <label for="reason" class="block text-sm font-medium text-gray-700 mb-2">Reason for Extension</label>
+                            <textarea name="reason" id="reason" rows="4" required maxlength="500"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Explain why you need more time..."></textarea>
+                            <p class="text-xs text-gray-500 mt-1">Maximum 500 characters</p>
+                        </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label for="reason" class="block text-sm font-medium text-gray-700 mb-2">Reason for Extension</label>
-                        <textarea name="reason" id="reason" rows="4" required maxlength="500"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Explain why you need more time..."></textarea>
-                        <p class="text-xs text-gray-500 mt-1">Maximum 500 characters</p>
-                    </div>
-
-                    <div class="flex gap-3">
+                    <div class="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
                         <button type="button" onclick="closeExtensionModal()"
-                            class="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
+                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md">
                             Cancel
                         </button>
                         <button type="submit"
-                            class="flex-1 px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700">
+                            class="px-4 py-2 text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 rounded-md">
                             Submit Request
                         </button>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
-
-@endsection
+    </div>@endsection

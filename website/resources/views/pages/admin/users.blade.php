@@ -132,10 +132,15 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ ($users->currentPage() - 1) * $users->perPage() + $index + 1 }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div class="flex-shrink-0 w-10 h-10">
-                                            <img class="w-10 h-10 rounded-full"
-                                                src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=random&size=128"
-                                                alt="{{ $user->name }}">
+                                        <div class="flex-shrink-0">
+                                            @php
+                                                $initials = strtoupper(substr($user->name, 0, 2));
+                                                $colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-pink-500', 'bg-indigo-500', 'bg-red-500', 'bg-yellow-500', 'bg-teal-500'];
+                                                $colorIndex = ord(strtolower($user->name[0])) % count($colors);
+                                            @endphp
+                                            <div class="w-10 h-10 rounded-full {{ $colors[$colorIndex] }} flex items-center justify-center">
+                                                <span class="text-white font-semibold text-sm">{{ $initials }}</span>
+                                            </div>
                                         </div>
                                         <div class="ml-4">
                                             <div class="text-sm font-medium text-gray-900">{{ $user->name }}</div>

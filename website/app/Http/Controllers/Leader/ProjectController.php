@@ -19,14 +19,15 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
 
-        // Get projects where current user is assigned as member or created by them
+        // Get projects where current user is assigned as member or created by them - exclude done projects
         $userProjects = Project::where(function ($q) use ($user) {
             $q->where('user_id', $user->id) // Projects created by this user
-              ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
-                  $subQuery->where('user_id', $user->id); // Projects where user is a member
-              });
+                ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
+                    $subQuery->where('user_id', $user->id); // Projects where user is a member
+                });
         })
-        ->with(['user', 'boards.cards', 'projectMembers.user'])
+            ->where('status', '!=', 'done')
+            ->with(['user', 'boards.cards', 'projectMembers.user'])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -64,7 +65,7 @@ class ProjectController extends Controller
 
             if ($firstBoard) {
                 return redirect()->route('leader.projects.board', $project->id)
-                                ->with('message', 'Otomatis diarahkan ke project Anda: ' . $project->project_name);
+                    ->with('message', 'Otomatis diarahkan ke project Anda: ' . $project->project_name);
             }
         }
 
@@ -89,20 +90,21 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
 
-        // Check if user has access to this project
+        // Check if user has access to this project - exclude done projects
         $project = Project::where(function ($query) use ($user) {
             $query->where('user_id', $user->id)
-                  ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
-                      $subQuery->where('user_id', $user->id);
-                  });
+                ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
+                    $subQuery->where('user_id', $user->id);
+                });
         })
-        ->where('id', $projectId)
-        ->with(['boards.cards.assignedUsers', 'user', 'projectMembers.user'])
-        ->first();
+            ->where('id', $projectId)
+            ->where('status', '!=', 'done')
+            ->with(['boards.cards.assignedUsers', 'user', 'projectMembers.user'])
+            ->first();
 
         if (!$project) {
             return redirect()->route('leader.projects')
-                           ->with('error', 'Anda tidak memiliki akses ke project ini.');
+                ->with('error', 'Anda tidak memiliki akses ke project ini.');
         }
 
         // Get or create default board for this project
@@ -121,12 +123,12 @@ class ProjectController extends Controller
         // Search functionality
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $cardsQuery->where(function($q) use ($search) {
+            $cardsQuery->where(function ($q) use ($search) {
                 $q->where('card_title', 'like', '%' . $search . '%')
-                  ->orWhere('description', 'like', '%' . $search . '%')
-                  ->orWhereHas('user', function($userQuery) use ($search) {
-                      $userQuery->where('name', 'like', '%' . $search . '%');
-                  });
+                    ->orWhere('description', 'like', '%' . $search . '%')
+                    ->orWhereHas('user', function ($userQuery) use ($search) {
+                        $userQuery->where('name', 'like', '%' . $search . '%');
+                    });
             });
         }
 
@@ -171,13 +173,14 @@ class ProjectController extends Controller
 
         $project = Project::where(function ($query) use ($user) {
             $query->where('user_id', $user->id)
-                  ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
-                      $subQuery->where('user_id', $user->id);
-                  });
+                ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
+                    $subQuery->where('user_id', $user->id);
+                });
         })
-        ->where('id', $projectId)
-        ->with(['user', 'boards.cards', 'projectMembers.user'])
-        ->firstOrFail();
+            ->where('id', $projectId)
+            ->where('status', '!=', 'done')
+            ->with(['user', 'boards.cards', 'projectMembers.user'])
+            ->firstOrFail();
 
         // Calculate statistics - FIXED: use manual counting instead of flatMap
         $totalCards = 0;
@@ -229,12 +232,12 @@ class ProjectController extends Controller
         // Check if user has access to this project
         $project = Project::where(function ($query) use ($user) {
             $query->where('user_id', $user->id)
-                  ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
-                      $subQuery->where('user_id', $user->id);
-                  });
+                ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
+                    $subQuery->where('user_id', $user->id);
+                });
         })
-        ->where('id', $request->project_id)
-        ->first();
+            ->where('id', $request->project_id)
+            ->first();
 
         if (!$project) {
             return response()->json(['error' => 'Unauthorized'], 403);
@@ -279,7 +282,7 @@ class ProjectController extends Controller
 
             // Update assignment status based on task status
             if ($card->assignedUsers()->exists()) {
-                $assignmentStatus = match($newStatus) {
+                $assignmentStatus = match ($newStatus) {
                     'todo' => 'assigned',
                     'in_progress' => 'in_progress',
                     'review', 'done' => 'completed',
@@ -335,20 +338,21 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
 
-        // Check if user has access to this project
+        // Check if user has access to this project - exclude done projects
         $project = Project::where(function ($query) use ($user) {
             $query->where('user_id', $user->id)
-                  ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
-                      $subQuery->where('user_id', $user->id);
-                  });
+                ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
+                    $subQuery->where('user_id', $user->id);
+                });
         })
-        ->where('id', $projectId)
-        ->with(['user', 'projectMembers.user'])
-        ->first();
+            ->where('id', $projectId)
+            ->where('status', '!=', 'done')
+            ->with(['user', 'projectMembers.user'])
+            ->first();
 
         if (!$project) {
             return redirect()->route('leader.projects')
-                           ->with('error', 'Anda tidak memiliki akses ke project ini.');
+                ->with('error', 'Anda tidak memiliki akses ke project ini atau project sudah selesai.');
         }
 
         // Get or create default board for this project
@@ -383,42 +387,44 @@ class ProjectController extends Controller
 
     public function storeTask(Request $request)
     {
+        $user = Auth::user();
+
+        // Get project first to use deadline in validation
+        $project = Project::where(function ($query) use ($user) {
+            $query->where('user_id', $user->id)
+                ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
+                    $subQuery->where('user_id', $user->id);
+                });
+        })
+            ->where('id', $request->project_id)
+            ->with('boards')
+            ->first();
+
+        if (!$project) {
+            return redirect()->route('leader.projects')
+                ->with('error', 'Unauthorized access to project.');
+        }
+
         $request->validate([
             'project_id' => 'required|integer|exists:projects,id',
             'board_id' => 'required|integer|exists:boards,id',
             'card_title' => 'required|string|max:255',
             'description' => 'required|string',
             'user_id' => 'required|integer|exists:users,id',
-            'due_date' => 'nullable|date|after_or_equal:today',
+            'due_date' => 'nullable|date|after_or_equal:today|before_or_equal:' . $project->deadline,
             'priority' => 'required|in:low,medium,high',
             'status' => 'required|in:todo,in_progress,review,done',
             'estimated_hours' => 'nullable|numeric|min:0|max:999.99'
+        ], [
+            'due_date.before_or_equal' => 'The due date cannot be after the project deadline (' . \Carbon\Carbon::parse($project->deadline)->format('M d, Y') . ').',
         ]);
-
-        $user = Auth::user();
-
-        // Check if user has access to this project
-        $project = Project::where(function ($query) use ($user) {
-            $query->where('user_id', $user->id)
-                  ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
-                      $subQuery->where('user_id', $user->id);
-                  });
-        })
-        ->where('id', $request->project_id)
-        ->with('boards')
-        ->first();
-
-        if (!$project) {
-            return redirect()->route('leader.projects')
-                           ->with('error', 'Unauthorized access to project.');
-        }
 
         // Check if board belongs to this project
         $board = $project->boards->where('id', $request->board_id)->first();
         if (!$board) {
             return redirect()->back()
-                           ->with('error', 'Board not found for this project.')
-                           ->withInput();
+                ->with('error', 'Board not found for this project.')
+                ->withInput();
         }
 
         // Check if assigned user is a project member or owner
@@ -428,8 +434,8 @@ class ProjectController extends Controller
 
         if (!$isProjectMember && $request->user_id != $project->user_id) {
             return redirect()->back()
-                           ->with('error', 'Assigned user is not a project member.')
-                           ->withInput();
+                ->with('error', 'Assigned user is not a project member.')
+                ->withInput();
         }
 
         // CHECK: User hanya bisa punya 1 task aktif (belum done)
@@ -456,8 +462,8 @@ class ProjectController extends Controller
 
         // Get the next position for the card in the specified status
         $lastPosition = Card::where('board_id', $request->board_id)
-                           ->where('status', $request->status)
-                           ->max('position') ?? 0;
+            ->where('status', $request->status)
+            ->max('position') ?? 0;
 
         // Create the card
         $card = Card::create([
@@ -484,12 +490,12 @@ class ProjectController extends Controller
 
         if ($action === 'create_and_continue') {
             return redirect()->route('leader.projects.create-task', $project->id)
-                           ->with('success', 'Task "' . $card->card_title . '" created successfully! Add another task.');
+                ->with('success', 'Task "' . $card->card_title . '" created successfully! Add another task.');
         }
 
         // Default: create_and_view
         return redirect()->route('leader.projects.board', $project->id)
-                       ->with('success', 'Task "' . $card->card_title . '" created successfully!');
+            ->with('success', 'Task "' . $card->card_title . '" created successfully!');
     }
 
     /**
@@ -503,14 +509,14 @@ class ProjectController extends Controller
         $task = Card::whereHas('board.project', function ($query) use ($user) {
             $query->where(function ($subQuery) use ($user) {
                 $subQuery->where('user_id', $user->id)
-                         ->orWhereHas('projectMembers', function ($memberQuery) use ($user) {
-                             $memberQuery->where('user_id', $user->id);
-                         });
+                    ->orWhereHas('projectMembers', function ($memberQuery) use ($user) {
+                        $memberQuery->where('user_id', $user->id);
+                    });
             });
         })
-        ->where('id', $taskId)
-        ->with(['board.project', 'user'])
-        ->first();
+            ->where('id', $taskId)
+            ->with(['board.project', 'user'])
+            ->first();
 
         if (!$task) {
             return response()->json([
@@ -521,7 +527,7 @@ class ProjectController extends Controller
 
         // Check if user is assigned to this task or is the task creator
         $hasAccess = $task->user_id == $user->id ||
-                    $task->assignedUsers()->where('user_id', $user->id)->exists();
+            $task->assignedUsers()->where('user_id', $user->id)->exists();
 
         if (!$hasAccess) {
             return response()->json([
@@ -568,15 +574,16 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
 
-        // Get all projects where user is leader or member
+        // Get all projects where user is leader or member - exclude done projects
         $projects = Project::where(function ($query) use ($user) {
             $query->where('user_id', $user->id)
-                  ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
-                      $subQuery->where('user_id', $user->id);
-                  });
+                ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
+                    $subQuery->where('user_id', $user->id);
+                });
         })
-        ->with(['boards.cards.user', 'boards.cards.assignedUsers'])
-        ->get();
+            ->where('status', '!=', 'done')
+            ->with(['boards.cards.user', 'boards.cards.assignedUsers'])
+            ->get();
 
         // Get all tasks from user's projects
         $allTasks = collect();
@@ -598,7 +605,7 @@ class ProjectController extends Controller
         // Get tasks assigned to the current user
         $myTasks = $allTasks->filter(function ($task) use ($user) {
             return $task->user_id == $user->id ||
-                   $task->assignedUsers->contains('id', $user->id);
+                $task->assignedUsers->contains('id', $user->id);
         });
 
         // Get tasks that need review (for project leaders)
@@ -611,5 +618,73 @@ class ProjectController extends Controller
             'tasksForReview',
             'allTasks'
         ));
+    }
+
+    /**
+     * Submit project to admin for review
+     */
+    public function submitProject(Request $request, $projectId)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'submission_note' => 'nullable|string|max:1000',
+        ]);
+
+        // Find project where user is the owner (leader)
+        $project = Project::where('id', $projectId)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$project) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Project tidak ditemukan atau Anda tidak memiliki akses untuk submit project ini.'
+            ], 404);
+        }
+
+        // Check if project is in draft status
+        if ($project->status !== 'draft') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Project hanya bisa disubmit jika statusnya masih draft.'
+            ], 400);
+        }
+
+        // Update project status to submitted
+        $project->update([
+            'status' => 'submitted',
+            'submission_note' => $request->submission_note,
+            'submitted_at' => now(),
+        ]);
+
+        // Create notification for all admins
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            \App\Models\Notification::create([
+                'user_id' => $admin->id,
+                'type' => 'project_submitted',
+                'title' => 'Project Submitted for Review',
+                'message' => "Project '{$project->project_name}' telah disubmit oleh {$user->name} untuk review.",
+                'data' => [
+                    'project_id' => $project->id,
+                    'project_name' => $project->project_name,
+                    'submitted_by' => $user->name,
+                    'submission_note' => $request->submission_note,
+                ],
+                'is_read' => false,
+                'project_id' => $project->id,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Project berhasil disubmit untuk review oleh admin!',
+            'project' => [
+                'id' => $project->id,
+                'name' => $project->project_name,
+                'status' => $project->status,
+            ]
+        ]);
     }
 }

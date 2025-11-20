@@ -18,6 +18,12 @@ return new class extends Migration
             $table->string('slug');
             $table->text('description')->nullable();
             $table->date('deadline')->nullable();
+            $table->enum('status', ['draft', 'submitted', 'done', 'rejected'])->default('draft');
+            $table->text('submission_note')->nullable(); // Note dari leader saat submit
+            $table->text('review_note')->nullable(); // Note dari admin saat review
+            $table->timestamp('submitted_at')->nullable();
+            $table->timestamp('reviewed_at')->nullable();
+            $table->foreignId('reviewed_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
     }

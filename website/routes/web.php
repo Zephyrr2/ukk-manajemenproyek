@@ -65,6 +65,11 @@ Route::middleware('auth')->group(function () {
         Route::put('/projects/{slug}', [ProjectController::class, 'updateProject'])->name('projects.update');
         Route::delete('/projects/{slug}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 
+        // Project Review Management
+        Route::post('/projects/{slug}/approve', [ProjectController::class, 'approveProject'])->name('projects.approve');
+        Route::post('/projects/{slug}/reject', [ProjectController::class, 'rejectProject'])->name('projects.reject');
+        Route::post('/projects/{slug}/reset-status', [ProjectController::class, 'resetProjectStatus'])->name('projects.reset-status');
+
         // Project Members Management
         Route::post('/projects/{slug}/members', [ProjectController::class, 'addMember'])->name('projects.members.add');
         Route::delete('/projects/{slug}/members/{member}', [ProjectController::class, 'removeMember'])->name('projects.members.remove');
@@ -100,6 +105,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/projects/store-task', [LeaderProjectController::class, 'storeTask'])->name('projects.store-task');
         Route::post('/tasks/{id}/submit', [LeaderProjectController::class, 'submitTask'])->name('tasks.submit');
         Route::get('/projects/{id}/members', [LeaderProjectController::class, 'getProjectMembers'])->name('projects.members');
+
+        // Project Submission (Leader submits project to admin)
+        Route::post('/projects/{id}/submit-project', [LeaderProjectController::class, 'submitProject'])->name('projects.submit');
 
         // Task Assignment - using dedicated TaskController
         Route::get('/task-assignment', [TaskController::class, 'index'])->name('task-assignment');

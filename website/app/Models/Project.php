@@ -12,6 +12,17 @@ class Project extends Model
         'slug',
         'description',
         'deadline',
+        'status',
+        'submission_note',
+        'review_note',
+        'submitted_at',
+        'reviewed_at',
+        'reviewed_by',
+    ];
+
+    protected $casts = [
+        'submitted_at' => 'datetime',
+        'reviewed_at' => 'datetime',
     ];
 
     public function user()
@@ -61,5 +72,15 @@ class Project extends Model
 
         $completedTasks = $this->completed_tasks_count;
         return round(($completedTasks / $totalTasks) * 100);
+    }
+
+    public function reviewer()
+    {
+        return $this->belongsTo(User::class, 'reviewed_by');
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'project_id');
     }
 }

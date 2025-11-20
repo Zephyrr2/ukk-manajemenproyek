@@ -20,13 +20,14 @@ class TaskController extends Controller
     {
         $user = Auth::user();
 
-        // Get all projects where user is leader or member
+        // Get all projects where user is leader or member - exclude done projects
         $projects = Project::where(function ($query) use ($user) {
             $query->where('user_id', $user->id)
                   ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
                       $subQuery->where('user_id', $user->id);
                   });
         })
+        ->where('status', '!=', 'done')
         ->with(['boards.cards.user', 'boards.cards.assignments.user'])
         ->get();
 

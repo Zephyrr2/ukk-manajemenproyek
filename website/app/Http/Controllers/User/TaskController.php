@@ -21,11 +21,14 @@ class TaskController extends Controller
     {
         $user = Auth::user();
 
-        // Get all projects where user is member
-        $projects = Project::whereHas('projectMembers', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
+        // Get all projects where user is member - exclude done projects
+        $projects = Project::where(function ($query) use ($user) {
+            $query->whereHas('projectMembers', function ($subQuery) use ($user) {
+                $subQuery->where('user_id', $user->id);
+            })
+            ->orWhere('user_id', $user->id); // Include projects created by user
         })
-        ->orWhere('user_id', $user->id) // Include projects created by user
+        ->where('status', '!=', 'done')
         ->with(['boards.cards.user', 'boards.cards.assignments.user', 'boards.cards.subtasks'])
         ->get();
 

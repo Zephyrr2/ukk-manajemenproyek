@@ -17,13 +17,14 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Get projects where user is leader (creator or member)
+        // Get projects where user is leader (creator or member) - exclude done projects
         $projects = Project::where(function ($query) use ($user) {
             $query->where('user_id', $user->id)
                   ->orWhereHas('projectMembers', function ($subQuery) use ($user) {
                       $subQuery->where('user_id', $user->id);
                   });
         })
+        ->where('status', '!=', 'done')
         ->with(['boards.cards.user', 'user', 'projectMembers.user'])
         ->get();
 

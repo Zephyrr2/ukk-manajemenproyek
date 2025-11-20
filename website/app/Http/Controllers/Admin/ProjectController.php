@@ -486,4 +486,186 @@ class ProjectController extends Controller
         return redirect()->route('admin.projects')
                        ->with('success', "Project '{$projectName}' berhasil dihapus!");
     }
+
+    /**
+     * Approve submitted project
+     */
+    public function approveProject(Request $request, $slug)
+    {
+        $admin = Auth::user();
+
+        $request->validate([
+            'review_note' => 'nullable|string|max:1000',
+        ]);
+
+        $project = Project::where('slug', $slug)->with('user')->firstOrFail();
+
+        // Check if project is submitted
+        if ($project->status !== 'submitted') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Project hanya bisa di-approve jika statusnya submitted.'
+            ], 400);
+        }
+
+        // Update project status to done
+        $project->update([
+            'status' => 'done',
+            'review_note' => $request->review_note,
+            'reviewed_at' => now(),
+            'reviewed_by' => $admin->id,
+        ]);
+
+        // Update all users in this project to 'free' status
+        // Get project leader
+        $userIds = [];
+        if ($project->user_id) {
+            $userIds[] = $project->user_id;
+        }
+
+        // Get all project members
+        $memberIds = \App\Models\ProjectMember::where('project_id', $project->id)
+            ->pluck('user_id')
+            ->toArray();
+
+        $userIds = array_merge($userIds, $memberIds);
+        $userIds = array_unique($userIds);
+
+        // Update all users to free status
+        if (!empty($userIds)) {
+            User::whereIn('id', $userIds)->update(['status' => 'free']);
+        }
+
+        // Stop all active time logs for tasks in this project
+        $boardIds = \App\Models\Board::where('project_id', $project->id)->pluck('id');
+        $cardIds = \App\Models\Card::whereIn('board_id', $boardIds)->pluck('id');
+
+        $activeLogs = \App\Models\Time_Log::whereIn('card_id', $cardIds)
+            ->whereNull('end_time')
+            ->get();
+
+        foreach ($activeLogs as $log) {
+            $log->stopWorkSession();
+        }
+
+        // Create notification for project leader
+        \App\Models\Notification::create([
+            'user_id' => $project->user_id,
+            'type' => 'project_approved',
+            'title' => 'Project Approved',
+            'message' => "Project '{$project->project_name}' telah disetujui oleh admin {$admin->name}.",
+            'data' => [
+                'project_id' => $project->id,
+                'project_name' => $project->project_name,
+                'reviewed_by' => $admin->name,
+                'review_note' => $request->review_note,
+            ],
+            'is_read' => false,
+            'project_id' => $project->id,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Project berhasil di-approve!',
+            'project' => [
+                'id' => $project->id,
+                'name' => $project->project_name,
+                'status' => $project->status,
+            ]
+        ]);
+    }
+
+    /**
+     * Reject submitted project
+     */
+    public function rejectProject(Request $request, $slug)
+    {
+        $admin = Auth::user();
+
+        $request->validate([
+            'review_note' => 'nullable|string|max:1000',
+        ]);
+
+        $project = Project::where('slug', $slug)->with('user')->firstOrFail();
+
+        // Check if project is submitted
+        if ($project->status !== 'submitted') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Project hanya bisa di-reject jika statusnya submitted.'
+            ], 400);
+        }
+
+        // Update project status back to draft (rejected project automatically returns to draft)
+        $project->update([
+            'status' => 'draft',
+            'review_note' => $request->review_note,
+            'reviewed_at' => now(),
+            'reviewed_by' => $admin->id,
+            'submission_note' => null, // Clear submission note
+            'submitted_at' => null, // Clear submitted timestamp
+        ]);
+
+        // Create notification for project leader
+        \App\Models\Notification::create([
+            'user_id' => $project->user_id,
+            'type' => 'project_rejected',
+            'title' => 'Project Rejected',
+            'message' => "Project '{$project->project_name}' telah ditolak oleh admin {$admin->name}. Project dikembalikan ke status draft.",
+            'data' => [
+                'project_id' => $project->id,
+                'project_name' => $project->project_name,
+                'reviewed_by' => $admin->name,
+                'review_note' => $request->review_note,
+            ],
+            'is_read' => false,
+            'project_id' => $project->id,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Project telah di-reject dan dikembalikan ke status draft!',
+            'project' => [
+                'id' => $project->id,
+                'name' => $project->project_name,
+                'status' => $project->status,
+            ]
+        ]);
+    }
+
+    /**
+     * Reset project status back to draft (after rejection)
+     */
+    public function resetProjectStatus(Request $request, $slug)
+    {
+        $project = Project::where('slug', $slug)->firstOrFail();
+
+        // Can only reset rejected projects
+        if ($project->status !== 'rejected') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya project yang rejected yang bisa direset ke draft.'
+            ], 400);
+        }
+
+        // Reset to draft status
+        $project->update([
+            'status' => 'draft',
+            'submission_note' => null,
+            'review_note' => null,
+            'submitted_at' => null,
+            'reviewed_at' => null,
+            'reviewed_by' => null,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status project berhasil direset ke draft!',
+            'project' => [
+                'id' => $project->id,
+                'name' => $project->project_name,
+                'status' => $project->status,
+            ]
+        ]);
+    }
 }

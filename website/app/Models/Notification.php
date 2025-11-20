@@ -17,6 +17,7 @@ class Notification extends Model
         'data',
         'is_read',
         'card_id',
+        'project_id',
     ];
 
     protected $casts = [
@@ -40,6 +41,14 @@ class Notification extends Model
     public function card()
     {
         return $this->belongsTo(Card::class);
+    }
+
+    /**
+     * Get the project associated with the notification
+     */
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
     }
 
     /**
@@ -86,6 +95,9 @@ class Notification extends Model
             'extension_request' => '⏰',
             'extension_approved' => '✅',
             'extension_rejected' => '❌',
+            'project_submitted' => '📋',
+            'project_approved' => '✅',
+            'project_rejected' => '❌',
             default => '🔔',
         };
     }
@@ -102,6 +114,9 @@ class Notification extends Model
             'extension_request' => 'orange',
             'extension_approved' => 'green',
             'extension_rejected' => 'red',
+            'project_submitted' => 'blue',
+            'project_approved' => 'green',
+            'project_rejected' => 'red',
             default => 'gray',
         };
     }

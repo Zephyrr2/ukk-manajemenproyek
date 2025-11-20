@@ -54,7 +54,22 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <h1 class="text-2xl font-bold text-gray-900">{{ $project->project_name }}</h1>
+                                        <div class="flex items-center space-x-2 mb-1">
+                                            <h1 class="text-2xl font-bold text-gray-900">{{ $project->project_name }}</h1>
+                                            @php
+                                                $statusConfig = [
+                                                    'draft' => ['bg-gray-100', 'text-gray-800', 'Draft'],
+                                                    'submitted' => ['bg-blue-100', 'text-blue-800', 'Submitted'],
+                                                    'done' => ['bg-green-100', 'text-green-800', 'Done'],
+                                                    'rejected' => ['bg-red-100', 'text-red-800', 'Rejected'],
+                                                ];
+                                                $config = $statusConfig[$project->status] ?? $statusConfig['draft'];
+                                            @endphp
+                                            <span
+                                                class="px-3 py-1 rounded-full text-sm font-medium {{ $config[0] }} {{ $config[1] }}">
+                                                {{ $config[2] }}
+                                            </span>
+                                        </div>
                                         <p class="text-gray-500">Created on {{ $project->created_at->format('M d, Y') }}</p>
                                     </div>
                                 </div>
@@ -66,6 +81,116 @@
                                             {{ $project->description ?? 'No description provided.' }}
                                         </p>
                                     </div>
+
+                                    @if ($project->status === 'submitted')
+                                        <!-- Submission Information -->
+                                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-5">
+                                            <div class="flex items-start space-x-4">
+                                                <div class="flex-shrink-0">
+                                                    <div
+                                                        class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                                        <svg class="w-6 h-6 text-blue-600" fill="none"
+                                                            stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-1">
+                                                    <h3 class="font-semibold text-blue-900 mb-2 flex items-center">
+                                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                                        </svg>
+                                                        Project Submitted for Review
+                                                    </h3>
+                                                    <div class="space-y-2">
+                                                        <div class="flex items-center text-sm">
+                                                            <span class="font-medium text-blue-900 mr-2">Submitted
+                                                                by:</span>
+                                                            <div class="flex items-center space-x-2">
+                                                                @if ($project->user)
+                                                                    <img class="w-6 h-6 rounded-full"
+                                                                        src="https://ui-avatars.com/api/?name={{ urlencode($project->user->name) }}&background=random"
+                                                                        alt="{{ $project->user->name }}">
+                                                                    <span
+                                                                        class="text-blue-800 font-medium">{{ $project->user->name }}</span>
+                                                                    <span
+                                                                        class="text-blue-600">({{ ucfirst($project->user->role) }})</span>
+                                                                @else
+                                                                    <span class="text-blue-800">Unknown</span>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex items-center text-sm">
+                                                            <span class="font-medium text-blue-900 mr-2">Submitted
+                                                                on:</span>
+                                                            <span class="text-blue-800">
+                                                                {{ $project->submitted_at ? $project->submitted_at->format('l, F j, Y \a\t g:i A') : 'N/A' }}
+                                                            </span>
+                                                        </div>
+                                                        @if ($project->submission_note)
+                                                            <div class="mt-3 pt-3 border-t border-blue-200">
+                                                                <span
+                                                                    class="font-medium text-blue-900 block mb-1">Submission
+                                                                    Note:</span>
+                                                                <p
+                                                                    class="text-blue-800 bg-white bg-opacity-50 rounded p-3 text-sm leading-relaxed">
+                                                                    "{{ $project->submission_note }}"
+                                                                </p>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Action Buttons -->
+                                        <div class="flex items-center space-x-3 pt-2">
+                                            <button onclick="approveProject()"
+                                                class="flex-1 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center shadow-sm">
+                                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                                Approve Project
+                                            </button>
+                                            <button onclick="rejectProject()"
+                                                class="flex-1 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center shadow-sm">
+                                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                                Reject Project
+                                            </button>
+                                        </div>
+                                    @endif
+
+                                    @if ($project->status === 'done' && $project->review_note)
+                                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                            <h3 class="font-medium text-green-900 mb-2 flex items-center">
+                                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                Approval Note
+                                            </h3>
+                                            <p class="text-green-800">{{ $project->review_note }}</p>
+                                            <p class="text-xs text-green-600 mt-2">
+                                                Approved
+                                                {{ $project->reviewed_at ? $project->reviewed_at->diffForHumans() : '' }}
+                                                @if ($project->reviewer)
+                                                    by {{ $project->reviewer->name }}
+                                                @endif
+                                            </p>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -86,11 +211,15 @@
                                         <div class="flex items-start justify-between">
                                             <div class="flex-1 min-w-0">
                                                 <p class="text-xs sm:text-sm text-gray-500 mb-1">Total Tasks</p>
-                                                <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $totalTasks }}</p>
+                                                <p class="text-2xl sm:text-3xl font-bold text-gray-900">
+                                                    {{ $totalTasks }}</p>
                                             </div>
-                                            <div class="w-12 h-12 sm:w-14 sm:h-14 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                                                <svg class="w-6 h-6 sm:w-7 sm:h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                            <div
+                                                class="w-12 h-12 sm:w-14 sm:h-14 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <svg class="w-6 h-6 sm:w-7 sm:h-7 text-green-600" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                                 </svg>
                                             </div>
                                         </div>
@@ -99,11 +228,15 @@
                                         <div class="flex items-start justify-between">
                                             <div class="flex-1 min-w-0">
                                                 <p class="text-xs sm:text-sm text-gray-500 mb-1">Completed</p>
-                                                <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $completedTasks }}</p>
+                                                <p class="text-2xl sm:text-3xl font-bold text-gray-900">
+                                                    {{ $completedTasks }}</p>
                                             </div>
-                                            <div class="w-12 h-12 sm:w-14 sm:h-14 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                                                <svg class="w-6 h-6 sm:w-7 sm:h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                            <div
+                                                class="w-12 h-12 sm:w-14 sm:h-14 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <svg class="w-6 h-6 sm:w-7 sm:h-7 text-green-600" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M5 13l4 4L19 7" />
                                                 </svg>
                                             </div>
                                         </div>
@@ -114,11 +247,15 @@
                                     <div class="flex items-start justify-between">
                                         <div class="flex-1 min-w-0">
                                             <p class="text-xs sm:text-sm text-gray-500 mb-1">In Progress</p>
-                                            <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $inProgressTasks }}</p>
+                                            <p class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $inProgressTasks }}
+                                            </p>
                                         </div>
-                                        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-yellow-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                                            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        <div
+                                            class="w-12 h-12 sm:w-14 sm:h-14 bg-yellow-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-yellow-600" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                         </div>
                                     </div>
@@ -127,11 +264,21 @@
                                 <div class="mb-4">
                                     <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
                                         <span>Overall Progress</span>
-                                        <span>{{ $progressPercentage }}%</span>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="font-semibold">{{ $project->status === 'done' ? 100 : $progressPercentage }}%</span>
+                                            @if($project->status === 'done')
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                                    </svg>
+                                                    Complete
+                                                </span>
+                                            @endif
+                                        </div>
                                     </div>
                                     <div class="w-full bg-gray-200 rounded-full h-3">
-                                        <div class="bg-green-600 h-3 rounded-full transition-all duration-300"
-                                            style="width: {{ $progressPercentage }}%"></div>
+                                        <div class="h-3 rounded-full transition-all duration-300 {{ $project->status === 'done' ? 'bg-green-500' : 'bg-green-600' }}"
+                                            style="width: {{ $project->status === 'done' ? 100 : $progressPercentage }}%"></div>
                                     </div>
                                 </div>
                             </div>
@@ -146,60 +293,74 @@
                                     @forelse($recentActivities as $activity)
                                         <div class="flex items-start space-x-3">
                                             @php
-                                                $iconColor = match($activity->status) {
+                                                $iconColor = match ($activity->status) {
                                                     'completed' => ['bg-green-100', 'text-green-600'],
                                                     'in_progress' => ['bg-yellow-100', 'text-yellow-600'],
                                                     'todo' => ['bg-green-100', 'text-green-600'],
-                                                    default => ['bg-gray-100', 'text-gray-600']
+                                                    default => ['bg-gray-100', 'text-gray-600'],
                                                 };
-                                                $statusText = match($activity->status) {
+                                                $statusText = match ($activity->status) {
                                                     'completed' => 'completed',
                                                     'in_progress' => 'moved to in progress',
                                                     'todo' => 'created',
-                                                    default => 'updated'
+                                                    default => 'updated',
                                                 };
                                             @endphp
-                                            <div class="w-8 h-8 {{ $iconColor[0] }} rounded-full flex items-center justify-center flex-shrink-0">
-                                                @if($activity->status === 'completed')
-                                                    <svg class="w-4 h-4 {{ $iconColor[1] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            <div
+                                                class="w-8 h-8 {{ $iconColor[0] }} rounded-full flex items-center justify-center flex-shrink-0">
+                                                @if ($activity->status === 'completed')
+                                                    <svg class="w-4 h-4 {{ $iconColor[1] }}" fill="none"
+                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M5 13l4 4L19 7" />
                                                     </svg>
                                                 @elseif($activity->status === 'in_progress')
-                                                    <svg class="w-4 h-4 {{ $iconColor[1] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    <svg class="w-4 h-4 {{ $iconColor[1] }}" fill="none"
+                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                     </svg>
                                                 @else
-                                                    <svg class="w-4 h-4 {{ $iconColor[1] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                                    <svg class="w-4 h-4 {{ $iconColor[1] }}" fill="none"
+                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                                     </svg>
                                                 @endif
                                             </div>
                                             <div class="flex-1">
                                                 <p class="text-sm text-gray-900">
                                                     Task "{{ $activity->card_title }}" was {{ $statusText }}
-                                                    @if($activity->user)
+                                                    @if ($activity->user)
                                                         by {{ $activity->user->name }}
                                                     @endif
                                                 </p>
-                                                <p class="text-xs text-gray-500">{{ $activity->updated_at->diffForHumans() }}</p>
+                                                <p class="text-xs text-gray-500">
+                                                    {{ $activity->updated_at->diffForHumans() }}</p>
                                             </div>
                                         </div>
                                     @empty
                                         <div class="text-center py-8">
-                                            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                            <div
+                                                class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                                 </svg>
                                             </div>
                                             <p class="text-gray-500 text-sm">No recent activity</p>
-                                            <p class="text-gray-400 text-xs mt-1">Tasks will appear here when they are updated</p>
+                                            <p class="text-gray-400 text-xs mt-1">Tasks will appear here when they are
+                                                updated</p>
                                         </div>
                                     @endforelse
                                 </div>
 
-                                @if($recentActivities->count() > 0)
+                                @if ($recentActivities->count() > 0)
                                     <div class="mt-4 pt-4 border-t border-gray-200">
-                                        <a href="{{ route('admin.projects.board', $project->slug) }}" class="text-green-600 hover:text-green-800 text-sm font-medium">
+                                        <a href="{{ route('admin.projects.board', $project->slug) }}"
+                                            class="text-green-600 hover:text-green-800 text-sm font-medium">
                                             View Project Board →
                                         </a>
                                     </div>
@@ -219,22 +380,28 @@
                                     <div>
                                         <label class="text-sm font-medium text-gray-500">Team Leader</label>
                                         <div class="mt-1 flex items-center space-x-2">
-                                            @if($project->user)
+                                            @if ($project->user)
                                                 <img class="w-8 h-8 rounded-full"
                                                     src="https://ui-avatars.com/api/?name={{ urlencode($project->user->name) }}&background=random"
                                                     alt="Team Leader">
                                                 <div>
-                                                    <p class="text-sm font-medium text-gray-900">{{ $project->user->name }}</p>
+                                                    <p class="text-sm font-medium text-gray-900">
+                                                        {{ $project->user->name }}</p>
                                                     <p class="text-xs text-gray-500">{{ $project->user->email }}</p>
                                                 </div>
                                             @else
-                                                <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                                <div
+                                                    class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                                    <svg class="w-4 h-4 text-gray-400" fill="none"
+                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                                     </svg>
                                                 </div>
                                                 <div>
-                                                    <p class="text-sm font-medium text-gray-500">No team leader assigned</p>
+                                                    <p class="text-sm font-medium text-gray-500">No team leader assigned
+                                                    </p>
                                                     <p class="text-xs text-gray-400">Click edit to assign</p>
                                                 </div>
                                             @endif
@@ -269,23 +436,27 @@
                             <div class="p-6">
                                 <div class="flex items-center justify-between mb-4">
                                     <h3 class="text-lg font-semibold text-gray-900">Team Members</h3>
-                                    <button onclick="openAddMemberModal()" class="text-green-600 hover:text-green-800 text-sm font-medium">
+                                    <button onclick="openAddMemberModal()"
+                                        class="text-green-600 hover:text-green-800 text-sm font-medium">
                                         + Add Member
                                     </button>
                                 </div>
 
                                 <div class="space-y-3" id="members-list">
                                     <!-- Team Lead/Project Manager (always shown first) -->
-                                    @if($project->user)
-                                        <div class="flex items-center space-x-3 bg-green-50 rounded-lg p-3 border border-green-200">
+                                    @if ($project->user)
+                                        <div
+                                            class="flex items-center space-x-3 bg-green-50 rounded-lg p-3 border border-green-200">
                                             <img class="w-10 h-10 rounded-full"
                                                 src="https://ui-avatars.com/api/?name={{ urlencode($project->user->name) }}&background=random"
                                                 alt="{{ $project->user->name }}">
                                             <div class="flex-1">
                                                 <div class="flex items-center space-x-2">
-                                                    <p class="text-sm font-medium text-gray-900">{{ $project->user->name }}</p>
-                                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
-                                                        @if($project->user->role === 'leader')
+                                                    <p class="text-sm font-medium text-gray-900">
+                                                        {{ $project->user->name }}</p>
+                                                    <span
+                                                        class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                                                        @if ($project->user->role === 'leader')
                                                             Team Leader
                                                         @elseif($project->user->role === 'admin')
                                                             Project Manager
@@ -297,9 +468,12 @@
                                                 <p class="text-xs text-gray-500">{{ $project->user->email }}</p>
                                             </div>
                                             <div class="flex items-center space-x-2">
-                                                <span class="text-xs text-gray-500">{{ $project->created_at->format('M d, Y') }}</span>
-                                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                <span
+                                                    class="text-xs text-gray-500">{{ $project->created_at->format('M d, Y') }}</span>
+                                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
                                             </div>
                                         </div>
@@ -307,7 +481,7 @@
 
                                     <!-- Other Members (excluding project manager) -->
                                     @forelse($project->membersWithUsers->where('user_id', '!=', $project->user_id ?? 0) as $member)
-                                        <div class="flex items-center space-x-3 member-item" data-member-id="{{ $member->id }}">
+<div class="flex items-center space-x-3 member-item" data-member-id="{{ $member->id }}">
                                             <img class="w-10 h-10 rounded-full"
                                                 src="https://ui-avatars.com/api/?name={{ urlencode($member->user->name) }}&background=random"
                                                 alt="{{ $member->user->name }}">
@@ -328,7 +502,7 @@
                                         <div class="text-center py-4 text-gray-500" id="no-members-message">
                                             No team members added yet. Click "Add Member" to start building your team.
                                         </div>
-                                    @endforelse
+@endforelse
                                 </div>
                             </div>
                         </div>
@@ -412,62 +586,122 @@
 @endsection
 
 @section('scripts')
-<script>
-    const projectId = {{ $project->id }};
-    const projectSlug = '{{ $project->slug }}';
-    let searchTimeout;
+    <script>
+        const projectId = {{ $project->id }};
+        const projectSlug = '{{ $project->slug }}';
+        let searchTimeout;
 
-    // Open/Close Modal
-    function openAddMemberModal() {
-        document.getElementById('addMemberModal').classList.remove('hidden');
-    }
+        // Approve Project
+        async function approveProject() {
+            if (!confirm('Are you sure you want to approve this project?')) {
+                return;
+            }
 
-    function closeAddMemberModal() {
-        document.getElementById('addMemberModal').classList.add('hidden');
-        resetForm();
-    }
+            try {
+                const response = await fetch(`/admin/projects/${projectSlug}/approve`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                });
 
-    function resetForm() {
-        document.getElementById('addMemberForm').reset();
-        document.getElementById('userSearch').value = '';
-        document.getElementById('selectedUserId').value = '';
-        document.getElementById('selectedUserDisplay').classList.add('hidden');
-        document.getElementById('userSearchResults').classList.add('hidden');
-    }
+                const data = await response.json();
 
-    // User Search
-    document.getElementById('userSearch').addEventListener('input', function(e) {
-        clearTimeout(searchTimeout);
-        const query = e.target.value.trim();
-
-        if (query.length < 2) {
-            document.getElementById('userSearchResults').classList.add('hidden');
-            return;
+                if (data.success) {
+                    alert('Project approved successfully!');
+                    location.reload();
+                } else {
+                    alert(data.message || 'Failed to approve project');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while approving the project');
+            }
         }
 
-        searchTimeout = setTimeout(() => {
-            searchUsers(query);
-        }, 300);
-    });
+        // Reject Project
+        async function rejectProject() {
+            if (!confirm('Are you sure you want to reject this project?')) {
+                return;
+            }
 
-    function searchUsers(query) {
-        fetch(`/admin/search-users?q=${encodeURIComponent(query)}&project_id=${projectId}`)
-            .then(response => response.json())
-            .then(users => {
-                const resultsDiv = document.getElementById('userSearchResults');
+            try {
+                const response = await fetch(`/admin/projects/${projectSlug}/reject`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                });
 
-                if (users.length === 0) {
-                    resultsDiv.innerHTML = '<div class="p-2 text-sm text-gray-500">No users found</div>';
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Project rejected successfully!');
+                    location.reload();
                 } else {
-                    resultsDiv.innerHTML = users.map(user => {
-                        const isWorking = user.status === 'working';
-                        const statusIcon = isWorking ? '🔴' : '✅';
-                        const statusText = isWorking ? 'Working' : 'Free';
-                        const statusClass = isWorking ? 'text-red-600' : 'text-green-600';
-                        const userClass = isWorking ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer';
-                        const clickHandler = isWorking ? '' : `onclick="selectUser(${user.id}, '${user.name}', '${user.email}', '${user.role}', '${user.status}')"`;
+                    alert(data.message || 'Failed to reject project');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while rejecting the project');
+            }
+        }
 
-                        return `
+        // Open/Close Modal
+        function openAddMemberModal() {
+            document.getElementById('addMemberModal').classList.remove('hidden');
+        }
+
+        function closeAddMemberModal() {
+            document.getElementById('addMemberModal').classList.add('hidden');
+            resetForm();
+        }
+
+        function resetForm() {
+            document.getElementById('addMemberForm').reset();
+            document.getElementById('userSearch').value = '';
+            document.getElementById('selectedUserId').value = '';
+            document.getElementById('selectedUserDisplay').classList.add('hidden');
+            document.getElementById('userSearchResults').classList.add('hidden');
+        }
+
+        // User Search
+        document.getElementById('userSearch').addEventListener('input', function(e) {
+            clearTimeout(searchTimeout);
+            const query = e.target.value.trim();
+
+            if (query.length < 2) {
+                document.getElementById('userSearchResults').classList.add('hidden');
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                searchUsers(query);
+            }, 300);
+        });
+
+        function searchUsers(query) {
+            fetch(`/admin/search-users?q=${encodeURIComponent(query)}&project_id=${projectId}`)
+                .then(response => response.json())
+                .then(users => {
+                    const resultsDiv = document.getElementById('userSearchResults');
+
+                    if (users.length === 0) {
+                        resultsDiv.innerHTML = '<div class="p-2 text-sm text-gray-500">No users found</div>';
+                    } else {
+                        resultsDiv.innerHTML = users.map(user => {
+                            const isWorking = user.status === 'working';
+                            const statusIcon = isWorking ? '🔴' : '✅';
+                            const statusText = isWorking ? 'Working' : 'Free';
+                            const statusClass = isWorking ? 'text-red-600' : 'text-green-600';
+                            const userClass = isWorking ? 'opacity-50 cursor-not-allowed' :
+                                'hover:bg-gray-50 cursor-pointer';
+                            const clickHandler = isWorking ? '' :
+                                `onclick="selectUser(${user.id}, '${user.name}', '${user.email}', '${user.role}', '${user.status}')"`;
+
+                            return `
                         <div class="p-2 ${userClass} user-result" ${clickHandler}>
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-2">
@@ -487,127 +721,129 @@
                             ${isWorking ? '<p class="text-xs text-red-500 mt-1">Cannot be added - currently working on a task</p>' : ''}
                         </div>
                         `;
-                    }).join('');
-                }
+                        }).join('');
+                    }
 
-                resultsDiv.classList.remove('hidden');
-            })
-            .catch(error => {
-                console.error('Error searching users:', error);
-            });
-    }
-
-    function selectUser(userId, name, email, role, status) {
-        document.getElementById('selectedUserId').value = userId;
-        document.getElementById('userSearch').value = name;
-        document.getElementById('selectedUserName').textContent = name;
-
-        // Show status in selected user display
-        const statusIcon = status === 'working' ? '🔴' : '✅';
-        const statusText = status === 'working' ? 'Working' : 'Free';
-        document.getElementById('selectedUserEmail').textContent = email + ' • ' + role + ' • ' + statusIcon + ' ' + statusText;
-        document.getElementById('selectedUserAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
-
-        document.getElementById('selectedUserDisplay').classList.remove('hidden');
-        document.getElementById('userSearchResults').classList.add('hidden');
-    }
-
-    function clearSelectedUser() {
-        document.getElementById('selectedUserId').value = '';
-        document.getElementById('userSearch').value = '';
-        document.getElementById('selectedUserDisplay').classList.add('hidden');
-    }
-
-    // Add Member Form Submit
-    document.getElementById('addMemberForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const userId = document.getElementById('selectedUserId').value;
-        const role = document.getElementById('memberRole').value;
-
-        if (!userId) {
-            alert('Please select a user');
-            return;
+                    resultsDiv.classList.remove('hidden');
+                })
+                .catch(error => {
+                    console.error('Error searching users:', error);
+                });
         }
 
-        if (!role) {
-            alert('Please select a role');
-            return;
+        function selectUser(userId, name, email, role, status) {
+            document.getElementById('selectedUserId').value = userId;
+            document.getElementById('userSearch').value = name;
+            document.getElementById('selectedUserName').textContent = name;
+
+            // Show status in selected user display
+            const statusIcon = status === 'working' ? '🔴' : '✅';
+            const statusText = status === 'working' ? 'Working' : 'Free';
+            document.getElementById('selectedUserEmail').textContent = email + ' • ' + role + ' • ' + statusIcon + ' ' +
+                statusText;
+            document.getElementById('selectedUserAvatar').src =
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
+
+            document.getElementById('selectedUserDisplay').classList.remove('hidden');
+            document.getElementById('userSearchResults').classList.add('hidden');
         }
 
-        const formData = {
-            user_id: userId,
-            role: role,
-            _token: '{{ csrf_token() }}'
-        };
+        function clearSelectedUser() {
+            document.getElementById('selectedUserId').value = '';
+            document.getElementById('userSearch').value = '';
+            document.getElementById('selectedUserDisplay').classList.add('hidden');
+        }
 
-        fetch(`/admin/projects/${projectSlug}/members`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify(formData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload(); // Refresh the page to show new member
-            } else {
-                alert(data.message || 'Error adding member');
+        // Add Member Form Submit
+        document.getElementById('addMemberForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const userId = document.getElementById('selectedUserId').value;
+            const role = document.getElementById('memberRole').value;
+
+            if (!userId) {
+                alert('Please select a user');
+                return;
             }
-        })
-        .catch(error => {
-            console.error('Error adding member:', error);
-            alert('Error adding member');
+
+            if (!role) {
+                alert('Please select a role');
+                return;
+            }
+
+            const formData = {
+                user_id: userId,
+                role: role,
+                _token: '{{ csrf_token() }}'
+            };
+
+            fetch(`/admin/projects/${projectSlug}/members`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload(); // Refresh the page to show new member
+                    } else {
+                        alert(data.message || 'Error adding member');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error adding member:', error);
+                    alert('Error adding member');
+                });
         });
-    });
 
-    // Remove Member
-    function removeMember(memberId) {
-        if (!confirm('Are you sure you want to remove this member?')) {
-            return;
-        }
-
-        fetch(`/admin/projects/${projectSlug}/members/${memberId}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        // Remove Member
+        function removeMember(memberId) {
+            if (!confirm('Are you sure you want to remove this member?')) {
+                return;
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Remove member from DOM
-                const memberElement = document.querySelector(`[data-member-id="${memberId}"]`);
-                if (memberElement) {
-                    memberElement.remove();
-                }
 
-                // Show "no members" message if no members left
-                const membersList = document.getElementById('members-list');
-                if (membersList.children.length === 0) {
-                    membersList.innerHTML = `
+            fetch(`/admin/projects/${projectSlug}/members/${memberId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove member from DOM
+                        const memberElement = document.querySelector(`[data-member-id="${memberId}"]`);
+                        if (memberElement) {
+                            memberElement.remove();
+                        }
+
+                        // Show "no members" message if no members left
+                        const membersList = document.getElementById('members-list');
+                        if (membersList.children.length === 0) {
+                            membersList.innerHTML = `
                         <div class="text-center py-4 text-gray-500" id="no-members-message">
                             No members added yet. Click "Add Member" to start building your team.
                         </div>
                     `;
-                }
-            } else {
-                alert(data.message || 'Error removing member');
-            }
-        })
-        .catch(error => {
-            console.error('Error removing member:', error);
-            alert('Error removing member');
-        });
-    }
-
-    // Close modal when clicking outside
-    document.getElementById('addMemberModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeAddMemberModal();
+                        }
+                    } else {
+                        alert(data.message || 'Error removing member');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error removing member:', error);
+                    alert('Error removing member');
+                });
         }
-    });
-</script>
+
+        // Close modal when clicking outside
+        document.getElementById('addMemberModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAddMemberModal();
+            }
+        });
+    </script>
 @endsection

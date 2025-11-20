@@ -20,6 +20,7 @@ return new class extends Migration
             $table->json('data')->nullable(); // Additional data (task info, etc)
             $table->boolean('is_read')->default(false);
             $table->foreignId('card_id')->nullable()->constrained('cards')->onDelete('cascade');
+            $table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('cascade');
             $table->timestamps();
         });
     }

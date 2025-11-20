@@ -1,0 +1,11 @@
+# Example cPanel .htaccess for backup directory protection
+# Place this file in: /home/username/backups/.htaccess
+
+# Deny all access to backup files
+<FilesMatch "\.(sql|gz|tar|zip|log)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Or simply deny all
+Deny from all

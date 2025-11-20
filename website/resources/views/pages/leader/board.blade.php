@@ -13,23 +13,64 @@
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
             <div class="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
                 <div class="flex items-start space-x-3 sm:space-x-4">
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div
+                        class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h1 class="text-lg sm:text-xl font-semibold text-gray-900 break-words">{{ $project->project_name }}</h1>
-                        <p class="text-gray-500 text-xs sm:text-sm mt-1 break-words">{{ $project->description ?? 'No description available' }}</p>
+                        <h1 class="text-lg sm:text-xl font-semibold text-gray-900 break-words">{{ $project->project_name }}
+                        </h1>
+                        <p class="text-gray-500 text-xs sm:text-sm mt-1 break-words">
+                            {{ $project->description ?? 'No description available' }}</p>
                     </div>
                 </div>
                 <div class="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
                     <div class="text-sm text-gray-500">Progress: <span
                             class="font-medium text-gray-900">{{ number_format($progressPercentage, 1) }}%</span></div>
                     <div class="w-full sm:w-32 bg-gray-200 rounded-full h-2">
-                        <div class="bg-green-600 h-2 rounded-full transition-all" style="width: {{ $progressPercentage }}%"></div>
+                        <div class="bg-green-600 h-2 rounded-full transition-all" style="width: {{ $progressPercentage }}%">
+                        </div>
                     </div>
+
+                    @if($project->status === 'draft')
+                        <button onclick="submitProjectDirect()"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center transition-colors text-sm whitespace-nowrap"
+                            id="submitProjectBtn">
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Submit Project
+                        </button>
+                    @elseif($project->status === 'submitted')
+                        <span class="bg-yellow-100 text-yellow-800 px-3 py-2 rounded-lg font-medium flex items-center justify-center text-sm whitespace-nowrap">
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Waiting Review
+                        </span>
+                    @elseif($project->status === 'done')
+                        <span class="bg-green-100 text-green-800 px-3 py-2 rounded-lg font-medium flex items-center justify-center text-sm whitespace-nowrap">
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Done
+                        </span>
+                    @elseif($project->status === 'rejected')
+                        <span class="bg-red-100 text-red-800 px-3 py-2 rounded-lg font-medium flex items-center justify-center text-sm whitespace-nowrap">
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Rejected
+                        </span>
+                    @endif
                 </div>
             </div>
         </div>
@@ -37,7 +78,9 @@
         <!-- Board Actions -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
             <div class="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-                <form method="GET" action="{{ route('leader.projects.board', $project->id) }}" class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 flex-1 sm:flex-initial" id="searchForm">
+                <form method="GET" action="{{ route('leader.projects.board', $project->id) }}"
+                    class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 flex-1 sm:flex-initial"
+                    id="searchForm">
                     <div class="relative flex-1 sm:flex-initial">
                         <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
                             placeholder="Search tasks..." autocomplete="off"
@@ -49,11 +92,12 @@
                             </svg>
                         </div>
                     </div>
-                    @if(request('search'))
+                    @if (request('search'))
                         <a href="{{ route('leader.projects.board', $project->id) }}"
-                           class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                            class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
                             </svg>
                             <span class="sm:hidden">Clear Search</span>
                             <span class="hidden sm:inline">Clear</span>
@@ -71,18 +115,21 @@
                 </a>
             </div>
 
-            @if(request('search'))
+            @if (request('search'))
                 <div class="mt-3 flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <p class="text-sm text-blue-800">
                             Showing results for: <span class="font-semibold">"{{ request('search') }}"</span>
-                            <span class="text-blue-600 ml-2">({{ $totalCards }} task{{ $totalCards != 1 ? 's' : '' }} found)</span>
+                            <span class="text-blue-600 ml-2">({{ $totalCards }} task{{ $totalCards != 1 ? 's' : '' }}
+                                found)</span>
                         </p>
                     </div>
-                    <a href="{{ route('leader.projects.board', $project->id) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                    <a href="{{ route('leader.projects.board', $project->id) }}"
+                        class="text-blue-600 hover:text-blue-800 text-sm font-medium">
                         Clear filter
                     </a>
                 </div>
@@ -158,9 +205,24 @@
 
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center space-x-2">
-                                        <img class="w-6 h-6 rounded-full"
-                                            src="https://ui-avatars.com/api/?name={{ urlencode($task->user->name) }}&size=24&background=random"
-                                            alt="{{ $task->user->name }}" title="{{ $task->user->name }}">
+                                        @php
+                                            $initials = strtoupper(substr($task->user->name, 0, 2));
+                                            $colors = [
+                                                'bg-blue-500',
+                                                'bg-green-500',
+                                                'bg-purple-500',
+                                                'bg-pink-500',
+                                                'bg-indigo-500',
+                                                'bg-red-500',
+                                                'bg-yellow-500',
+                                                'bg-teal-500',
+                                            ];
+                                            $colorIndex = ord(strtolower($task->user->name[0])) % count($colors);
+                                        @endphp
+                                        <div class="w-6 h-6 rounded-full {{ $colors[$colorIndex] }} flex items-center justify-center"
+                                            title="{{ $task->user->name }}">
+                                            <span class="text-white font-semibold text-xs">{{ $initials }}</span>
+                                        </div>
 
                                         <!-- Comment Button -->
                                         <button
@@ -389,16 +451,16 @@
                 </div>
 
                 ${comment.user_id == currentUserId ? `
-                                    <form action="/leader/comments/${comment.id}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus komentar ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-400 hover:text-red-600 transition-colors">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                            </svg>
-                                        </button>
-                                    </form>
-                                ` : ''}
+                                            <form action="/leader/comments/${comment.id}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus komentar ini?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-400 hover:text-red-600 transition-colors">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        ` : ''}
             </div>
 
             <div class="mt-3">
@@ -428,5 +490,47 @@
 
         // Search functionality - manual submit only (Enter key)
         // Form will submit naturally when user presses Enter in the input field
+
+        // Submit Project Direct Function
+        async function submitProjectDirect() {
+            if (!confirm('Apakah Anda yakin ingin submit project ini untuk direview oleh admin?')) {
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitProjectBtn');
+            const originalHTML = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<svg class="animate-spin h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Submitting...';
+
+            try {
+                const response = await fetch('{{ route("leader.projects.submit", $project->id) }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        submission_note: null
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ ' + data.message);
+                    window.location.reload();
+                } else {
+                    alert('❌ ' + data.message);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalHTML;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Terjadi kesalahan saat submit project.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHTML;
+            }
+        }
     </script>
 @endsection
