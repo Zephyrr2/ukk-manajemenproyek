@@ -95,7 +95,7 @@
         <div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
             <h3 class="text-lg leading-6 font-medium text-gray-900">Subtasks Management</h3>
             @if($task->status !== 'done')
-                <a href="{{ route('subtasks.create', $task->id) }}"
+                <a href="{{ route('user.subtasks.create', $task->id) }}"
                    class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full sm:w-auto">
                     <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
@@ -217,7 +217,7 @@
 
                             @if($subtask->status === 'todo')
                                 <!-- Start Button -->
-                                <form action="{{ route('subtasks.start', [$task->id, $subtask->id]) }}" method="POST" class="inline">
+                                <form action="{{ route('user.subtasks.start', [$task->id, $subtask->id]) }}" method="POST" class="inline">
                                     @csrf
                                     <button type="submit"
                                         class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
@@ -231,7 +231,7 @@
                             @elseif($subtask->status === 'in_progress')
                                 @if($isPaused)
                                     <!-- Resume Button (when paused) -->
-                                    <form action="{{ route('subtasks.resume', [$task->id, $subtask->id]) }}" method="POST" class="inline">
+                                    <form action="{{ route('user.subtasks.resume', [$task->id, $subtask->id]) }}" method="POST" class="inline">
                                         @csrf
                                         <button type="submit"
                                             class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
@@ -244,7 +244,7 @@
                                 </form>
                                 @elseif($activeSubtaskLog)
                                     <!-- Pause Button (when active) -->
-                                    <form action="{{ route('subtasks.pause', [$task->id, $subtask->id]) }}" method="POST" class="inline">
+                                    <form action="{{ route('user.subtasks.pause', [$task->id, $subtask->id]) }}" method="POST" class="inline">
                                         @csrf
                                         <button type="submit"
                                             class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
@@ -258,7 +258,7 @@
                                 @endif
 
                                 <!-- Done Button -->
-                                <form action="{{ route('subtasks.complete', [$task->id, $subtask->id]) }}" method="POST" class="inline">
+                                <form action="{{ route('user.subtasks.complete', [$task->id, $subtask->id]) }}" method="POST" class="inline">
                                     @csrf
                                     <button type="submit"
                                         class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -273,7 +273,7 @@
 
                             <!-- Edit Button -->
                             @if($subtask->status !== 'done')
-                                <a href="{{ route('subtasks.edit', [$task->id, $subtask->id]) }}"
+                                <a href="{{ route('user.subtasks.edit', [$task->id, $subtask->id]) }}"
                                    class="inline-flex items-center px-2 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
@@ -282,7 +282,7 @@
                             @endif
 
                             <!-- Delete Button -->
-                            <form action="{{ route('subtasks.destroy', [$task->id, $subtask->id]) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this subtask?')">
+                            <form action="{{ route('user.subtasks.destroy', [$task->id, $subtask->id]) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this subtask?')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
