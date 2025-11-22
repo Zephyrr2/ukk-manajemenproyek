@@ -27,6 +27,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/login/process', [AuthController::class, 'loginProcess']);
     Route::get('/register', [AuthController::class, 'register']);
     Route::post('/register/process', [AuthController::class, 'registerProcess']);
+    Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.request');
+    Route::post('/forgot-password/process', [AuthController::class, 'forgotPasswordProcess'])->name('password.email');
 });
 
 // Authenticated Routes

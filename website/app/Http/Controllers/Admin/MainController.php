@@ -9,6 +9,7 @@ use App\Models\Board;
 use App\Models\Card;
 use App\Models\Card_Assigment;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class MainController
 {
@@ -77,6 +78,92 @@ class MainController
                               ];
                           });
 
+        // Task Completion Trend (Last 7 days)
+        $completionTrendLabels = [];
+        $completionTrendData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i);
+            $completionTrendLabels[] = $date->format('D');
+
+            // Count tasks completed on this day
+            $completedOnDay = Card::where('status', 'done')
+                                 ->whereDate('updated_at', $date->format('Y-m-d'))
+                                 ->count();
+            $completionTrendData[] = $completedOnDay;
+        }
+
+        // Task Status Distribution
+        $taskStatusData = [
+            Card::where('status', 'done')->count(),
+            Card::where('status', 'in_progress')->count(),
+            Card::where('status', 'todo')->count(),
+            Card::where('due_date', '<', Carbon::now())->whereIn('status', ['todo', 'in_progress', 'review'])->count()
+        ];
+
+        // Top Performers (Users with most completed tasks)
+        $topPerformersRaw = Card_Assigment::select('user_id', DB::raw('COUNT(*) as completed_count'))
+            ->whereHas('card', function ($q) {
+                $q->where('status', 'done');
+            })
+            ->groupBy('user_id')
+            ->orderBy('completed_count', 'desc')
+            ->take(5)
+            ->get();
+
+        $topPerformersNames = [];
+        $topPerformersData = [];
+
+        foreach ($topPerformersRaw as $performer) {
+            $user = User::find($performer->user_id);
+            if ($user) {
+                $topPerformersNames[] = $user->name;
+                $topPerformersData[] = $performer->completed_count;
+            }
+        }
+
+        // Project Status Overview - Simplified calculation
+        $allProjects = Project::with(['boards.cards'])->get();
+
+        $completedProjects = 0;
+        $inProgressProjects = 0;
+        $pendingProjects = 0;
+        $onHoldProjects = 0;
+
+        foreach ($allProjects as $project) {
+            $totalCards = 0;
+            $completedCards = 0;
+            $hasInProgress = false;
+
+            foreach ($project->boards as $board) {
+                foreach ($board->cards as $card) {
+                    $totalCards++;
+                    if ($card->status === 'done') {
+                        $completedCards++;
+                    } elseif (in_array($card->status, ['in_progress', 'review'])) {
+                        $hasInProgress = true;
+                    }
+                }
+            }
+
+            // Classify project based on progress
+            if ($totalCards === 0) {
+                $pendingProjects++;
+            } elseif ($completedCards === $totalCards) {
+                $completedProjects++;
+            } elseif ($hasInProgress || $completedCards > 0) {
+                $inProgressProjects++;
+            } else {
+                $pendingProjects++;
+            }
+        }
+
+        $projectStatusData = [
+            $completedProjects,
+            $inProgressProjects,
+            $pendingProjects,
+            $onHoldProjects
+        ];
+
         return view('pages.admin.dashboard', compact(
             'totalProjects',
             'totalUsers',
@@ -84,7 +171,13 @@ class MainController
             'activeTasks',
             'overdueTasks',
             'recentProjects',
-            'teamMembers'
+            'teamMembers',
+            'completionTrendLabels',
+            'completionTrendData',
+            'taskStatusData',
+            'topPerformersNames',
+            'topPerformersData',
+            'projectStatusData'
         ));
     }
 

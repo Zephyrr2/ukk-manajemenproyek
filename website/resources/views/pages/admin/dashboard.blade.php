@@ -63,7 +63,73 @@
                 </div>
             </div>
         </div>
-    </div>    <!-- Projects Section -->
+    </div>
+
+    <!-- Performance Statistics Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Task Completion Trend -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <h2 class="text-base sm:text-lg font-semibold text-gray-900">Task Completion Trend (Last 7 Days)</h2>
+            </div>
+            <div class="h-64">
+                <canvas id="taskCompletionChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Task Status Distribution -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center mr-3">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
+                    </svg>
+                </div>
+                <h2 class="text-base sm:text-lg font-semibold text-gray-900">Task Status Distribution</h2>
+            </div>
+            <div class="h-64">
+                <canvas id="taskStatusChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Team Productivity -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center mr-3">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <h2 class="text-base sm:text-lg font-semibold text-gray-900">Top Performers (Completed Tasks)</h2>
+            </div>
+            <div class="h-64">
+                <canvas id="teamProductivityChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Project Status Overview -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 bg-amber-600 rounded-lg flex items-center justify-center mr-3">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h2 class="text-base sm:text-lg font-semibold text-gray-900">Project Status Overview</h2>
+            </div>
+            <div class="h-64">
+                <canvas id="projectStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Projects Section -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
         <div class="flex items-center mb-4 sm:mb-6">
             <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
@@ -167,3 +233,139 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Task Completion Trend Chart (Line Chart)
+    const taskCompletionCtx = document.getElementById('taskCompletionChart').getContext('2d');
+    new Chart(taskCompletionCtx, {
+        type: 'line',
+        data: {
+            labels: {!! json_encode($completionTrendLabels ?? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']) !!},
+            datasets: [{
+                label: 'Tasks Completed',
+                data: {!! json_encode($completionTrendData ?? [12, 19, 15, 25, 22, 30, 28]) !!},
+                borderColor: 'rgb(34, 197, 94)',
+                backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 5
+                    }
+                }
+            }
+        }
+    });
+
+    // Task Status Distribution (Doughnut Chart)
+    const taskStatusCtx = document.getElementById('taskStatusChart').getContext('2d');
+    new Chart(taskStatusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Completed', 'In Progress', 'Pending', 'Overdue'],
+            datasets: [{
+                data: {!! json_encode($taskStatusData ?? [45, 30, 15, 10]) !!},
+                backgroundColor: [
+                    'rgb(34, 197, 94)',
+                    'rgb(59, 130, 246)',
+                    'rgb(251, 191, 36)',
+                    'rgb(239, 68, 68)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Team Productivity Chart (Horizontal Bar Chart)
+    const teamProductivityCtx = document.getElementById('teamProductivityChart').getContext('2d');
+    new Chart(teamProductivityCtx, {
+        type: 'bar',
+        data: {
+            labels: {!! json_encode($topPerformersNames ?? ['John Doe', 'Jane Smith', 'Mike Johnson', 'Sarah Williams', 'Tom Brown']) !!},
+            datasets: [{
+                label: 'Completed Tasks',
+                data: {!! json_encode($topPerformersData ?? [35, 28, 25, 22, 18]) !!},
+                backgroundColor: 'rgb(16, 185, 129)',
+                borderRadius: 5
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 5
+                    }
+                }
+            }
+        }
+    });
+
+    // Project Status Overview (Bar Chart)
+    const projectStatusCtx = document.getElementById('projectStatusChart').getContext('2d');
+    new Chart(projectStatusCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Completed', 'In Progress', 'Pending', 'On Hold'],
+            datasets: [{
+                label: 'Projects',
+                data: {!! json_encode($projectStatusData ?? [8, 15, 5, 2]) !!},
+                backgroundColor: [
+                    'rgb(34, 197, 94)',
+                    'rgb(59, 130, 246)',
+                    'rgb(251, 191, 36)',
+                    'rgb(107, 114, 128)'
+                ],
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 2
+                    }
+                }
+            }
+        }
+    });
+</script>
+@endpush
